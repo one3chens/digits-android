@@ -85,6 +85,7 @@ Follow [@Digits](http://twitter.com/digits) on Twitter for updates.
 
 ## Authors
 
+* [Ashwin Raghav](https://twitter.com/ashwinraghav)
 * [Eric Frohnhoefer](https://twitter.com/ericfrohnhoefer)
 * [Israel Camacho](https://twitter.com/rallat)
 
