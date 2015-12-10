@@ -210,7 +210,6 @@ public class Digits extends Kit<Void> {
         createContactsClient();
         userSessionMonitor = new SessionMonitor<>(getSessionManager(), getExecutorService(),
                 digitsSessionVerifier);
-        userSessionMonitor.triggerVerificationIfNecessary();
         // Monitor activity lifecycle after sessions have been restored. Otherwise we would not
         // have any sessions to monitor anyways.
         userSessionMonitor.monitorActivityLifecycle(getFabric().getActivityLifecycleManager());
