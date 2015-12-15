@@ -31,6 +31,7 @@ class PhoneNumberUtils {
 
     private final static int MAX_COUNTRIES = 291;
     private final static int MAX_COUNTRY_CODES = 286;
+    private static final int MAX_LENGTH_COUNTRY_CODE = 3;
 
     private final SimManager simManager;
 
@@ -84,16 +85,25 @@ class PhoneNumberUtils {
         return DEFAULT_COUNTRY_ISO;
     }
 
+    /**
+     * Country code extracted using shortest matching prefix like libPhoneNumber. See:
+     * https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberUtil.java#L2395
+     */
     private String countryCodeForPhoneNumber(Map<Integer, List<String>>
             countryCodeToRegionCodeMap, String normalizedPhoneNumber) {
+        final String phoneWithoutPlusPrefix = normalizedPhoneNumber
+                .replaceFirst("^\\+", "");
+        final int numberLength = phoneWithoutPlusPrefix.length();
 
-        for (int i = 3; i > 0; i--) {
-            final String countryCode = normalizedPhoneNumber.substring(1, i);
-            final Integer countryCodeKey = Integer.valueOf(countryCode);
+        for (int i = 1; i <= MAX_LENGTH_COUNTRY_CODE && i <= numberLength; i++) {
+            final String potentialCountryCode = phoneWithoutPlusPrefix.substring(0, i);
+            final Integer countryCodeKey = Integer.valueOf(potentialCountryCode);
+
             if (countryCodeToRegionCodeMap.containsKey(countryCodeKey)) {
-                return countryCode;
+                return potentialCountryCode;
             }
         }
+
         return DEFAULT_COUNTRY_CODE;
     }
 

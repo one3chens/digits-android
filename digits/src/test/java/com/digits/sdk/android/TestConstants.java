@@ -32,6 +32,7 @@ public class TestConstants {
 
     public static final String RAW_PHONE = "+123456789";
     public static final String ES_RAW_PHONE = "+3423456789";
+    public static final String YE_RAW_PHONE = "+96723456789";
     public static final String PHONE = "123456789";
     public static final String PHONE_NO_COUNTRY_CODE = "23456789";
     public static final String PHONE_PLUS_SYMBOL_NO_COUNTRY_CODE = "23456789";
@@ -39,7 +40,9 @@ public class TestConstants {
     public static final String US_ISO2 = "us";
     public static final String US_ISO3 = "usa";
     public static final String ES_COUNTRY_CODE = "34";
+    public static final String YE_COUNTRY_CODE = "967";
     public static final String ES_ISO2 = "es";
+    public static final String YE_ISO2 = "ye";
     public static final DigitsException ANY_EXCEPTION = new DigitsException("");
     public static final Email EMAIL = new Email("support@fabric.io", false);
     public static final boolean ANY_BOOLEAN = Boolean.TRUE;

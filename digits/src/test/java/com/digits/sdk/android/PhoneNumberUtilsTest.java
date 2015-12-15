@@ -59,7 +59,7 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
-    public void testGetPhoneNumberProvidedRawPhoneNumber() throws Exception {
+    public void testGetPhoneNumber_withRawPhoneNumber() throws Exception {
         final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(null);
         final PhoneNumber phoneNumber = phoneNumberUtils.getPhoneNumber(TestConstants.ES_RAW_PHONE);
         assertEquals(TestConstants.ES_COUNTRY_CODE, phoneNumber.getCountryCode());
@@ -68,14 +68,23 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
-    public void testGetPhoneNumberProvidedPhone_empty() throws Exception {
+    public void testGetPhoneNumber_withLongestCountryCode() throws Exception {
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(null);
+        final PhoneNumber phoneNumber = phoneNumberUtils.getPhoneNumber(TestConstants.YE_RAW_PHONE);
+        assertEquals(TestConstants.YE_COUNTRY_CODE, phoneNumber.getCountryCode());
+        assertEquals(TestConstants.YE_ISO2, phoneNumber.getCountryIso().toLowerCase());
+        assertEquals(TestConstants.PHONE_NO_COUNTRY_CODE, phoneNumber.getPhoneNumber());
+    }
+
+    @Test
+    public void testGetPhoneNumber_withPhoneEmpty() throws Exception {
         final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(null);
         final PhoneNumber phoneNumber = phoneNumberUtils.getPhoneNumber("");
         assertEquals(PhoneNumber.emptyPhone(), phoneNumber);
     }
 
     @Test
-    public void testGetPhoneNumberProvidedPhone_withoutPlusSign() throws Exception {
+    public void testGetPhoneNumber_withPhoneWithoutPlusSign() throws Exception {
         final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(null);
         final PhoneNumber phoneNumber = phoneNumberUtils.getPhoneNumber(TestConstants.PHONE);
         assertEquals(TestConstants.PHONE, phoneNumber.getPhoneNumber());
