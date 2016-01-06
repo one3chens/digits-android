@@ -24,9 +24,17 @@ public class Email {
     @SerializedName("is_verified")
     final boolean verified;
 
-    public Email(String address, boolean verified) {
+    Email(String address, boolean verified) {
         this.address = address;
         this.verified = verified;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public boolean isVerified() {
+        return verified;
     }
 
     @Override
