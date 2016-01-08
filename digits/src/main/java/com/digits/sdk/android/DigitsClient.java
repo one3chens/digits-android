@@ -20,7 +20,6 @@ package com.digits.sdk.android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.twitter.sdk.android.core.Callback;
@@ -46,6 +45,7 @@ public class DigitsClient {
     public static final String CLIENT_IDENTIFIER = "digits_sdk";
 
     private final Digits digits;
+    private final DigitsUserAgent userAgent;
     private final SessionManager<DigitsSession> sessionManager;
     private final TwitterCore twitterCore;
     private final DigitsAuthRequestQueue authRequestQueue;
@@ -53,12 +53,13 @@ public class DigitsClient {
     private DigitsApiClient digitsApiClient;
 
     DigitsClient() {
-        this(Digits.getInstance(), TwitterCore.getInstance(), Digits.getSessionManager(), null,
+        this(Digits.getInstance(), new DigitsUserAgent(), TwitterCore.getInstance(),
+                Digits.getSessionManager(), null,
                 new AuthScribeService(Digits.getInstance().getScribeClient()));
     }
 
-    DigitsClient(Digits digits, TwitterCore twitterCore, SessionManager<DigitsSession>
-            sessionManager, DigitsAuthRequestQueue authRequestQueue,
+    DigitsClient(Digits digits, DigitsUserAgent userAgent, TwitterCore twitterCore,
+        SessionManager<DigitsSession> sessionManager, DigitsAuthRequestQueue authRequestQueue,
                  DigitsScribeService scribeService) {
         if (twitterCore == null) {
             throw new IllegalArgumentException("twitter must not be null");
@@ -66,12 +67,17 @@ public class DigitsClient {
         if (digits == null) {
             throw new IllegalArgumentException("digits must not be null");
         }
+        if (userAgent == null) {
+            throw new IllegalArgumentException("userAgent must not be null");
+        }
         if (sessionManager == null) {
             throw new IllegalArgumentException("sessionManager must not be null");
         }
 
         this.twitterCore = twitterCore;
         this.digits = digits;
+        this.userAgent = userAgent;
+
         this.sessionManager = sessionManager;
 
         if (authRequestQueue == null) {
@@ -82,6 +88,7 @@ public class DigitsClient {
         }
         this.scribeService = scribeService;
     }
+
 
     protected DigitsAuthRequestQueue createAuthRequestQueue(SessionManager sessionManager) {
         final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>(1);
@@ -217,8 +224,7 @@ public class DigitsClient {
         }
 
         digitsApiClient = new DigitsApiClient(session, twitterCore.getAuthConfig(),
-                twitterCore.getSSLSocketFactory(), digits.getExecutorService(),
-                new DigitsUserAgent(digits.getVersion(), Build.VERSION.RELEASE));
+                twitterCore.getSSLSocketFactory(), digits.getExecutorService(), userAgent);
 
         return digitsApiClient;
     }

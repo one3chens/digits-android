@@ -95,6 +95,7 @@ Thanks for assistance and contributions:
 * [Dalton Hubble](https://twitter.com/dghubble)
 * [Justin Starry](https://twitter.com/sirstarry)
 * [Lien Mamitsuka](https://twitter.com/lienm)
+* [Megha Bangalore](https://twitter.com/megha)
 * [Ty Smith](https://twitter.com/tsmith)
 * [Yohan Hartanto](https://twitter.com/yohan)
 

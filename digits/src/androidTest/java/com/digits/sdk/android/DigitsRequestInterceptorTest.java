@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 import static retrofit.RequestInterceptor.RequestFacade;
 
 public class DigitsRequestInterceptorTest extends FabricAndroidTestCase {
-    private static final String ANY_USER_AGENT = "Digits/Test (Android Awesome)";
+    private static final String ANY_USER_AGENT = "Digits/Test (AwesomeApp Android Awesome)";
 
     public void testIntercept() throws Exception {
         final DigitsUserAgent userAgent = mock(MockDigitsUserAgent.class);

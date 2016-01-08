@@ -60,6 +60,7 @@ public class DigitsClientTests {
     private static final String TYPE = "typetoken";
     private static final String ANY_REQUEST_ID = "1";
     private static final String ANY_CODE = "1";
+    private static final String ANY_VERSION = "1.1";
     private static int TEST_NEW_TASK_INTENT_FLAGS =
             (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
     private static int TEST_NO_INTENT_FLAGS = 0;
@@ -68,6 +69,7 @@ public class DigitsClientTests {
     private Intent capturedIntent;
     private MockContext context;
     private Digits digits;
+    private DigitsUserAgent digitsUserAgent;
     private TwitterCore twitterCore;
     private SessionManager<DigitsSession> sessionManager;
     private DigitsApiClient.DeviceService deviceService;
@@ -87,6 +89,7 @@ public class DigitsClientTests {
     @Before
     public void setUp() throws Exception {
         digits = mock(Digits.class);
+        digitsUserAgent = mock(DigitsUserAgent.class);
         sessionManager = mock(SessionManager.class);
         twitterCore = mock(TwitterCore.class);
         digitsApiClient = mock(DigitsApiClient.class);
@@ -113,13 +116,15 @@ public class DigitsClientTests {
         when(digits.getActivityClassManager()).thenReturn(new ActivityClassManagerImp());
         when(digits.getScribeClient()).thenReturn(scribeClient);
         when(digits.getFabric()).thenReturn(fabric);
+        when(digits.getVersion()).thenReturn(ANY_VERSION);
         when(fabric.getCurrentActivity()).thenReturn(activity);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(activity.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(activity.isFinishing()).thenReturn(false);
         when(controller.getErrors()).thenReturn(mock(ErrorCodes.class));
 
-        digitsClient = new DigitsClient(digits, twitterCore, sessionManager, authRequestQueue,
+        digitsClient = new DigitsClient(digits, digitsUserAgent, twitterCore, sessionManager,
+            authRequestQueue,
                 scribeService) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
@@ -131,7 +136,8 @@ public class DigitsClientTests {
     @Test
     public void testConstructor_nullTwitter() throws Exception {
         try {
-            new DigitsClient(digits, null, sessionManager, authRequestQueue, scribeService);
+            new DigitsClient(digits, digitsUserAgent, null, sessionManager, authRequestQueue,
+                scribeService);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("twitter must not be null", e.getMessage());
@@ -141,7 +147,8 @@ public class DigitsClientTests {
     @Test
     public void testConstructor_nullDigits() throws Exception {
         try {
-            new DigitsClient(null, twitterCore, sessionManager, authRequestQueue, scribeService);
+            new DigitsClient(null, digitsUserAgent, twitterCore, sessionManager, authRequestQueue,
+                scribeService);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("digits must not be null", e.getMessage());
@@ -149,9 +156,21 @@ public class DigitsClientTests {
     }
 
     @Test
+    public void testConstructor_nullDigitsUserAgent() throws Exception {
+        try {
+            new DigitsClient(digits, null, twitterCore, sessionManager, authRequestQueue,
+                scribeService);
+            fail("Expected IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertEquals("userAgent must not be null", e.getMessage());
+        }
+    }
+
+    @Test
     public void testConstructor_nullSessionManager() throws Exception {
         try {
-            new DigitsClient(digits, twitterCore, null, authRequestQueue, scribeService);
+            new DigitsClient(digits, digitsUserAgent, twitterCore, null, authRequestQueue,
+                scribeService);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("sessionManager must not be null", e.getMessage());

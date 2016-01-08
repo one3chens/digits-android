@@ -17,17 +17,31 @@
 
 package com.digits.sdk.android;
 
+import android.os.Build;
+
 class DigitsUserAgent {
     private final String digitsVersion;
     private final String androidVersion;
+    private final String appName;
 
-    DigitsUserAgent(String digitsVersion, String androidVersion) {
+    DigitsUserAgent(){
+        this(Digits.getInstance().getVersion(), Build.VERSION.RELEASE,
+                Digits.getInstance().getContext().getApplicationContext()
+                        .getApplicationInfo().loadLabel(
+                        Digits.getInstance()
+                                .getContext()
+                                .getApplicationContext()
+                                .getPackageManager()).toString());
+    }
+
+    DigitsUserAgent(String digitsVersion, String androidVersion, String appName) {
         this.digitsVersion = digitsVersion;
+        this.appName = appName;
         this.androidVersion = androidVersion;
-
     }
 
     public String toString() {
-        return "Digits/" + digitsVersion + " (Android " + androidVersion + ")";
+        return "Digits/" + digitsVersion + " ( " + appName + "; Android " + androidVersion + ")";
     }
+
 }

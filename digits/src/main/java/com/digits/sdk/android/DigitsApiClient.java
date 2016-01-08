@@ -17,9 +17,6 @@
 
 package com.digits.sdk.android;
 
-
-import android.os.Build;
-
 import com.twitter.sdk.android.core.AuthenticatedClient;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Session;
@@ -47,8 +44,13 @@ class DigitsApiClient {
     DigitsApiClient(Session session) {
         this(session, TwitterCore.getInstance().getAuthConfig(),
                 TwitterCore.getInstance().getSSLSocketFactory(), Digits.getInstance()
-                        .getExecutorService(),
-                new DigitsUserAgent(Digits.getInstance().getVersion(), Build.VERSION.RELEASE));
+                        .getExecutorService());
+    }
+
+    DigitsApiClient(Session session, TwitterAuthConfig authConfig,
+            SSLSocketFactory sslFactory, ExecutorService executorService) {
+        this(session, authConfig, sslFactory, executorService,
+            new DigitsUserAgent());
     }
 
     DigitsApiClient(Session session, TwitterAuthConfig authConfig,
@@ -79,7 +81,6 @@ class DigitsApiClient {
     public AccountService getAccountService() {
         return getService(AccountService.class);
     }
-
 
     @SuppressWarnings("unchecked")
     private <T> T getService(Class<T> cls) {
