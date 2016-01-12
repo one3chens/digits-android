@@ -3,9 +3,13 @@
 
 ## Unreleased
 
+## v1.9.3
+* Fixed issue when setting default three-digit country code.
+* Added public accessors to Email object.
+
 ## v1.9.2
 
-* Fix issue where Digits Activities are retained in recents.
+* Fixed issue where Digits Activities are retained in recents.
 
 ## v1.9.1
 
