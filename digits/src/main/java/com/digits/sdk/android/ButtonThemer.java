@@ -31,6 +31,9 @@ import android.widget.TextView;
 
 class ButtonThemer {
     private final Resources resources;
+    private static int[][] focussedOrPressedButEnabled =
+        {{android.R.attr.state_focused, android.R.attr.state_enabled},
+        {android.R.attr.state_pressed, android.R.attr.state_enabled}};
 
     public ButtonThemer(Resources resources) {
         this.resources = resources;
@@ -42,17 +45,15 @@ class ButtonThemer {
         final float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5,
                 resources.getDisplayMetrics());
 
-        // Pressed state
+        // pressed or in focus
         GradientDrawable tmp = new GradientDrawable();
         tmp.setCornerRadius(radius);
         tmp.setColor(getPressedColor(accentColor));
-        background.addState(new int[]{android.R.attr.state_focused,
-                android.R.attr.state_pressed}, tmp);
-        background.addState(new int[]{-android.R.attr.state_focused,
-                android.R.attr.state_pressed}, tmp);
-        background.addState(new int[]{android.R.attr.state_focused}, tmp);
+        for (int[]state: focussedOrPressedButEnabled) {
+            background.addState(state, tmp);
+        }
 
-        // Default state
+        // default
         tmp = new GradientDrawable();
         tmp.setColor(accentColor);
         tmp.setCornerRadius(radius);
@@ -73,17 +74,21 @@ class ButtonThemer {
         final float strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2,
                 resources.getDisplayMetrics());
 
-        // Pressed state
+        // pressed or in focus
         GradientDrawable tmp = new GradientDrawable();
         tmp.setCornerRadius(radius);
         tmp.setStroke((int) strokeWidth, getPressedColor(accentColor));
-        background.addState(new int[]{android.R.attr.state_focused,
-                android.R.attr.state_pressed}, tmp);
-        background.addState(new int[]{-android.R.attr.state_focused,
-                android.R.attr.state_pressed}, tmp);
-        background.addState(new int[]{android.R.attr.state_focused}, tmp);
+        for (int[]state: focussedOrPressedButEnabled) {
+            background.addState(state, tmp);
+        }
 
-        // Default state
+        // disabled
+        tmp = new GradientDrawable();
+        tmp.setCornerRadius(radius);
+        tmp.setStroke((int) strokeWidth, getDisabledColor(accentColor));
+        background.addState(new int[]{-android.R.attr.state_enabled}, tmp);
+
+        // default
         tmp = new GradientDrawable();
         tmp.setCornerRadius(radius);
         tmp.setStroke((int) strokeWidth, accentColor);
@@ -104,27 +109,54 @@ class ButtonThemer {
         }
     }
 
+    private int getDisabledColor(int accentColor) {
+        if (ThemeUtils.isLightColor(accentColor)) {
+            return ThemeUtils.calculateOpacityTransform(.60, Color.BLACK, accentColor);
+        } else {
+            return ThemeUtils.calculateOpacityTransform(.60, Color.WHITE, accentColor);
+        }
+    }
+
     void setTextAccentColor(TextView view, int accentColor) {
-        view.setTextColor(getTextColor(accentColor));
+        final int enabledColor = getTextColor(accentColor);
+        final int disabledColor = getDisabledColor(enabledColor);
+
+        final int[][] states = new int[][]{
+                new int[]{-android.R.attr.state_enabled}, //For completeness. Currently unused
+                StateSet.WILD_CARD
+        };
+
+        final int[] colors = new int[]{disabledColor, enabledColor};
+        final ColorStateList stateList = new ColorStateList(states, colors);
+        view.setTextColor(stateList);
     }
 
     void setTextAccentColorInverse(TextView view, int accentColor) {
         final int pressedColor = getPressedColor(accentColor);
+        final int disabledColor = getDisabledColor(accentColor);
+
         final int[][] states = new int[][]{
-                new int[]{android.R.attr.state_focused, -android.R.attr.state_pressed},
-                new int[]{android.R.attr.state_focused, android.R.attr.state_pressed},
-                new int[]{-android.R.attr.state_focused, android.R.attr.state_pressed},
-                StateSet.WILD_CARD,
+            new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled},
+            new int[]{android.R.attr.state_focused, android.R.attr.state_enabled},
+            new int[]{-android.R.attr.state_enabled},
+            StateSet.WILD_CARD
         };
-        final int[] colors = new int[]{accentColor, pressedColor, pressedColor, accentColor};
+
+        final int[] colors = new int[]{pressedColor, pressedColor, disabledColor, accentColor};
 
         final ColorStateList stateList = new ColorStateList(states, colors);
+
         view.setTextColor(stateList);
     }
 
     int getTextColor(int accentColor) {
         return ThemeUtils.isLightColor(accentColor) ? resources.getColor(R.color
                 .dgts__text_dark) : resources.getColor(R.color.dgts__text_light);
+    }
+
+    int getTextColorInverse(int accentColor) {
+        //The text color is the accentColor for for Inverse button
+        return accentColor;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
