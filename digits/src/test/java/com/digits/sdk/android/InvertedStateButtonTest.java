@@ -40,40 +40,49 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class StateButtonTest {
-    private static final String SEND_TEXT = "Send confirmation code";
-    private static final String PROGRESS_TEXT = "Sending confirmation code";
-    private static final String END_TEXT = "Sent confirmation code";
+public class InvertedStateButtonTest {
+    private static final String START_TEXT = "Call Me";
+    private static final String PROGRESS_TEXT = "Calling";
+    private static final String END_TEXT = "Continuing to call";
 
-    private StateButton button;
+    private InvertedStateButton button;
     private TextView textView;
     private ProgressBar progressBar;
     private ImageView imageView;
 
     @Before
     public void setUp() throws Exception {
-        button = new StateButton(RuntimeEnvironment.application);
-        final TypedArray array = mock(TypedArray.class);
+        button = new InvertedStateButton(RuntimeEnvironment.application);
+        final TypedArray array = createTypedArray(false);
         final Context context = mock(Context.class);
         final AttributeSet attrs = mock(AttributeSet.class);
-
-        when(array.getText(R.styleable.StateButton_startStateText)).thenReturn(SEND_TEXT);
-        when(array.getText(R.styleable.StateButton_progressStateText)).thenReturn
-                (PROGRESS_TEXT);
-        when(array.getText(R.styleable.StateButton_finishStateText)).thenReturn
-                (END_TEXT);
         when(context.obtainStyledAttributes(attrs, R.styleable.StateButton)).thenReturn(array);
         button.initAttrs(context, attrs);
         array.recycle();
-
         textView = (TextView) button.findViewById(R.id.dgts__state_button);
         progressBar = (ProgressBar) button.findViewById(R.id.dgts__state_progress);
         imageView = (ImageView) button.findViewById(R.id.dgts__state_success);
     }
 
     @Test
-    public void testShowStart() throws Exception {
-        assertEquals(SEND_TEXT, textView.getText());
+    public void testShowStart_withoutTimer() throws Exception {
+        assertEquals(START_TEXT, textView.getText());
+        assertEquals(View.GONE, progressBar.getVisibility());
+        assertEquals(View.GONE, imageView.getVisibility());
+        assertTrue(progressBar.isIndeterminate());
+        assertTrue(button.isClickable());
+    }
+
+    @Test
+    public void testShowStart_withTimer() throws Exception {
+        final TypedArray array = createTypedArray(true);
+        final Context context = mock(Context.class);
+        final AttributeSet attrs = mock(AttributeSet.class);
+        when(context.obtainStyledAttributes(attrs, R.styleable.StateButton)).thenReturn(array);
+
+        button.initAttrs(context, attrs);
+        array.recycle();
+        assertEquals(START_TEXT, textView.getText());
         assertEquals(View.GONE, progressBar.getVisibility());
         assertEquals(View.GONE, imageView.getVisibility());
         assertTrue(progressBar.isIndeterminate());
@@ -103,7 +112,17 @@ public class StateButtonTest {
     @Test
     public void testShowError() throws Exception {
         button.showError();
-        testShowStart();
+        testShowStart_withoutTimer();
     }
 
+    private TypedArray createTypedArray(boolean showTimer){
+        final TypedArray array = mock(TypedArray.class);
+
+        when(array.getText(R.styleable.StateButton_startStateText)).thenReturn(START_TEXT);
+        when(array.getText(R.styleable.StateButton_progressStateText)).thenReturn
+                (PROGRESS_TEXT);
+        when(array.getText(R.styleable.StateButton_finishStateText)).thenReturn
+                (END_TEXT);
+        return array;
+    }
 }

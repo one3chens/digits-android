@@ -26,5 +26,4 @@
 
     <attr name="dgts__accentColor" format="reference|color" />
     <attr name="dgts__logoDrawable" format="reference" />
-
 </resources>

@@ -49,10 +49,17 @@ public class StateButton extends RelativeLayout {
 
     public StateButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        initAttrs(context, attrs);
+        initView(context);
+    }
+
+    void initAttrs(Context context, AttributeSet attrs) {
         final TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.StateButton);
         init(array);
         array.recycle();
+    }
 
+    void initView(Context context){
         accentColor = ThemeUtils.getAccentColor(getResources(), context.getTheme());
         buttonThemer = new ButtonThemer(getResources());
 
@@ -60,6 +67,10 @@ public class StateButton extends RelativeLayout {
         buttonThemer.setTextAccentColor(textView, accentColor);
         setImageAccentColor();
         setSpinnerAccentColor();
+    }
+
+    StateButton(Context context, AttributeSet attrs, int defStyle, int dummy){
+        super(context, attrs, defStyle);
     }
 
     void setImageAccentColor() {
@@ -93,7 +104,7 @@ public class StateButton extends RelativeLayout {
         initView();
     }
 
-    private void initView() {
+    void initView() {
         inflate(getContext(), R.layout.dgts__state_button, this);
 
         textView = (TextView) this.findViewById(R.id.dgts__state_button);
@@ -126,6 +137,14 @@ public class StateButton extends RelativeLayout {
         textView.setText(startText);
         progressBar.setVisibility(View.GONE);
         imageView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        textView.setEnabled(enabled);
+        progressBar.setEnabled(enabled);
+        imageView.setEnabled(enabled);
     }
 
 }
