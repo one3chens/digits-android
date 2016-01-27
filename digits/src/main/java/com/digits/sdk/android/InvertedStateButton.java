@@ -37,7 +37,6 @@ public class InvertedStateButton extends StateButton {
     void initView(Context context){
         accentColor = ThemeUtils.getAccentColor(getResources(), context.getTheme());
         buttonThemer = new ButtonThemer(getResources());
-
         buttonThemer.setBackgroundAccentColorInverse(this, accentColor);
         buttonThemer.setTextAccentColorInverse(textView, accentColor);
         setImageAccentColor();

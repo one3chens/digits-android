@@ -21,6 +21,9 @@
     <dimen name="dgts__title_text_size">22sp</dimen>
     <dimen name="dgts__terms_text_size">12sp</dimen>
     <dimen name="dgts__margin_bottom">16dp</dimen>
+    <dimen name="dgts__margin_left">14dp</dimen>
+    <dimen name="dgts__margin_right">14dp</dimen>
+    <dimen name="dgts__countdown_margin">8dp</dimen>
     <dimen name="dgts__padding_container">14dp</dimen>
     <dimen name="dgts__padding_title">10dp</dimen>
     <dimen name="dgts__country_code_margin_bottom">1dp</dimen>

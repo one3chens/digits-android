@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.ResultReceiver;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -58,14 +57,12 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
-        resendText = (TextView) activity.findViewById(R.id.dgts__resendConfirmation);
 
         controller = initController(bundle);
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
         setUpTermsText(activity, controller, termsText);
-        setUpResendText(activity, resendText);
         setUpSmsIntercept(activity, editText);
 
         CommonUtils.openKeyboard(activity, editText);
@@ -76,17 +73,6 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 bundle.<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
                 stateButton, editText, bundle.getString(DigitsClient.EXTRA_PHONE), scribeService,
                 bundle.getBoolean(DigitsClient.EXTRA_EMAIL));
-    }
-
-    protected void setUpResendText(final Activity activity, TextView resendText) {
-        resendText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scribeService.click(DigitsScribeConstants.Element.RESEND);
-                activity.setResult(DigitsActivity.RESULT_RESEND_CONFIRMATION);
-                activity.finish();
-            }
-        });
     }
 
     @Override

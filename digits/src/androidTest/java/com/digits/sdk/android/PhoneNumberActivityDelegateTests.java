@@ -100,14 +100,6 @@ public class PhoneNumberActivityDelegateTests extends
         verify(controller).setCountryCode(PhoneNumber.emptyPhone());
     }
 
-    public void testOnActivityResult_resendResult() throws Exception {
-        final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
-        delegate.controller = controller;
-        delegate.onActivityResult(DigitsActivity.REQUEST_CODE,
-                DigitsActivity.RESULT_RESEND_CONFIRMATION, activity);
-        verify(controller).resend();
-    }
-
     public void testOnActivityResult_notResendResult() throws Exception {
         final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
         delegate.controller = controller;

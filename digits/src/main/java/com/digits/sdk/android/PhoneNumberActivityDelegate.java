@@ -122,14 +122,6 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Activity activity) {
-        if (resultCode == DigitsActivity.RESULT_RESEND_CONFIRMATION &&
-                requestCode == DigitsActivity.REQUEST_CODE) {
-            controller.resend();
-        }
-    }
-
-    @Override
     public void setText(int resourceId) {
         termsTextView.setText(getFormattedTerms(activity, resourceId));
     }

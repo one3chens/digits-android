@@ -47,7 +47,6 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
-        final TextView resendText = (TextView) activity.findViewById(R.id.dgts__resendConfirmation);
         config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
@@ -55,7 +54,6 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
         setUpTermsText(activity, controller, termsText);
-        setUpResendText(activity, resendText);
         setUpSmsIntercept(activity, editText);
 
         CommonUtils.openKeyboard(activity, editText);
@@ -77,17 +75,6 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         } else {
             termsText.setVisibility(View.GONE);
         }
-    }
-
-    protected void setUpResendText(final Activity activity, TextView resendText) {
-        resendText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scribeService.click(DigitsScribeConstants.Element.RESEND);
-                activity.setResult(DigitsActivity.RESULT_RESEND_CONFIRMATION);
-                activity.finish();
-            }
-        });
     }
 
     @Override

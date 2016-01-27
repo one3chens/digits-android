@@ -111,18 +111,6 @@ public class LoginCodeActivityDelegateTests extends
                 eq(R.string.dgts__terms_text_sign_in));
     }
 
-    public void testSetUpResendText() throws NoSuchFieldException, IllegalAccessException {
-        delegate.controller = controller;
-        delegate.setUpResendText(activity, editText);
-
-        verify(editText).setOnClickListener(captorClick.capture());
-        final View.OnClickListener listener = captorClick.getValue();
-        listener.onClick(null);
-        verify(scribeService).click(DigitsScribeConstants.Element.RESEND);
-        verify(activity).finish();
-        verifyResultCode(activity, DigitsActivity.RESULT_RESEND_CONFIRMATION);
-    }
-
     public void testOnResume() {
         delegate.controller = controller;
         delegate.onResume();

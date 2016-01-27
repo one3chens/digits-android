@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.InputType;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -59,7 +58,6 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
-        resendText = (TextView) activity.findViewById(R.id.dgts__resendConfirmation);
 
         controller = initController(bundle);
 
@@ -69,7 +67,6 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
         setUpTermsText(activity, controller, termsText);
-        setUpResendText(resendText);
 
         CommonUtils.openKeyboard(activity, editText);
     }
@@ -85,10 +82,6 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     public void setUpTermsText(Activity activity, DigitsController controller, TextView termsText) {
         termsText.setText(getFormattedTerms(activity, R.string.dgts__terms_email_request));
         super.setUpTermsText(activity, controller, termsText);
-    }
-
-    private void setUpResendText(TextView resendText) {
-        resendText.setVisibility(View.GONE);
     }
 
     private DigitsController initController(Bundle bundle) {

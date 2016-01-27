@@ -22,11 +22,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.ResultReceiver;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.twitter.sdk.android.core.SessionManager;
 
@@ -145,6 +147,12 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         //Nothing to do
     }
 
+    @Override
+    public void resendCode(final Context context, final InvertedStateButton resendButton,
+                           final Verification verificationType) {
+        //Nothing to do
+    }
+
     abstract Uri getTosUri();
 
     Bundle getBundle(String phoneNumber) {
@@ -174,5 +182,24 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
+    }
+
+    @Override
+    public CountDownTimer getCountDownTimer(int disableDurationMillis,
+                             final TextView textView) {
+        return new CountDownTimer(disableDurationMillis, 500){
+            public void onTick(long millisUntilFinished) {
+                textView.setText(String.valueOf(timeRoundedToSeconds(millisUntilFinished)));
+            }
+
+            public void onFinish() {
+                textView.setText("");
+                textView.setEnabled(true);
+            }
+
+            private int timeRoundedToSeconds(double millis) {
+                return (int) Math.ceil(millis / 1000);
+            }
+        };
     }
 }

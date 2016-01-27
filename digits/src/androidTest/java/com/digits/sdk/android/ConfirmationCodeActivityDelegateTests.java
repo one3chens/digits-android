@@ -23,7 +23,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.SpannedString;
-import android.view.View;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -65,18 +64,6 @@ public class ConfirmationCodeActivityDelegateTests extends
 
     public void testGetLayoutId() {
         assertEquals(R.layout.dgts__activity_confirmation, delegate.getLayoutId());
-    }
-
-    public void testSetUpResendText() throws NoSuchFieldException, IllegalAccessException {
-        delegate.controller = controller;
-        delegate.setUpResendText(activity, editText);
-
-        verify(editText).setOnClickListener(captorClick.capture());
-        final View.OnClickListener listener = captorClick.getValue();
-        listener.onClick(null);
-        verify(scribeService).click(DigitsScribeConstants.Element.RESEND);
-        verify(activity).finish();
-        verifyResultCode(activity, DigitsActivity.RESULT_RESEND_CONFIRMATION);
     }
 
     public void testOnResume() {

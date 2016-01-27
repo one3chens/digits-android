@@ -55,22 +55,22 @@ public class StateButton extends RelativeLayout {
 
     void initAttrs(Context context, AttributeSet attrs) {
         final TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.StateButton);
-        init(array);
+
+        startText = array.getText(R.styleable.StateButton_startStateText);
+        progressText = array.getText(R.styleable.StateButton_progressStateText);
+        finishText = array.getText(R.styleable.StateButton_finishStateText);
+        initView();
+
         array.recycle();
     }
 
     void initView(Context context){
         accentColor = ThemeUtils.getAccentColor(getResources(), context.getTheme());
         buttonThemer = new ButtonThemer(getResources());
-
         buttonThemer.setBackgroundAccentColor(this, accentColor);
         buttonThemer.setTextAccentColor(textView, accentColor);
         setImageAccentColor();
         setSpinnerAccentColor();
-    }
-
-    StateButton(Context context, AttributeSet attrs, int defStyle, int dummy){
-        super(context, attrs, defStyle);
     }
 
     void setImageAccentColor() {
@@ -95,13 +95,6 @@ public class StateButton extends RelativeLayout {
         startText = context.getString(startResId);
         progressText = context.getString(progressResId);
         finishText = context.getString(finishResId);
-    }
-
-    void init(TypedArray array) {
-        startText = array.getText(R.styleable.StateButton_startStateText);
-        progressText = array.getText(R.styleable.StateButton_progressStateText);
-        finishText = array.getText(R.styleable.StateButton_finishStateText);
-        initView();
     }
 
     void initView() {
