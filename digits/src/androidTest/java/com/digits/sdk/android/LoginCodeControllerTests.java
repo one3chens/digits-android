@@ -20,7 +20,9 @@ package com.digits.sdk.android;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
+import android.widget.TextView;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -49,7 +51,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(), scribeService,
-                false);
+                false, timerTextView);
     }
 
     public void testExecuteRequest_success() throws Exception {
@@ -84,7 +86,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                scribeService, true);
+                scribeService, true, timerTextView);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -104,7 +106,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(), scribeService,
-                true);
+                true, timerTextView);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -115,6 +117,8 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         emailRequestCallback.failure(TestConstants.ANY_EXCEPTION);
         verify(scribeService).error(any(DigitsException.class));
         verify(phoneEditText).setError(null);
+        verify(callMeButton).showError();
+        verify(resendButton).showError();
         verify(sendButton).showError();
     }
 
@@ -128,7 +132,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                scribeService, true);
+                scribeService, true, timerTextView);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -146,6 +150,75 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Bundle bundle = intent.getExtras();
         assertTrue(BundleManager.assertContains(bundle, DigitsClient.EXTRA_PHONE,
                 DigitsClient.EXTRA_RESULT_RECEIVER));
+    }
+
+    public void testResendCode_success() throws Exception {
+        final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
+                (Runnable.class);
+
+        final DummyLoginCodeController dlc = new DummyLoginCodeController(resultReceiver,
+                sendButton, resendButton, callMeButton, phoneEditText, sessionManager, digitsClient,
+                REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
+                scribeService, true, timerTextView);
+        final CountDownTimer timer = dlc.getCountDownTimer();
+
+        controller = dlc;
+        controller.resendCode(context, resendButton, Verification.sms);
+        verify(resendButton).showProgress();
+        verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
+                callbackCaptor.capture());
+
+        final DigitsCallback<AuthResponse> callback = callbackCaptor.getValue();
+        assertNotNull(callback);
+
+        final AuthResponse authResponse = new AuthResponse();
+        authResponse.requestId = FAKE_REQUEST_ID;
+        authResponse.userId = USER_ID;
+        callback.success(authResponse, null);
+
+        verify(resendButton).showFinish();
+        verify(resendButton).postDelayed(runnableArgumentCaptor.capture(),
+                eq(PhoneNumberController.POST_DELAY_MS));
+
+        //test UI side effects
+        final Runnable runnable = runnableArgumentCaptor.getValue();
+        runnable.run();
+        verify(resendButton).showStart();
+        verify(timerTextView).setText(
+                String.valueOf(DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
+                TextView.BufferType.NORMAL);
+        verify(resendButton).setEnabled(false);
+        verify(callMeButton).setEnabled(false);
+
+        //verify countdown started
+        verify(timer).start();
+
+        //Verify if requestId was reset
+        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable(CODE));
+        controller.executeRequest(context);
+        verify(digitsClient).loginDevice(eq(FAKE_REQUEST_ID), eq(USER_ID), eq(CODE),
+                any(DigitsCallback.class));
+    }
+
+    public void testResendCode_failure() throws Exception {
+        controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
+                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
+                scribeService, true, timerTextView);
+
+        controller.resendCode(context, resendButton, Verification.sms);
+        verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
+                callbackCaptor.capture());
+        final DigitsCallback<AuthResponse> callback = callbackCaptor.getValue();
+        assertNotNull(callback);
+
+        final AuthResponse authResponse = new AuthResponse();
+        authResponse.requestId = FAKE_REQUEST_ID;
+        authResponse.userId = USER_ID;
+        callback.failure(TestConstants.ANY_EXCEPTION);
+        verify(callMeButton).showError();
+        verify(resendButton).showError();
+        verify(sendButton).showError();
     }
 
     private void verifyEmailRequest(DigitsSession session) {

@@ -20,7 +20,6 @@ package com.digits.sdk.android;
 import android.app.Activity;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.ResultReceiver;
 import android.view.View;
 import android.widget.EditText;
@@ -37,7 +36,6 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     TextView termsText;
     TextView timerText;
     DigitsController controller;
-    CountDownTimer timer;
     SmsBroadcastReceiver receiver;
     Activity activity;
     AuthConfig config;
@@ -61,13 +59,12 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
-        timer = initCountDownTimer(controller, timerText, resendButton, callMeButton);
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
         setupResendButton(activity, controller, scribeService, resendButton);
         setupCallMeButton(activity, controller, scribeService, callMeButton, config);
-        setupCountDownTimer(timerText, timer, config);
+        setupCountDownTimer(controller, timerText, config);
         setUpEditPhoneNumberLink(activity, editPhoneNumberLinkTextView,
                 bundle.getString(DigitsClient.EXTRA_PHONE));
         setUpTermsText(activity, controller, termsText);
@@ -82,7 +79,8 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 stateButton, resendButton, callMeButton, editText,
                 bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
                 bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
-                .EXTRA_PHONE), scribeService, bundle.getBoolean(DigitsClient.EXTRA_EMAIL));
+                .EXTRA_PHONE), scribeService, bundle.getBoolean(DigitsClient.EXTRA_EMAIL),
+                timerText);
     }
 
     @Override
@@ -118,7 +116,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         if (receiver != null) {
             activity.unregisterReceiver(receiver);
         }
-        timer.cancel();
+        controller.cancelTimer();
     }
 
     protected void setUpSmsIntercept(Activity activity, EditText editText) {

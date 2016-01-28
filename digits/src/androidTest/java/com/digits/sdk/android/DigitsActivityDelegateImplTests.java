@@ -22,6 +22,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import org.mockito.ArgumentCaptor;
+
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -34,9 +38,7 @@ public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
     public void setUp() throws Exception {
         super.setUp();
         doReturn(layoutParams).when(timerText).getLayoutParams();
-        doReturn(timer).when(controller).getCountDownTimer(
-                DigitsConstants.RESEND_TIMER_DURATION_MILLIS, timerText, resendButton,
-                callMeButton);
+        doNothing().when(controller).startTimer();
     }
 
     @Override
@@ -47,6 +49,9 @@ public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
     public void testSetupResendButton() throws Exception {
         delegate.setupResendButton(activity, controller, scribeService, resendButton);
         verify(resendButton).setEnabled(false);
+        verify(resendButton).setOnClickListener(captorClick.capture());
+        testResendCaptor(resendButton, captorClick, DigitsScribeConstants.Element.RESEND,
+                Verification.sms);
     }
 
     public void testSetupCallMeButton_voiceEnabled() throws Exception {
@@ -54,6 +59,10 @@ public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
         config.isVoiceEnabled = Boolean.TRUE;
 
         delegate.setupCallMeButton(activity, controller, scribeService, callMeButton, config);
+
+        verify(callMeButton).setOnClickListener(captorClick.capture());
+        testResendCaptor(callMeButton, captorClick, DigitsScribeConstants.Element.CALL,
+                Verification.voicecall);
         verify(callMeButton).setEnabled(false);
         verify(callMeButton).setVisibility(View.VISIBLE);
     }
@@ -71,27 +80,26 @@ public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
         final AuthConfig config = new AuthConfig();
         config.isVoiceEnabled = Boolean.TRUE;
 
-        delegate.setupCountDownTimer(timerText, timer, config);
+        delegate.setupCountDownTimer(controller, timerText, config);
 
         verify(layoutParams).addRule(RelativeLayout.ALIGN_RIGHT,
                 R.id.dgts__callMeButton);
         verify(layoutParams).addRule(RelativeLayout.ALIGN_BOTTOM,
                 R.id.dgts__callMeButton);
-        verify(timer).start();
-
+        verify(controller).startTimer();
     }
 
     public void testSetupTimerText_voiceDisabled() throws Exception {
         final AuthConfig config = new AuthConfig();
         config.isVoiceEnabled = Boolean.FALSE;
 
-        delegate.setupCountDownTimer(timerText, timer, config);
+        delegate.setupCountDownTimer(controller, timerText, config);
 
         verify(layoutParams).addRule(RelativeLayout.ALIGN_RIGHT,
                 R.id.dgts__resendConfirmationButton);
         verify(layoutParams).addRule(RelativeLayout.ALIGN_BOTTOM,
                 R.id.dgts__resendConfirmationButton);
-        verify(timer).start();
+        verify(controller).startTimer();
 
     }
 
@@ -108,10 +116,15 @@ public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
         verifyResultCode(activity, DigitsActivity.RESULT_CHANGE_PHONE_NUMBER);
     }
 
-    public void testInitTimerTest() throws Exception{
-        delegate.initCountDownTimer(controller, timerText, resendButton, callMeButton);
-        verify(controller).getCountDownTimer(DigitsConstants.RESEND_TIMER_DURATION_MILLIS,
-                timerText, resendButton, callMeButton);
+    private void testResendCaptor(InvertedStateButton timedStateButton,
+                                  ArgumentCaptor<View.OnClickListener> captorClick,
+                                  DigitsScribeConstants.Element element,
+                                  Verification verificationType){
+        final View.OnClickListener listener = captorClick.getValue();
+        listener.onClick(null);
+        verify(scribeService).click(element);
+        verify(controller, atLeast(0)).clearError();
+        verify(controller).resendCode(activity, timedStateButton, verificationType);
     }
 
     class MockDigitsActivityDelegateImpl extends DigitsActivityDelegateImpl {

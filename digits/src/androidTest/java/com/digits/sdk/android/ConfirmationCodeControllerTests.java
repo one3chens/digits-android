@@ -19,7 +19,11 @@ package com.digits.sdk.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
+import android.widget.TextView;
+
+import com.twitter.sdk.android.core.Result;
 
 import org.mockito.ArgumentCaptor;
 
@@ -40,9 +44,10 @@ public class ConfirmationCodeControllerTests extends
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        controller = new ConfirmationCodeController(resultReceiver, sendButton,
+        controller = new DummyConfirmationCodeController(resultReceiver, sendButton,
                 resendButton, callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                digitsClient, errors, new ActivityClassManagerImp(), scribeService, false);
+                digitsClient, errors, new ActivityClassManagerImp(), scribeService, false,
+                timerTextView);
     }
 
     public void testExecuteRequest_successAndMailRequestDisabled() throws Exception {
@@ -69,9 +74,10 @@ public class ConfirmationCodeControllerTests extends
     }
 
     public void testExecuteRequest_successAndMailRequestEnabled() throws Exception {
-        controller = new ConfirmationCodeController(resultReceiver, sendButton, resendButton,
+        controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true);
+                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true,
+                timerTextView);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
                 new ArrayList<Header>(), null);
@@ -92,9 +98,10 @@ public class ConfirmationCodeControllerTests extends
     }
 
     public void testExecuteRequest_failure() throws Exception {
-        controller = new ConfirmationCodeController(resultReceiver, sendButton, resendButton,
+        controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true);
+                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true,
+                timerTextView);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
                 new ArrayList<Header>(), null);
@@ -102,8 +109,54 @@ public class ConfirmationCodeControllerTests extends
 
         final DigitsCallback callback = executeRequest();
         callback.failure(TestConstants.ANY_EXCEPTION);
+        verify(callMeButton).showError();
+        verify(resendButton).showError();
         verify(sendButton).showError();
     }
+
+    public void testResendCode_success() throws Exception {
+        final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
+                (Runnable.class);
+
+        final DummyConfirmationCodeController dcc =
+                new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
+                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true,
+                        timerTextView);
+        controller = dcc;
+
+        final CountDownTimer timer = dcc.getCountDownTimer();
+
+        controller.resendCode(context, resendButton, Verification.sms);
+        verify(resendButton).showProgress();
+        verify(digitsClient).registerDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
+                callbackCaptor.capture());
+
+        final DigitsCallback<DeviceRegistrationResponse> callback = callbackCaptor.getValue();
+        assertNotNull(callback);
+
+        final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
+        final Result<DeviceRegistrationResponse> deviceResponse = new Result<>(data, null);
+
+        callback.success(deviceResponse);
+        verify(resendButton).showFinish();
+        verify(resendButton).postDelayed(runnableArgumentCaptor.capture(),
+                eq(PhoneNumberController.POST_DELAY_MS));
+
+        //test UI side effects
+        final Runnable runnable = runnableArgumentCaptor.getValue();
+        runnable.run();
+        verify(resendButton).showStart();
+        verify(timerTextView).setText(
+                String.valueOf(DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
+                TextView.BufferType.NORMAL);
+        verify(resendButton).setEnabled(false);
+        verify(callMeButton).setEnabled(false);
+
+        //verify countdown started
+        verify(timer).start();
+    }
+
 
     DigitsCallback executeRequest() {
         when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable

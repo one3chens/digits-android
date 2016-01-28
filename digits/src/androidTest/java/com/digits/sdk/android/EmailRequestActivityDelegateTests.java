@@ -99,7 +99,7 @@ public class EmailRequestActivityDelegateTests extends
 
     public void testSetupTimerText(){
         final AuthConfig config = new AuthConfig();
-        delegate.setupCountDownTimer(timerText, timer, config);
+        delegate.setupCountDownTimer(controller, timerText, config);
         verify(timerText).setVisibility(View.GONE);
     }
 

@@ -18,7 +18,6 @@
 package com.digits.sdk.android;
 
 import android.app.Activity;
-import android.os.CountDownTimer;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -49,7 +48,6 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
     TextView textView;
     TextView timerText;
     DigitsScribeService scribeService;
-    CountDownTimer timer;
     RelativeLayout.LayoutParams layoutParams;
 
     @Override
@@ -68,7 +66,6 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
         editText = mock(EditText.class);
         textView = mock(TextView.class);
         timerText = mock(TextView.class);
-        timer = mock(CountDownTimer.class);
         layoutParams = mock(RelativeLayout.LayoutParams.class);
     }
 

@@ -19,7 +19,6 @@ package com.digits.sdk.android;
 
 
 import android.app.Activity;
-import android.os.CountDownTimer;
 import android.support.annotation.StringRes;
 import android.text.Html;
 import android.text.Spanned;
@@ -35,13 +34,6 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
     @Override
     public void onDestroy() {
         // no-op Not currently used by all delegates
-    }
-
-    CountDownTimer initCountDownTimer(DigitsController controller, TextView timerText,
-                                      InvertedStateButton resendButton,
-                                      InvertedStateButton callMeButton){
-        return controller.getCountDownTimer(DigitsConstants.RESEND_TIMER_DURATION_MILLIS, timerText,
-                resendButton, callMeButton);
     }
 
     public void setUpSendButton(final Activity activity, final DigitsController controller,
@@ -60,6 +52,14 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
                            final DigitsScribeService scribeService,
                            final InvertedStateButton resendButton){
         resendButton.setEnabled(false);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scribeService.click(DigitsScribeConstants.Element.RESEND);
+                controller.clearError();
+                controller.resendCode(activity, resendButton, Verification.sms);
+            }
+        });
     }
 
     void setupCallMeButton(final Activity activity, final DigitsController controller,
@@ -68,13 +68,22 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
                            final AuthConfig config){
         callMeButton.setVisibility(config.isVoiceEnabled ? View.VISIBLE : View.GONE);
         callMeButton.setEnabled(false);
+
+        callMeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scribeService.click(DigitsScribeConstants.Element.CALL);
+                controller.clearError();
+                controller.resendCode(activity, callMeButton, Verification.voicecall);
+            }
+        });
     }
 
-    void setupCountDownTimer(final TextView timerText,
-                             final CountDownTimer countDownTimer,
+    void setupCountDownTimer(final DigitsController controller,
+                             final TextView timerText,
                              final AuthConfig config){
         setTimerAlignment(timerText, config.isVoiceEnabled);
-        countDownTimer.start();
+        controller.startTimer();
     }
 
     protected void setUpEditPhoneNumberLink(final Activity activity,

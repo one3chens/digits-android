@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
@@ -37,17 +38,19 @@ class LoginCodeController extends DigitsControllerImpl {
     private final Boolean emailCollection;
     private final InvertedStateButton resendButton, callMeButton;
     private String requestId;
+    private final TextView timerText;
 
     LoginCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                         InvertedStateButton resendButton, InvertedStateButton callMeButton,
                         EditText phoneEditText, String requestId, long userId, String phoneNumber,
-                        DigitsScribeService scribeService, Boolean emailCollection) {
+                        DigitsScribeService scribeService, Boolean emailCollection,
+                        TextView timerText) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(), requestId,
                 userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), scribeService,
-                emailCollection);
+                emailCollection, timerText);
     }
 
     LoginCodeController(ResultReceiver resultReceiver,
@@ -56,7 +59,8 @@ class LoginCodeController extends DigitsControllerImpl {
                         SessionManager<DigitsSession> sessionManager, DigitsClient client,
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
                         ActivityClassManager activityClassManager,
-                        DigitsScribeService scribeService, Boolean emailCollection) {
+                        DigitsScribeService scribeService, Boolean emailCollection,
+                        TextView timerText) {
         super(resultReceiver, stateButton, loginEditText, client, errors, activityClassManager,
                 sessionManager, scribeService);
         this.requestId = requestId;
@@ -65,6 +69,10 @@ class LoginCodeController extends DigitsControllerImpl {
         this.emailCollection = emailCollection;
         this.resendButton = resendButton;
         this.callMeButton = callMeButton;
+        this.countDownTimer = createCountDownTimer(
+                DigitsConstants.RESEND_TIMER_DURATION_MILLIS, timerText, resendButton,
+                callMeButton);
+        this.timerText = timerText;
     }
 
     @Override
@@ -92,6 +100,42 @@ class LoginCodeController extends DigitsControllerImpl {
                         }
                     });
         }
+    }
+
+    //Config responses during resends are currently ignored
+    public void resendCode(final Context context, final InvertedStateButton activeButton,
+                           final Verification verificationType) {
+        activeButton.showProgress();
+        digitsClient.authDevice(phoneNumber, verificationType,
+            new DigitsCallback<AuthResponse>(context, this) {
+                @Override
+                public void success(final Result<AuthResponse> result) {
+                    activeButton.showFinish();
+                    requestId = result.data.requestId;
+                    activeButton.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            activeButton.showStart();
+                            timerText.setText(
+                                    String.valueOf(
+                                            DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
+                                    TextView.BufferType.NORMAL);
+                            resendButton.setEnabled(false);
+                            callMeButton.setEnabled(false);
+                            startTimer();
+                        }
+                    }, POST_DELAY_MS);
+
+                }
+            }
+        );
+    }
+
+    @Override
+    public void handleError(final Context context, DigitsException digitsException) {
+        callMeButton.showError();
+        resendButton.showError();
+        super.handleError(context, digitsException);
     }
 
     private void emailRequest(final Context context, final DigitsSession session) {

@@ -18,7 +18,6 @@ package com.digits.sdk.android;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.ResultReceiver;
 import android.text.InputType;
 import android.view.View;
@@ -26,7 +25,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import io.fabric.sdk.android.services.common.CommonUtils;
-
 
 public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     EditText editText;
@@ -78,7 +76,7 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         setUpSendButton(activity, controller, stateButton);
         setupResendButton(activity, controller, scribeService, resendButton);
         setupCallMeButton(activity, controller, scribeService, callMeButton, config);
-        setupCountDownTimer(timerText, null, config);
+        setupCountDownTimer(controller, timerText, config);
         setUpEditPhoneNumberLink(activity, editPhoneNumberLink,
                 bundle.getString(DigitsClient.EXTRA_PHONE));
         setUpTermsText(activity, controller, termsText);
@@ -109,8 +107,8 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     }
 
     @Override
-    void setupCountDownTimer(final TextView timerText,
-                             final CountDownTimer countDownTimer,
+    void setupCountDownTimer(final DigitsController controller,
+                             final TextView timerText,
                              final AuthConfig config){
         timerText.setVisibility(View.GONE);
     }

@@ -18,10 +18,8 @@
 package com.digits.sdk.android;
 
 import android.content.Context;
-import android.os.CountDownTimer;
 import android.os.ResultReceiver;
 import android.text.TextWatcher;
-import android.widget.TextView;
 
 /**
  * Interface that implements the logic business for
@@ -51,8 +49,7 @@ interface DigitsController {
 
     void clearError();
 
-    CountDownTimer getCountDownTimer(final int disableDurationMillis, final TextView timerText,
-                                    final InvertedStateButton resentButton,
-                                    final InvertedStateButton callMeButton);
+    void startTimer();
 
+    void cancelTimer();
 }

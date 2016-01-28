@@ -22,8 +22,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.ResultReceiver;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
@@ -62,6 +64,8 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     SessionManager<DigitsSession> sessionManager;
     Activity context;
     DigitsScribeService scribeService;
+    CountDownTimer countDownTimer;
+    TextView timerTextView;
 
     @Override
     public void setUp() throws Exception {
@@ -79,6 +83,8 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         sessionManager = mock(SessionManager.class);
         errors = mock(ErrorCodes.class);
         scribeService = mock(DigitsScribeService.class);
+        countDownTimer = mock(CountDownTimer.class);
+        timerTextView = mock(TextView.class);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(context.getResources()).thenReturn(getContext().getResources());
     }

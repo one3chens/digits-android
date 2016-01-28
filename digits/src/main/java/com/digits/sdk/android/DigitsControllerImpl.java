@@ -46,7 +46,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     final SessionManager<DigitsSession> sessionManager;
     final DigitsScribeService scribeService;
     int errorCount;
-
+    CountDownTimer countDownTimer;
 
     DigitsControllerImpl(ResultReceiver resultReceiver, StateButton stateButton, EditText editText,
                          DigitsClient client, ErrorCodes errors,
@@ -185,9 +185,22 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     }
 
     @Override
-    public CountDownTimer getCountDownTimer(final int disableDurationMillis,
-                             final TextView timerText, final InvertedStateButton resentButton,
-                             final InvertedStateButton callMeButton) {
+    public void startTimer() {
+        if (countDownTimer != null){
+            countDownTimer.start();
+        }
+    }
+
+    public void cancelTimer() {
+        if (countDownTimer != null){
+            countDownTimer.cancel();
+        }
+    }
+
+    CountDownTimer createCountDownTimer(final int disableDurationMillis,
+                                        final TextView timerText,
+                                        final InvertedStateButton resentButton,
+                                        final InvertedStateButton callMeButton) {
         timerText.setText(String.valueOf(DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000));
 
         return new CountDownTimer(disableDurationMillis, 500) {

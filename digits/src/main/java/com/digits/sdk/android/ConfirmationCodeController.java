@@ -21,6 +21,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.ResultReceiver;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
@@ -31,16 +32,18 @@ class ConfirmationCodeController extends DigitsControllerImpl {
     private final String phoneNumber;
     private final Boolean isEmailCollection;
     private final InvertedStateButton resendButton, callMeButton;
+    private final TextView timerText;
 
     ConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                                InvertedStateButton resendButton, InvertedStateButton callMeButton,
                                EditText phoneEditText, String phoneNumber,
-                               DigitsScribeService scribeService, boolean isEmailCollection) {
+                               DigitsScribeService scribeService, boolean isEmailCollection,
+                               TextView timerText) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText, phoneNumber,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(),
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), scribeService,
-                isEmailCollection);
+                isEmailCollection, timerText);
     }
 
     /**
@@ -51,13 +54,18 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                                EditText phoneEditText, String phoneNumber,
                                SessionManager<DigitsSession> sessionManager, DigitsClient client,
                                ErrorCodes errors, ActivityClassManager activityClassManager,
-                               DigitsScribeService scribeService, boolean isEmailCollection) {
+                               DigitsScribeService scribeService, boolean isEmailCollection,
+                               TextView timerText) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
                 sessionManager, scribeService);
         this.phoneNumber = phoneNumber;
         this.isEmailCollection = isEmailCollection;
         this.resendButton = resendButton;
         this.callMeButton = callMeButton;
+        this.countDownTimer = createCountDownTimer(
+                DigitsConstants.RESEND_TIMER_DURATION_MILLIS, timerText, resendButton,
+                callMeButton);
+        this.timerText = timerText;
     }
 
     @Override
@@ -84,6 +92,37 @@ class ConfirmationCodeController extends DigitsControllerImpl {
 
                     });
         }
+    }
+
+    public void resendCode(final Context context, final InvertedStateButton activeButton,
+                           final Verification verificationType) {
+        activeButton.showProgress();
+        digitsClient.registerDevice(phoneNumber, verificationType,
+            new DigitsCallback<DeviceRegistrationResponse>(context, this) {
+                @Override
+                public void success(Result<DeviceRegistrationResponse> result) {
+                    activeButton.showFinish();
+                    activeButton.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            activeButton.showStart();
+                            timerText.setText(String.valueOf(
+                                            DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
+                                    TextView.BufferType.NORMAL);
+                            resendButton.setEnabled(false);
+                            callMeButton.setEnabled(false);
+                            startTimer();
+                        }
+                    }, POST_DELAY_MS);
+                }
+            });
+    }
+
+    @Override
+    public void handleError(final Context context, DigitsException digitsException) {
+        callMeButton.showError();
+        resendButton.showError();
+        super.handleError(context, digitsException);
     }
 
     @Override

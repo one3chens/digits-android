@@ -25,26 +25,19 @@ import com.twitter.sdk.android.core.SessionManager;
 
 import static org.mockito.Mockito.mock;
 
-public class DummyLoginCodeController extends LoginCodeController {
-    private final DigitsApiClient.AccountService accountService;
-    public DummyLoginCodeController(ResultReceiver resultReceiver, StateButton sendButton,
+public class DummyConfirmationCodeController extends ConfirmationCodeController {
+    DummyConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                                     InvertedStateButton resendButton,
-                                    InvertedStateButton callMeButton, EditText phoneEditText,
+                                    InvertedStateButton callMeButton,
+                                    EditText phoneEditText, String phoneNumber,
                                     SessionManager<DigitsSession> sessionManager,
-                                    DigitsClient digitsClient, String requestId,
-                                    long userId, String phoneWithCountryCode, ErrorCodes errors,
-                                    ActivityClassManagerImp activityClassManagerImp,
-                                    DigitsScribeService scribeService, boolean emailCollection,
-                                    TextView timerTextView) {
-        super(resultReceiver, sendButton, resendButton, callMeButton, phoneEditText,
-                sessionManager, digitsClient, requestId, userId, phoneWithCountryCode, errors,
-                activityClassManagerImp, scribeService, emailCollection, timerTextView);
-        accountService = mock(DigitsApiClient.AccountService.class);
-    }
-
-    @Override
-    DigitsApiClient.AccountService getAccountService(DigitsSession session) {
-        return accountService;
+                                    DigitsClient client, ErrorCodes errors,
+                                    ActivityClassManager activityClassManager,
+                                    DigitsScribeService scribeService, boolean isEmailCollection,
+                                    TextView timerText) {
+        super(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText, phoneNumber,
+                sessionManager, client, errors, activityClassManager, scribeService,
+                isEmailCollection, timerText);
     }
 
     @Override
@@ -58,5 +51,4 @@ public class DummyLoginCodeController extends LoginCodeController {
     public CountDownTimer getCountDownTimer(){
         return countDownTimer;
     }
-
 }
