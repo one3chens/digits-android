@@ -44,6 +44,10 @@
         </activity>
 
         <activity
+            android:name=".digits.CustomPhoneNumberActivity">
+        </activity>
+
+        <activity
             android:name=".digits.FoundFriendsActivity"
             android:label="@string/kit_digits"/>
 

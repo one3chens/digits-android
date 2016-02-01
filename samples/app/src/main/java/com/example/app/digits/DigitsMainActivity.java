@@ -18,6 +18,7 @@
 package com.example.app.digits;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -43,7 +44,10 @@ public class DigitsMainActivity extends Activity {
     private Button digitsAuthButton;
     private Button clearSessionButton;
     private Button verifyCredentialsButton;
+    private Button customPhoneLoginButton;
     private SessionListener sessionListener;
+
+    public static final int CUSTOM_LOGIN_REQUEST = 1;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +128,15 @@ public class DigitsMainActivity extends Activity {
                 }
             }
         });
+        customPhoneLoginButton = (Button) findViewById(R.id.custom_login_button);
+        customPhoneLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DigitsMainActivity.this, CustomPhoneNumberActivity.class);
+                startActivityForResult(intent, CUSTOM_LOGIN_REQUEST);
+            }
+        });
+
 
         Button findFriendsButton = (Button) findViewById(R.id.find_your_friends_button);
         findFriendsButton.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +154,17 @@ public class DigitsMainActivity extends Activity {
             }
         };
         Digits.getInstance().addSessionListener(sessionListener);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CUSTOM_LOGIN_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(DigitsMainActivity.this,
+                        "Login Succeeded",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
