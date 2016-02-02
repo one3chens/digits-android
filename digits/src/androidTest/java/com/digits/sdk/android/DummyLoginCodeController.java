@@ -16,6 +16,7 @@
  */
 package com.digits.sdk.android;
 
+import android.os.CountDownTimer;
 import android.os.ResultReceiver;
 import android.widget.EditText;
 
@@ -25,18 +26,21 @@ import static org.mockito.Mockito.mock;
 
 public class DummyLoginCodeController extends LoginCodeController {
     private final DigitsApiClient.AccountService accountService;
+    private final CountDownTimer mockTimer;
 
     public DummyLoginCodeController(ResultReceiver resultReceiver, StateButton sendButton,
-                                    EditText phoneEditText,
+                                    InvertedStateButton resendButton,
+                                    InvertedStateButton callMeButton, EditText phoneEditText,
                                     SessionManager<DigitsSession> sessionManager,
                                     DigitsClient digitsClient, String requestId,
                                     long userId, String phoneWithCountryCode, ErrorCodes errors,
                                     ActivityClassManagerImp activityClassManagerImp,
                                     DigitsScribeService scribeService, boolean emailCollection) {
-        super(resultReceiver, sendButton, phoneEditText, sessionManager, digitsClient, requestId,
-                userId, phoneWithCountryCode, errors, activityClassManagerImp, scribeService,
-                emailCollection);
+        super(resultReceiver, sendButton, resendButton, callMeButton, phoneEditText,
+                sessionManager, digitsClient, requestId, userId, phoneWithCountryCode, errors,
+                activityClassManagerImp, scribeService, emailCollection);
         accountService = mock(DigitsApiClient.AccountService.class);
+        mockTimer = mock(CountDownTimer.class);
     }
 
 
@@ -44,4 +48,5 @@ public class DummyLoginCodeController extends LoginCodeController {
     DigitsApiClient.AccountService getAccountService(DigitsSession session) {
         return accountService;
     }
+
 }

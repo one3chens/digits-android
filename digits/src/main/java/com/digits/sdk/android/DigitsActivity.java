@@ -26,6 +26,7 @@ public abstract class DigitsActivity extends Activity {
     static final int REQUEST_CODE = 140;
     static final int RESULT_FINISH_DIGITS = 200;
     static final int RESULT_RESEND_CONFIRMATION = 300;
+    static final int RESULT_CHANGE_PHONE_NUMBER = 400;
 
     DigitsActivityDelegate delegate;
 

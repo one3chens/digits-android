@@ -30,11 +30,13 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 class ConfirmationCodeController extends DigitsControllerImpl {
     private final String phoneNumber;
     private final Boolean isEmailCollection;
+    private final InvertedStateButton resendButton, callMeButton;
 
     ConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
+                               InvertedStateButton resendButton, InvertedStateButton callMeButton,
                                EditText phoneEditText, String phoneNumber,
                                DigitsScribeService scribeService, boolean isEmailCollection) {
-        this(resultReceiver, stateButton, phoneEditText, phoneNumber,
+        this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText, phoneNumber,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(),
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), scribeService,
@@ -45,6 +47,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
      * Only for test
      */
     ConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
+                               InvertedStateButton resendButton, InvertedStateButton callMeButton,
                                EditText phoneEditText, String phoneNumber,
                                SessionManager<DigitsSession> sessionManager, DigitsClient client,
                                ErrorCodes errors, ActivityClassManager activityClassManager,
@@ -53,6 +56,8 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                 sessionManager, scribeService);
         this.phoneNumber = phoneNumber;
         this.isEmailCollection = isEmailCollection;
+        this.resendButton = resendButton;
+        this.callMeButton = callMeButton;
     }
 
     @Override

@@ -30,9 +30,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasFocus;
 
 public class ConfirmationCodeActivityTests extends DigitsActivityTests<ConfirmationCodeActivity> {
     private static final String PHONE = "+15553334444";
+    private AuthConfig config;
 
     public ConfirmationCodeActivityTests() {
         super(ConfirmationCodeActivity.class);
+        config = new AuthConfig();
+        config.isVoiceEnabled = true;
+        config.isEmailEnabled = config.tosUpdate = true;
     }
 
     @Override
@@ -41,6 +45,7 @@ public class ConfirmationCodeActivityTests extends DigitsActivityTests<Confirmat
 
         final Bundle bundle = getBundle();
         bundle.putString(DigitsClient.EXTRA_PHONE, PHONE);
+        bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, config);
 
         final Intent launchIntent = new Intent(getInstrumentation().getContext(),
                 ConfirmationCodeActivity.class);

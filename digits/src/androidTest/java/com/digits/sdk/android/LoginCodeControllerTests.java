@@ -35,6 +35,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeController> {
+    final static String FAKE_REQUEST_ID = "fakeRequestId";
+
     @Captor
     ArgumentCaptor<Callback<VerifyAccountResponse>> callbackArgumentCaptor;
     @Captor
@@ -44,9 +46,10 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
     public void setUp() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
-        controller = new DummyLoginCodeController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
-                new ActivityClassManagerImp(), scribeService, false);
+        controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
+                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(), scribeService,
+                false);
     }
 
     public void testExecuteRequest_success() throws Exception {
@@ -78,9 +81,10 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<DigitsSessionResponse> result = new Result(response, null);
         final Result<VerifyAccountResponse> resultEmailRequest = new Result(
                 TestConstants.getVerifyAccountResponse(), null);
-        controller = new DummyLoginCodeController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
-                new ActivityClassManagerImp(), scribeService, true);
+        controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
+                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
+                scribeService, true);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -94,13 +98,13 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         verifyEmailRequest(session);
     }
 
-
     public void testExecuteRequest_successWithEmailRequestFailure() throws Exception {
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         final Result<DigitsSessionResponse> result = new Result(response, null);
-        controller = new DummyLoginCodeController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
-                new ActivityClassManagerImp(), scribeService, true);
+        controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
+                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(), scribeService,
+                true);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -121,9 +125,10 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
                 TestConstants.getVerifyAccountResponseNoEmail(), null);
         final ComponentName emailRequestComponent = new ComponentName(context,
                 controller.activityClassManager.getEmailRequestActivity());
-        controller = new DummyLoginCodeController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
-                new ActivityClassManagerImp(), scribeService, true);
+        controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
+                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
+                scribeService, true);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);

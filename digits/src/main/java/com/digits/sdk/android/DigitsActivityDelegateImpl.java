@@ -19,6 +19,7 @@ package com.digits.sdk.android;
 
 
 import android.app.Activity;
+import android.os.CountDownTimer;
 import android.support.annotation.StringRes;
 import android.text.Html;
 import android.text.Spanned;
@@ -26,6 +27,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
@@ -33,6 +35,13 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
     @Override
     public void onDestroy() {
         // no-op Not currently used by all delegates
+    }
+
+    CountDownTimer initCountDownTimer(DigitsController controller, TextView timerText,
+                                      InvertedStateButton resendButton,
+                                      InvertedStateButton callMeButton){
+        return controller.getCountDownTimer(DigitsConstants.RESEND_TIMER_DURATION_MILLIS, timerText,
+                resendButton, callMeButton);
     }
 
     public void setUpSendButton(final Activity activity, final DigitsController controller,
@@ -45,6 +54,40 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
             }
         });
 
+    }
+
+    void setupResendButton(final Activity activity, final DigitsController controller,
+                           final DigitsScribeService scribeService,
+                           final InvertedStateButton resendButton){
+        resendButton.setEnabled(false);
+    }
+
+    void setupCallMeButton(final Activity activity, final DigitsController controller,
+                           final DigitsScribeService scribeService,
+                           final InvertedStateButton callMeButton,
+                           final AuthConfig config){
+        callMeButton.setVisibility(config.isVoiceEnabled ? View.VISIBLE : View.GONE);
+        callMeButton.setEnabled(false);
+    }
+
+    void setupCountDownTimer(final TextView timerText,
+                             final CountDownTimer countDownTimer,
+                             final AuthConfig config){
+        setTimerAlignment(timerText, config.isVoiceEnabled);
+        countDownTimer.start();
+    }
+
+    protected void setUpEditPhoneNumberLink(final Activity activity,
+                                            final LinkTextView editPhoneLink,
+                                            String phoneNumber) {
+        editPhoneLink.setText(phoneNumber);
+        editPhoneLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.setResult(DigitsActivity.RESULT_CHANGE_PHONE_NUMBER);
+                activity.finish();
+            }
+        });
     }
 
     public void setUpEditText(final Activity activity, final DigitsController controller,
@@ -81,5 +124,17 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Activity activity) {
         // no-op Not used by all the delegates
+    }
+
+    private void setTimerAlignment(final TextView timerText, boolean isVoiceEnabled){
+        final int resendElementToAlign = isVoiceEnabled ?
+                R.id.dgts__callMeButton : R.id.dgts__resendConfirmationButton;
+        final RelativeLayout.LayoutParams params =
+                (RelativeLayout.LayoutParams) timerText.getLayoutParams();
+
+        params.addRule(RelativeLayout.ALIGN_RIGHT, resendElementToAlign);
+        params.addRule(RelativeLayout.ALIGN_BOTTOM, resendElementToAlign);
+
+        timerText.setLayoutParams(params);
     }
 }

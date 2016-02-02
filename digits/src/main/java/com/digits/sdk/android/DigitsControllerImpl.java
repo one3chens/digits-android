@@ -185,16 +185,21 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     }
 
     @Override
-    public CountDownTimer getCountDownTimer(int disableDurationMillis,
-                             final TextView textView) {
-        return new CountDownTimer(disableDurationMillis, 500){
+    public CountDownTimer getCountDownTimer(final int disableDurationMillis,
+                             final TextView timerText, final InvertedStateButton resentButton,
+                             final InvertedStateButton callMeButton) {
+        timerText.setText(String.valueOf(DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000));
+
+        return new CountDownTimer(disableDurationMillis, 500) {
             public void onTick(long millisUntilFinished) {
-                textView.setText(String.valueOf(timeRoundedToSeconds(millisUntilFinished)));
+                timerText.setText(String.valueOf(timeRoundedToSeconds(millisUntilFinished)));
             }
 
             public void onFinish() {
-                textView.setText("");
-                textView.setEnabled(true);
+                timerText.setText("");
+                timerText.setEnabled(true);
+                resentButton.setEnabled(true);
+                callMeButton.setEnabled(true);
             }
 
             private int timeRoundedToSeconds(double millis) {

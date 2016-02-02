@@ -32,24 +32,27 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 
 
 class LoginCodeController extends DigitsControllerImpl {
-    private final String requestId;
     private final long userId;
     private final String phoneNumber;
     private final Boolean emailCollection;
+    private final InvertedStateButton resendButton, callMeButton;
+    private String requestId;
 
     LoginCodeController(ResultReceiver resultReceiver, StateButton stateButton,
-                        EditText phoneEditText, String requestId, long userId, String
-                                phoneNumber, DigitsScribeService scribeService,
-                        Boolean emailCollection) {
-        this(resultReceiver, stateButton, phoneEditText, Digits.getSessionManager(),
-                Digits.getInstance().getDigitsClient(), requestId, userId, phoneNumber,
+                        InvertedStateButton resendButton, InvertedStateButton callMeButton,
+                        EditText phoneEditText, String requestId, long userId, String phoneNumber,
+                        DigitsScribeService scribeService, Boolean emailCollection) {
+        this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText,
+                Digits.getSessionManager(), Digits.getInstance().getDigitsClient(), requestId,
+                userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), scribeService,
                 emailCollection);
     }
 
     LoginCodeController(ResultReceiver resultReceiver,
-                        StateButton stateButton, EditText loginEditText,
+                        StateButton stateButton, InvertedStateButton resendButton,
+                        InvertedStateButton callMeButton, EditText loginEditText,
                         SessionManager<DigitsSession> sessionManager, DigitsClient client,
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
                         ActivityClassManager activityClassManager,
@@ -60,8 +63,9 @@ class LoginCodeController extends DigitsControllerImpl {
         this.userId = userId;
         this.phoneNumber = phoneNumber;
         this.emailCollection = emailCollection;
+        this.resendButton = resendButton;
+        this.callMeButton = callMeButton;
     }
-
 
     @Override
     public void executeRequest(final Context context) {
@@ -131,4 +135,5 @@ class LoginCodeController extends DigitsControllerImpl {
     DigitsApiClient.AccountService getAccountService(DigitsSession session) {
         return new DigitsApiClient(session).getAccountService();
     }
+
 }

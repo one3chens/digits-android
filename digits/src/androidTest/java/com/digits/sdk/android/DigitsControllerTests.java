@@ -52,6 +52,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     T controller;
     EditText phoneEditText;
     StateButton sendButton;
+    InvertedStateButton resendButton, callMeButton;
     DigitsClient digitsClient;
     ArgumentCaptor<Intent> intentCaptor;
     ArgumentCaptor<DigitsCallback> callbackCaptor;
@@ -70,6 +71,8 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         intentCaptor = ArgumentCaptor.forClass(Intent.class);
         phoneEditText = mock(EditText.class);
         sendButton = mock(StateButton.class);
+        resendButton = mock(InvertedStateButton.class);
+        callMeButton = mock(InvertedStateButton.class);
         digitsClient = mock(DigitsClient.class);
         context = mock(Activity.class);
         resultReceiver = mock(ResultReceiver.class);

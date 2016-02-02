@@ -41,8 +41,8 @@ public class ConfirmationCodeControllerTests extends
     public void setUp() throws Exception {
         super.setUp();
         controller = new ConfirmationCodeController(resultReceiver, sendButton,
-                phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager, digitsClient, errors,
-                new ActivityClassManagerImp(), scribeService, false);
+                resendButton, callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
+                digitsClient, errors, new ActivityClassManagerImp(), scribeService, false);
     }
 
     public void testExecuteRequest_successAndMailRequestDisabled() throws Exception {
@@ -69,9 +69,9 @@ public class ConfirmationCodeControllerTests extends
     }
 
     public void testExecuteRequest_successAndMailRequestEnabled() throws Exception {
-        controller = new ConfirmationCodeController(resultReceiver, sendButton,
-                phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager, digitsClient, errors,
-                new ActivityClassManagerImp(), scribeService, true);
+        controller = new ConfirmationCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
+                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
                 new ArrayList<Header>(), null);
@@ -89,6 +89,20 @@ public class ConfirmationCodeControllerTests extends
         assertEquals(resultReceiver,
                 intent.getParcelableExtra(DigitsClient.EXTRA_RESULT_RECEIVER));
         assertEquals(PHONE_WITH_COUNTRY_CODE, intent.getStringExtra(DigitsClient.EXTRA_PHONE));
+    }
+
+    public void testExecuteRequest_failure() throws Exception {
+        controller = new ConfirmationCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
+                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true);
+
+        final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
+                new ArrayList<Header>(), null);
+        final DigitsUser user = new DigitsUser(USER_ID, "");
+
+        final DigitsCallback callback = executeRequest();
+        callback.failure(TestConstants.ANY_EXCEPTION);
+        verify(sendButton).showError();
     }
 
     DigitsCallback executeRequest() {

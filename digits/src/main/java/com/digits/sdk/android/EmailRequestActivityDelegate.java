@@ -18,8 +18,10 @@ package com.digits.sdk.android;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.ResultReceiver;
 import android.text.InputType;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -29,8 +31,10 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     EditText editText;
     StateButton stateButton;
+    InvertedStateButton resendButton, callMeButton;
+    LinkTextView editPhoneNumberLink;
     TextView termsText;
-    TextView resendText;
+    TextView timerText;
     DigitsController controller;
     Activity activity;
     DigitsScribeService scribeService;
@@ -57,7 +61,13 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         titleText = (TextView) activity.findViewById(R.id.dgts__titleText);
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
+        resendButton =  (InvertedStateButton) activity
+                .findViewById(R.id.dgts__resendConfirmationButton);
+        callMeButton =  (InvertedStateButton) activity.findViewById(R.id.dgts__callMeButton);
+        editPhoneNumberLink = (LinkTextView) activity.findViewById(R.id.dgts__editPhoneNumber);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
+        timerText = (TextView) activity.findViewById(R.id.dgts__countdownTimer);
+        final AuthConfig config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
 
@@ -66,9 +76,43 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
+        setupResendButton(activity, controller, scribeService, resendButton);
+        setupCallMeButton(activity, controller, scribeService, callMeButton, config);
+        setupCountDownTimer(timerText, null, config);
+        setUpEditPhoneNumberLink(activity, editPhoneNumberLink,
+                bundle.getString(DigitsClient.EXTRA_PHONE));
         setUpTermsText(activity, controller, termsText);
 
         CommonUtils.openKeyboard(activity, editText);
+    }
+
+    @Override
+    protected void setUpEditPhoneNumberLink(final Activity activity,
+                                            final LinkTextView editPhoneLink,
+                                            String phoneNumber) {
+        editPhoneLink.setVisibility(View.GONE);
+    }
+
+    @Override
+    void setupResendButton(final Activity activity, final DigitsController controller,
+                           final DigitsScribeService scribeService,
+                           final InvertedStateButton resendButton){
+        resendButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    void setupCallMeButton(final Activity activity, final DigitsController controller,
+                           final DigitsScribeService scribeService,
+                           final InvertedStateButton callMeButton,
+                           final AuthConfig config){
+        callMeButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    void setupCountDownTimer(final TextView timerText,
+                             final CountDownTimer countDownTimer,
+                             final AuthConfig config){
+        timerText.setVisibility(View.GONE);
     }
 
     @Override

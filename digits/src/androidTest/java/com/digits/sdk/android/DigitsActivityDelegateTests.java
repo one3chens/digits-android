@@ -18,10 +18,12 @@
 package com.digits.sdk.android;
 
 import android.app.Activity;
+import android.os.CountDownTimer;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.mockito.ArgumentCaptor;
@@ -38,12 +40,17 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
     T delegate;
     Activity activity;
     DigitsController controller;
+    InvertedStateButton resendButton, callMeButton;
+    LinkTextView editPhoneNumberLink;
     StateButton button;
     ArgumentCaptor<View.OnClickListener> captorClick;
     ArgumentCaptor<TextView.OnEditorActionListener> captorEditor;
     EditText editText;
     TextView textView;
+    TextView timerText;
     DigitsScribeService scribeService;
+    CountDownTimer timer;
+    RelativeLayout.LayoutParams layoutParams;
 
     @Override
     public void setUp() throws Exception {
@@ -53,11 +60,16 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
         activity = mock(Activity.class);
         controller = mock(DigitsController.class);
         button = mock(StateButton.class);
+        resendButton = mock(InvertedStateButton.class);
+        callMeButton = mock(InvertedStateButton.class);
+        editPhoneNumberLink = mock(LinkTextView.class);
         captorClick = ArgumentCaptor.forClass(View.OnClickListener.class);
         captorEditor = ArgumentCaptor.forClass(TextView.OnEditorActionListener.class);
         editText = mock(EditText.class);
         textView = mock(TextView.class);
-
+        timerText = mock(TextView.class);
+        timer = mock(CountDownTimer.class);
+        layoutParams = mock(RelativeLayout.LayoutParams.class);
     }
 
     public abstract T getDelegate();

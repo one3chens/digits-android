@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.InputType;
 import android.text.SpannedString;
+import android.view.View;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -78,6 +79,28 @@ public class EmailRequestActivityDelegateTests extends
         delegate.onResume();
         verify(controller).onResume();
         verify(scribeService).impression();
+    }
+
+    public void testSetUpEditPhoneNumberButton() {
+        delegate.setUpEditPhoneNumberLink(activity, editPhoneNumberLink, "");
+        verify(editPhoneNumberLink).setVisibility(View.GONE);
+    }
+
+    public void testSetupResendButton(){
+        delegate.setupResendButton(activity, controller, scribeService, resendButton);
+        verify(resendButton).setVisibility(View.GONE);
+    }
+
+    public void testSetupCallMeButton(){
+        final AuthConfig config = new AuthConfig();
+        delegate.setupCallMeButton(activity, controller, scribeService, callMeButton, config);
+        verify(callMeButton).setVisibility(View.GONE);
+    }
+
+    public void testSetupTimerText(){
+        final AuthConfig config = new AuthConfig();
+        delegate.setupCountDownTimer(timerText, timer, config);
+        verify(timerText).setVisibility(View.GONE);
     }
 
     public class DummyEmailRequestActivityDelegate extends EmailRequestActivityDelegate {

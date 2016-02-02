@@ -51,7 +51,8 @@ interface DigitsController {
 
     void clearError();
 
-    CountDownTimer getCountDownTimer(int disableDurationMillis,
-                                     final TextView textView);
+    CountDownTimer getCountDownTimer(final int disableDurationMillis, final TextView timerText,
+                                    final InvertedStateButton resentButton,
+                                    final InvertedStateButton callMeButton);
 
 }

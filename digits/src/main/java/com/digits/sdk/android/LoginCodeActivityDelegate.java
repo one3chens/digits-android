@@ -20,6 +20,7 @@ package com.digits.sdk.android;
 import android.app.Activity;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.ResultReceiver;
 import android.view.View;
 import android.widget.EditText;
@@ -30,9 +31,13 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     private final DigitsScribeService scribeService;
     EditText editText;
+    LinkTextView editPhoneNumberLinkTextView;
     StateButton stateButton;
+    InvertedStateButton resendButton, callMeButton;
     TextView termsText;
+    TextView timerText;
     DigitsController controller;
+    CountDownTimer timer;
     SmsBroadcastReceiver receiver;
     Activity activity;
     AuthConfig config;
@@ -42,17 +47,29 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     }
 
     @Override
-    public void init(Activity activity, Bundle bundle) {
+    public void init(final Activity activity, Bundle bundle) {
         this.activity = activity;
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
+        resendButton =  (InvertedStateButton) activity
+                .findViewById(R.id.dgts__resendConfirmationButton);
+        callMeButton =  (InvertedStateButton) activity.findViewById(R.id.dgts__callMeButton);
+        editPhoneNumberLinkTextView = (LinkTextView) activity
+                .findViewById(R.id.dgts__editPhoneNumber);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
+        timerText = (TextView) activity.findViewById(R.id.dgts__countdownTimer);
         config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
+        timer = initCountDownTimer(controller, timerText, resendButton, callMeButton);
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
+        setupResendButton(activity, controller, scribeService, resendButton);
+        setupCallMeButton(activity, controller, scribeService, callMeButton, config);
+        setupCountDownTimer(timerText, timer, config);
+        setUpEditPhoneNumberLink(activity, editPhoneNumberLinkTextView,
+                bundle.getString(DigitsClient.EXTRA_PHONE));
         setUpTermsText(activity, controller, termsText);
         setUpSmsIntercept(activity, editText);
 
@@ -62,7 +79,8 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     DigitsController initController(Bundle bundle) {
         return new LoginCodeController(bundle
                 .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
-                stateButton, editText, bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
+                stateButton, resendButton, callMeButton, editText,
+                bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
                 bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
                 .EXTRA_PHONE), scribeService, bundle.getBoolean(DigitsClient.EXTRA_EMAIL));
     }
@@ -100,6 +118,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         if (receiver != null) {
             activity.unregisterReceiver(receiver);
         }
+        timer.cancel();
     }
 
     protected void setUpSmsIntercept(Activity activity, EditText editText) {
