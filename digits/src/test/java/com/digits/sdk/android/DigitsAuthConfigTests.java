@@ -26,10 +26,12 @@ import static org.mockito.Mockito.mock;
 
 public class DigitsAuthConfigTests {
     private AuthCallback callback;
+    private ConfirmationCodeCallback confirmationCodeCallback;
 
     @Before
     public void setUp() throws Exception {
         callback = mock(AuthCallback.class);
+        confirmationCodeCallback = mock(ConfirmationCodeCallback.class);
     }
 
     @Test
@@ -47,11 +49,27 @@ public class DigitsAuthConfigTests {
     }
 
     @Test
+    public void testDigitsAuthConfigBuilder_nullPhoneNumberWithConfirmationCodeCallback() {
+        final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
+                .withThemeResId(TestConstants.THEME_ID)
+                .withAuthCallBack(callback)
+                .withEmailCollection()
+                .withCustomPhoneNumberScreen(confirmationCodeCallback);
+        try {
+            digitsAuthConfigBuilder.build();
+        } catch (IllegalArgumentException ex) {
+            assertEquals("PhoneNumber must be set when confirmationCodeCallback is used",
+                    ex.getMessage());
+        }
+    }
+
+    @Test
     public void testDigitsAuthConfigBuilder_allParamSuccess() {
         final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
                 .withPhoneNumber(TestConstants.PHONE)
                 .withThemeResId(TestConstants.THEME_ID)
                 .withAuthCallBack(callback)
+                .withCustomPhoneNumberScreen(confirmationCodeCallback)
                 .withEmailCollection();
 
         final DigitsAuthConfig digitsAuthConfig = digitsAuthConfigBuilder.build();
@@ -64,12 +82,15 @@ public class DigitsAuthConfigTests {
     @Test
     public void testDigitsAuthConfigBuilder_partialParamSuccess() {
         final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
-                .withAuthCallBack(callback);
+                .withAuthCallBack(callback)
+                .withCustomPhoneNumberScreen(confirmationCodeCallback)
+                .withPhoneNumber(TestConstants.PHONE);
 
         final DigitsAuthConfig digitsAuthConfig = digitsAuthConfigBuilder.build();
         assertEquals(callback, digitsAuthConfig.authCallback);
         assertEquals(false, digitsAuthConfig.isEmailRequired);
-        assertEquals("", digitsAuthConfig.phoneNumber);
+        assertEquals(TestConstants.PHONE, digitsAuthConfig.phoneNumber);
+        assertEquals(confirmationCodeCallback, digitsAuthConfig.confirmationCodeCallback);
     }
 
     @Test

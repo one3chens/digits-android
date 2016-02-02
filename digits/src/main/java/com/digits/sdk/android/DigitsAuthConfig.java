@@ -25,13 +25,16 @@ public class DigitsAuthConfig {
     protected final int themeResId;
     protected final String phoneNumber;
     protected final AuthCallback authCallback;
+    protected final ConfirmationCodeCallback confirmationCodeCallback;
 
     protected DigitsAuthConfig(boolean isEmailRequired, String phoneNumber,
-                     AuthCallback authCallback, int themeResId){
+                     AuthCallback authCallback, int themeResId,
+                     ConfirmationCodeCallback confirmationCodeCallback){
         this.isEmailRequired = isEmailRequired;
         this.themeResId = themeResId;
         this.phoneNumber = phoneNumber;
         this.authCallback = authCallback;
+        this.confirmationCodeCallback = confirmationCodeCallback;
     }
 
     /**
@@ -54,6 +57,7 @@ public class DigitsAuthConfig {
         String phoneNumber;
         AuthCallback authCallback;
         int themeResId;
+        ConfirmationCodeCallback confirmationCodeCallback;
 
         /**
          * Construct {@link DigitsAuthConfig.Builder}
@@ -119,6 +123,18 @@ public class DigitsAuthConfig {
         }
 
         /**
+         * Set confirmationCodeCallback to be used for a custom phone number entry screen
+         * @param confirmationCodeCallback {@link ConfirmationCodeCallback} to be called when digits sends a confirmation code to the phone number
+         *                                set via {@link #withPhoneNumber(String)} method. Must be used only by apps that have their own phone
+         *                                number entry screen. Setting this will bypass the digits phone number screen.
+         */
+        public Builder withCustomPhoneNumberScreen(
+                ConfirmationCodeCallback confirmationCodeCallback){
+            this.confirmationCodeCallback = confirmationCodeCallback;
+            return this;
+        }
+
+        /**
          * Returns DigitsAuthConfig constructed using the builder.
          */
         public DigitsAuthConfig build() {
@@ -126,8 +142,14 @@ public class DigitsAuthConfig {
                 throw new IllegalArgumentException("AuthCallback must not be null");
             }
 
+            if ((confirmationCodeCallback != null) && (phoneNumber == null)) {
+                throw new IllegalArgumentException("PhoneNumber must be set when " +
+                        "confirmationCodeCallback is used");
+            }
+
             return new DigitsAuthConfig(isEmailRequired,
-                    phoneNumber == null ? "": phoneNumber, authCallback, themeResId);
+                    phoneNumber == null ? "": phoneNumber, authCallback, themeResId,
+                    confirmationCodeCallback);
         }
     }
 }

@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.test.mock.MockContext;
 
 import com.twitter.sdk.android.core.Callback;
@@ -284,6 +285,48 @@ public class DigitsClientTests {
     }
 
     @Test
+    public void testStartSignUp_withCustomPhoneUI() throws Exception {
+        verifySignUpWithCustomPhoneUI(activity, callback, TestConstants.PHONE,
+                TestConstants.ANY_BOOLEAN, TEST_NO_INTENT_FLAGS);
+    }
+
+    public void testCreateCompositeCallback_success() {
+        final ConfirmationCodeCallback confirmationCodeCallback =
+                mock(ConfirmationCodeCallback.class);
+
+        final DigitsAuthConfig digitsAuthConfig = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withEmailCollection()
+                .withPhoneNumber(TestConstants.PHONE)
+                .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
+
+        final LoginOrSignupComposer loginOrSignupComposer =
+                digitsClient.createCompositeCallback(digitsAuthConfig);
+        final Intent intent  = mock(Intent.class);
+
+        loginOrSignupComposer.success(intent);
+        verify(scribeService).success();
+        verify(confirmationCodeCallback).success(intent);
+    }
+
+    public void testCreateCompositeCallback_failure() {
+        final ConfirmationCodeCallback confirmationCodeCallback =
+                mock(ConfirmationCodeCallback.class);
+
+        final DigitsAuthConfig digitsAuthConfig = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withEmailCollection()
+                .withPhoneNumber(TestConstants.PHONE)
+                .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
+
+        final LoginOrSignupComposer loginOrSignupComposer =
+                digitsClient.createCompositeCallback(digitsAuthConfig);
+        final Intent intent  = mock(Intent.class);
+        loginOrSignupComposer.failure(TestConstants.ANY_EXCEPTION);
+        verify(confirmationCodeCallback).failure(TestConstants.ANY_EXCEPTION);
+    }
+
+    @Test
     public void testGetApiClient_withSameSession() {
         final DigitsApiClient initial = digitsClient.getApiClient(guestSession);
         assertEquals(initial, digitsClient.getApiClient(guestSession));
@@ -393,6 +436,36 @@ public class DigitsClientTests {
         assertEquals(expectedBundle, capturedIntent.getExtras());
     }
 
+    private void verifySignUpWithCustomPhoneUI(Context context, AuthCallback callback,
+                                               String phone, boolean emailCollection,
+                                               int expectedFlags) {
+        final ConfirmationCodeCallback confirmationCodeCallback =
+                mock(ConfirmationCodeCallback.class);
+
+        final DigitsAuthConfig digitsAuthConfig = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withEmailCollection(emailCollection)
+                .withPhoneNumber(phone)
+                .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
+
+        final MockDigitsClient digitsClient = new MockDigitsClient(digits, digitsUserAgent,
+                twitterCore, sessionManager,
+                authRequestQueue,
+                scribeService) {
+            @Override
+            LoginResultReceiver createResultReceiver(AuthCallback callback) {
+                return loginResultReceiver;
+            }
+        };
+
+        digitsClient.startSignUp(digitsAuthConfig);
+        verify(scribeService).impression();
+        verifyNoMoreInteractions(scribeService);
+        verify(digitsClient.loginOrSignupComposer).start();
+    }
+
+
+
     private DigitsAuthRequestQueue createAuthRequestQueue() {
         final DigitsAuthRequestQueue authRequestQueue = mock(DigitsAuthRequestQueue.class);
         when(authRequestQueue.addClientRequest(any(Callback.class))).thenAnswer(
@@ -417,5 +490,35 @@ public class DigitsClientTests {
         bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailRequired);
 
         return bundle;
+    }
+
+    class MockDigitsClient extends DigitsClient{
+        LoginOrSignupComposer loginOrSignupComposer;
+
+        public MockDigitsClient(Digits digits, DigitsUserAgent digitsUserAgent,
+                                TwitterCore twitterCore,
+                                SessionManager<DigitsSession> sessionManager,
+                                DigitsAuthRequestQueue authRequestQueue,
+                                DigitsScribeService scribeService) {
+            super(digits, digitsUserAgent, twitterCore, sessionManager,
+                    authRequestQueue,
+                    scribeService);
+            this.loginOrSignupComposer = mock(DummyLoginOrSignupComposer.class);
+        }
+
+        @Override
+        LoginOrSignupComposer createCompositeCallback(final DigitsAuthConfig digitsAuthConfig) {
+            return this.loginOrSignupComposer;
+        }
+
+        protected abstract class DummyLoginOrSignupComposer extends LoginOrSignupComposer {
+            DummyLoginOrSignupComposer(Context context, DigitsClient digitsClient,
+                                       String phoneNumber, Verification verificationType,
+                                       boolean emailCollection, ResultReceiver resultReceiver,
+                                       ActivityClassManager activityClassManager) {
+                super(context, digitsClient, phoneNumber, verificationType, emailCollection,
+                        resultReceiver, activityClassManager);
+            }
+        }
     }
 }

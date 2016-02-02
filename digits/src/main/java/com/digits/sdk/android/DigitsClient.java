@@ -101,10 +101,13 @@ public class DigitsClient {
     protected void startSignUp(DigitsAuthConfig digitsAuthConfig) {
         scribeService.impression();
         final DigitsSession session = sessionManager.getActiveSession();
+        final boolean isCustomPhoneUI = (digitsAuthConfig.confirmationCodeCallback != null);
 
         if (session != null && !session.isLoggedOutUser()) {
             digitsAuthConfig.authCallback.success(session, null);
             scribeService.success();
+        } else if (isCustomPhoneUI) {
+            sendConfirmationCode(digitsAuthConfig);
         } else {
             startPhoneNumberActivity(createBundleForAuthFlow(digitsAuthConfig));
         }
@@ -163,6 +166,35 @@ public class DigitsClient {
             }
 
         });
+    }
+
+    protected void sendConfirmationCode(final DigitsAuthConfig digitsAuthConfig) {
+        final LoginOrSignupComposer signupAndLoginCombinedCallback =
+                createCompositeCallback(digitsAuthConfig);
+
+        signupAndLoginCombinedCallback.start();
+    }
+
+    LoginOrSignupComposer createCompositeCallback(final DigitsAuthConfig digitsAuthConfig) {
+        final Context context = digits.getContext();
+        final ActivityClassManager activityClassManager =
+                Digits.getInstance().getActivityClassManager();
+
+        return new LoginOrSignupComposer(context, this, digitsAuthConfig.phoneNumber,
+                Verification.sms, digitsAuthConfig.isEmailRequired,
+                createResultReceiver(digitsAuthConfig.authCallback), activityClassManager) {
+
+            @Override
+            public void success(final Intent intent) {
+                scribeService.success();
+                digitsAuthConfig.confirmationCodeCallback.success(intent);
+            }
+
+            @Override
+            public void failure(DigitsException exception) {
+                digitsAuthConfig.confirmationCodeCallback.failure(exception);
+            }
+        };
     }
 
     protected void loginDevice(final String requestId, final long userId, final String code,
