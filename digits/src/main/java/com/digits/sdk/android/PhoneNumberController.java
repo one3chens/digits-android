@@ -21,12 +21,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.widget.EditText;
 
-import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
 
 import java.util.Locale;
@@ -37,7 +35,6 @@ class PhoneNumberController extends DigitsControllerImpl implements
         PhoneNumberTask.Listener {
     private final TosView tosView;
     final CountryListSpinner countryCodeSpinner;
-    String phoneNumber;
     boolean voiceEnabled;
     boolean resendState;
     boolean emailCollection;
@@ -85,6 +82,37 @@ class PhoneNumberController extends DigitsControllerImpl implements
         }
     }
 
+    LoginOrSignupComposer createCompositeCallback(final Context context, final String phoneNumber) {
+        return new LoginOrSignupComposer(context, digitsClient, phoneNumber,
+                getVerificationType(), this.emailCollection, resultReceiver,
+                activityClassManager) {
+
+            @Override
+            public void success(final Intent intent) {
+                sendButton.showFinish();
+
+                editText.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        scribeService.success();
+                        startActivityForResult((Activity) context, intent);
+                    }
+                }, POST_DELAY_MS);
+            }
+
+            @Override
+            public void failure(DigitsException digitsException) {
+                if (digitsException instanceof OperatorUnsupportedException) {
+                    voiceEnabled = digitsException.getConfig().isVoiceEnabled;
+                    resend();
+                    PhoneNumberController.this.handleError(context, digitsException);
+                } else {
+                    PhoneNumberController.this.handleError(context, digitsException);
+                }
+            }
+        };
+    }
+
     @Override
     public void executeRequest(final Context context) {
         scribeRequest();
@@ -93,30 +121,8 @@ class PhoneNumberController extends DigitsControllerImpl implements
             CommonUtils.hideKeyboard(context, editText);
             final int code = (Integer) countryCodeSpinner.getTag();
             final String number = editText.getText().toString();
-            phoneNumber = getNumber(code, number);
-            digitsClient.authDevice(phoneNumber, getVerificationType(),
-                    new DigitsCallback<AuthResponse>(context, this) {
-                        @Override
-                        public void success(final Result<AuthResponse> result) {
-                            sendButton.showFinish();
-                            final AuthConfig config = result.data.authConfig;
-                            if (config != null) {
-                                voiceEnabled = config.isVoiceEnabled;
-                                emailCollection = config.isEmailEnabled && emailCollection;
-                            }
-                            editText.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    final AuthResponse response = result.data;
-                                    phoneNumber = response.normalizedPhoneNumber == null ?
-                                            phoneNumber : response.normalizedPhoneNumber;
-                                    startSignIn(context, result.data);
-                                }
-                            }, POST_DELAY_MS);
-                        }
-                    }
-            );
-
+            final String phoneNumber = getNumber(code, number);
+            createCompositeCallback(context, phoneNumber).start();
         }
     }
 
@@ -138,66 +144,8 @@ class PhoneNumberController extends DigitsControllerImpl implements
     }
 
     @Override
-    public void handleError(final Context context, DigitsException digitsException) {
-        if (digitsException instanceof CouldNotAuthenticateException) {
-            digitsClient.registerDevice(phoneNumber, getVerificationType(),
-                    new DigitsCallback<DeviceRegistrationResponse>(context, this) {
-                        @Override
-                        public void success(Result<DeviceRegistrationResponse> result) {
-                            final DeviceRegistrationResponse response = result.data;
-                            final AuthConfig config = response.authConfig;
-                            if (config != null) {
-                                voiceEnabled = config.isVoiceEnabled;
-                                emailCollection = config.isEmailEnabled && emailCollection;
-                            }
-                            phoneNumber = response.normalizedPhoneNumber == null ?
-                                    phoneNumber : response.normalizedPhoneNumber;
-                            sendButton.showFinish();
-                            startNextStep(context, result.data);
-                        }
-                    });
-        } else if (digitsException instanceof OperatorUnsupportedException) {
-            voiceEnabled = digitsException.getConfig().isVoiceEnabled;
-            resend();
-            super.handleError(context, digitsException);
-        } else {
-            super.handleError(context, digitsException);
-        }
-    }
-
-    @Override
     Uri getTosUri() {
         return DigitsConstants.DIGITS_TOS;
-    }
-
-    void startSignIn(Context context, AuthResponse response) {
-        scribeService.success();
-        final Intent intent = new Intent(context, activityClassManager.getLoginCodeActivity());
-        final Bundle bundle = getBundle();
-        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, response.requestId);
-        bundle.putLong(DigitsClient.EXTRA_USER_ID, response.userId);
-        bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, response.authConfig);
-        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
-        intent.putExtras(bundle);
-        startActivityForResult((Activity) context, intent);
-    }
-
-    private void startNextStep(Context context, DeviceRegistrationResponse response) {
-        scribeService.success();
-        final Intent intent = new Intent(context, activityClassManager.getConfirmationActivity());
-        final Bundle bundle = getBundle();
-        bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, response.authConfig);
-        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
-        intent.putExtras(bundle);
-        startActivityForResult((Activity) context, intent);
-    }
-
-
-    private Bundle getBundle() {
-        final Bundle bundle = new Bundle();
-        bundle.putString(DigitsClient.EXTRA_PHONE, phoneNumber);
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
-        return bundle;
     }
 
     private String getNumber(long countryCode, String numberTextView) {

@@ -20,13 +20,12 @@ package com.digits.sdk.android;
 import android.content.Intent;
 import android.text.Editable;
 
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
+
+import org.mockito.ArgumentCaptor;
 
 import java.util.Locale;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -36,6 +35,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     private CountryListSpinner countrySpinner;
     private Verification verification;
     private TosView tosView;
+    private ArgumentCaptor<Runnable> runnableCaptor;
+    private Intent intent;
 
     @Override
     public void setUp() throws Exception {
@@ -46,178 +47,74 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         controller = new PhoneNumberController(resultReceiver,
                 sendButton, phoneEditText, countrySpinner, digitsClient, errors,
                 new ActivityClassManagerImp(), sessionManager, tosView, scribeService, false);
+
+        runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        intent  = mock(Intent.class);
+
         assertFalse(controller.voiceEnabled);
         assertFalse(controller.emailCollection);
         assertFalse(controller.resendState);
         when(countrySpinner.getTag()).thenReturn(COUNTRY_CODE);
     }
 
-    public void testExecuteRequest_successSmsVerification() throws Exception {
+    public void testExecuteRequest_phoneNotEmpty() throws Exception {
+        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
+                (PHONE));
+        final DummyPhoneNumberController dummyPhoneNumberController =
+                new DummyPhoneNumberController(resultReceiver,
+                        sendButton, phoneEditText, countrySpinner, digitsClient, errors,
+                        new ActivityClassManagerImp(), sessionManager, tosView, scribeService,
+                        false);
+
         when(errors.getDefaultMessage()).thenReturn(ERROR_MESSAGE);
+        dummyPhoneNumberController.executeRequest(context);
+        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
+        verify(sendButton).showProgress();
+        verify(dummyPhoneNumberController.loginOrSignupComposer).start();
+    }
 
-        final DigitsCallback<AuthResponse> callback = executeRequest();
-        callback.success(createAuthResponse(), null);
+    public void testCreateCompositeCallback_success() {
+        final LoginOrSignupComposer loginOrSignupComposer =
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+        loginOrSignupComposer.success(intent);
 
-        assertTrue(controller.voiceEnabled);
-        assertFalse(controller.emailCollection);
-        verify(phoneEditText).postDelayed(any(Runnable.class),
-                eq(PhoneNumberController.POST_DELAY_MS));
         verify(sendButton).showFinish();
+        verify(phoneEditText).postDelayed(runnableCaptor.capture(),
+                eq(DigitsControllerImpl.POST_DELAY_MS));
+
+        final Runnable runnable = runnableCaptor.getValue();
+        runnable.run();
+        verify(scribeService).success();
+        verify(context).startActivityForResult(intent, DigitsActivity.REQUEST_CODE);
     }
 
-    public void testExecuteRequest_successMailEnabled() throws Exception {
-        controller.emailCollection = true;
-
-        final DigitsCallback<AuthResponse> callback = executeRequest();
-        callback.success(createAuthResponse(), null);
-
-        assertTrue(controller.emailCollection);
-    }
-
-    public void testExecuteRequest_successMailDisabled() throws Exception {
-        controller.emailCollection = true;
-
-        final DigitsCallback<AuthResponse> callback = executeRequest();
-        callback.success(createAuthResponseDisabledEmail(), null);
-
-        assertFalse(controller.emailCollection);
-    }
-
-    public void testExecuteRequest_successVoiceVerification() throws Exception {
+    public void testExecuteRequest_resendWithVoiceVerificationEnabled() throws Exception {
         controller.voiceEnabled = true;
         controller.resend();
-        verification = Verification.voicecall;
-        when(errors.getDefaultMessage()).thenReturn(ERROR_MESSAGE);
-
-        final DigitsCallback<AuthResponse> callback = executeRequest();
-        callback.success(createAuthResponse(), null);
-
-        assertTrue(controller.voiceEnabled);
-        assertFalse(controller.emailCollection);
-        verify(phoneEditText).postDelayed(any(Runnable.class),
-                eq(PhoneNumberController.POST_DELAY_MS));
-        verify(sendButton).showFinish();
+        final LoginOrSignupComposer loginOrSignupComposer =
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+        assertEquals(Verification.voicecall, loginOrSignupComposer.verificationType);
     }
 
-    public void testExecuteRequest_successResendWithVoiceVerificationDisabled() throws Exception {
+    public void testExecuteRequest_resendWithVoiceVerificationDisabled() throws Exception {
         controller.resend();
-        when(errors.getDefaultMessage()).thenReturn(ERROR_MESSAGE);
+        final LoginOrSignupComposer loginOrSignupComposer =
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
 
-        final DigitsCallback<AuthResponse> callback = executeRequest();
-        callback.success(createAuthResponse(), null);
-
-        assertTrue(controller.voiceEnabled);
-        assertFalse(controller.emailCollection);
-        verify(phoneEditText).postDelayed(any(Runnable.class),
-                eq(PhoneNumberController.POST_DELAY_MS));
-        verify(sendButton).showFinish();
+        assertEquals(Verification.sms, loginOrSignupComposer.verificationType);
     }
 
     @Override
     DigitsCallback<AuthResponse> executeRequest() {
-        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
-                (PHONE));
-        when(countrySpinner.getTag()).thenReturn(Integer.valueOf(COUNTRY_CODE));
-
-        controller.executeRequest(context);
-        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
-        verify(sendButton).showProgress();
         verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(getVerification())
                 , callbackCaptor.capture());
         assertNotNull(callbackCaptor.getValue());
-        assertEquals(PHONE_WITH_COUNTRY_CODE, controller.phoneNumber);
         return callbackCaptor.getValue();
     }
 
-
-    public void testHandleError_couldNotAuthenticateException() throws Exception {
-        final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
-        data.normalizedPhoneNumber = PHONE_WITH_COUNTRY_CODE;
-        data.authConfig = createAuthConfig(true, true, true);
-        final Intent intent = handleErrorSuccess(data);
-        assertTrue(controller.voiceEnabled);
-        assertEquals(ConfirmationCodeActivity.class.getName(),
-                intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
-        assertEquals(data.normalizedPhoneNumber, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
-        assertEquals(data.authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
-        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
-                false));
-    }
-
-    public void testHandleError_couldNotAuthenticateExceptionEnabledEmail() throws Exception {
-        controller.emailCollection = true;
-        final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
-        data.normalizedPhoneNumber = PHONE_WITH_COUNTRY_CODE;
-        data.authConfig = createAuthConfig(true, true, true);
-        final Intent intent = handleErrorSuccess(data);
-        assertTrue(controller.emailCollection);
-        assertEquals(ConfirmationCodeActivity.class.getName(),
-                intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
-        assertEquals(data.normalizedPhoneNumber, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
-        assertEquals(data.authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
-        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
-                false));
-    }
-
-    public void testHandleError_couldNotAuthenticateExceptionDisabledEmail() throws Exception {
-        controller.emailCollection = true;
-        final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
-        data.normalizedPhoneNumber = PHONE_WITH_COUNTRY_CODE;
-        data.authConfig = createAuthConfig(true, true, false);
-        final Intent intent = handleErrorSuccess(data);
-        assertFalse(controller.emailCollection);
-        assertEquals(ConfirmationCodeActivity.class.getName(),
-                intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
-        assertEquals(data.normalizedPhoneNumber, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
-        assertEquals(data.authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
-        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
-                false));
-    }
-
-    public void testHandleError_couldNotAuthenticateExceptionNullData() throws Exception {
-        final Intent intent = handleErrorSuccess(new DeviceRegistrationResponse());
-        assertFalse(controller.voiceEnabled);
-        assertEquals(ConfirmationCodeActivity.class.getName(),
-                intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
-        assertEquals(PHONE, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
-        assertNull(intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
-        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
-                false));
-    }
-
-    private Intent handleErrorSuccess(DeviceRegistrationResponse data) {
-        controller.phoneNumber = PHONE;
-        controller.handleError(context, new CouldNotAuthenticateException(ERROR_MESSAGE));
-
-        verify(digitsClient).registerDevice(eq(PHONE), eq(Verification.sms),
-                callbackCaptor.capture());
-        final Callback<DeviceRegistrationResponse> callback = callbackCaptor.getValue();
-        final Result<DeviceRegistrationResponse> deviceResponse = new Result<>(data, null);
-
-        callback.success(deviceResponse);
-        verify(scribeService).success();
-        verify(context).startActivityForResult(intentCaptor.capture(),
-                eq(DigitsActivity.REQUEST_CODE));
-        verify(sendButton).showFinish();
-        return intentCaptor.getValue();
-    }
-
-    public void testStartSignIn() {
-        controller.startSignIn(context, createAuthResponse());
-        verify(scribeService).success();
-        verify(context).startActivityForResult(intentCaptor.capture(),
-                eq(DigitsActivity.REQUEST_CODE));
-        final Intent intent = intentCaptor.getValue();
-        assertEquals(REQUEST_ID, intent.getStringExtra(DigitsClient.EXTRA_REQUEST_ID));
-        assertEquals(USER_ID, intent.getLongExtra(DigitsClient.EXTRA_USER_ID, 0));
-        assertEquals(true,
-                ((AuthConfig) intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG)).tosUpdate);
-        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
-                false));
+    @Override
+    public void testExecuteRequest_failure() throws Exception {
+        //not used
     }
 
     public void testValidateInput_valid() throws Exception {
@@ -322,18 +219,20 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         verifyNoInteractions(tosView);
     }
 
-    public void testHandleError_operatorUnsupportedWithVoiceEnabled() throws Exception {
+    public void testCreateCompositeCallback_operatorUnsupportedWithVoiceEnabled() throws Exception {
         assertFalse(controller.voiceEnabled);
-        controller.handleError(context, new OperatorUnsupportedException(ERROR_MESSAGE,
-                TwitterApiErrorConstants.OPERATOR_UNSUPPORTED, createAuthConfig(true, true,
-                true)));
+        final LoginOrSignupComposer loginOrSignupComposer =
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+        loginOrSignupComposer.failure(new OperatorUnsupportedException(ERROR_MESSAGE, 1,
+                createAuthConfig(true, true, true)));
+
         assertTrue(controller.voiceEnabled);
         assertResendWithVoiceEnabled();
         verify(phoneEditText).setError(ERROR_MESSAGE);
         verify(sendButton).showError();
     }
 
-    public void testHandleError_operatorUnsupportedWithVoiceDisable() throws Exception {
+    public void testCreateCompositeCallback_operatorUnsupportedWithVoiceDisable() throws Exception {
         assertFalse(controller.voiceEnabled);
         controller.handleError(context, new OperatorUnsupportedException(ERROR_MESSAGE,
                 TwitterApiErrorConstants.OPERATOR_UNSUPPORTED, createAuthConfig(true, false,
@@ -343,26 +242,18 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         verify(sendButton).showError();
     }
 
+    public void testCreateCompositeCallback_otherFailure() {
+        final LoginOrSignupComposer loginOrSignupComposer =
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+        loginOrSignupComposer.failure(new DigitsException(ERROR_MESSAGE, 1, null));
+        verify(phoneEditText).setError(ERROR_MESSAGE);
+        verify(sendButton).showError();
+    }
+
     public void testRetryScribing() throws Exception {
         controller.errorCount = 1;
         controller.executeRequest(context);
         verify(scribeService).click(DigitsScribeConstants.Element.RETRY);
-    }
-
-    private AuthResponse createAuthResponse() {
-        final AuthResponse authResponse = new AuthResponse();
-        authResponse.requestId = REQUEST_ID;
-        authResponse.userId = USER_ID;
-        authResponse.authConfig = createAuthConfig(true, true, true);
-        return authResponse;
-    }
-
-    private AuthResponse createAuthResponseDisabledEmail() {
-        final AuthResponse authResponse = new AuthResponse();
-        authResponse.requestId = REQUEST_ID;
-        authResponse.userId = USER_ID;
-        authResponse.authConfig = createAuthConfig(true, true, false);
-        return authResponse;
     }
 
     private AuthConfig createAuthConfig(boolean tosUpdate, boolean isVoiceEnabled,
