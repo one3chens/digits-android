@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Twitter, Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="dgts__call_me">Zavolajte mi</string>
+    <string name="dgts__calling">Vytáčam…</string>
+    <string name="dgts__confirmation_code">Potvrdzujúci kód</string>
+    <string name="dgts__confirmation_edit_hint">Zadajte 6-miestny kód, ktorý sme vám poslali</string>
+    <string name="dgts__confirmation_error">Nemožno potvrdiť vaše telefónne číslo</string>
+    <string name="dgts__confirmation_error_alternative">Prepáčte, pri odosielaní potvrdzujúceho kódu sa vyskytli problémy.</string>
+    <string name="dgts__confirmation_expired">Platnosť tohto kódu vypršala. Prepošlite si potvrdzujúci kód.</string>
+    <string name="dgts__continue">Pokračovať</string>
+    <string name="dgts__digits_logo_desc">ikona loga digits</string>
+    <string name="dgts__digits_logo_name_desc">názov loga digits</string>
+    <string name="dgts__dismiss">Zamietnuť</string>
+    <string name="dgts__done">Hotovo</string>
+    <string name="dgts__email_request_edit_hint">E-mailová adresa</string>
+    <string name="dgts__email_request_title">Zadajte e-mailovú adresu</string>
+    <string name="dgts__find_your_friends">Nájdite si svojich priateľov</string>
+    <string name="dgts__image_header_description">Ttulná fotka pre prihlásenie</string>
+    <string name="dgts__invalid_email">Neplatný E-mail. Skúste to znovu</string>
+    <string name="dgts__login_digits_text">Použiť moje telefónne číslo</string>
+    <string name="dgts__network_error">Skontrolujte vaše internetové pripojenie a skúste to znovu.</string>
+    <string name="dgts__not_now">Teraz nie</string>
+    <string name="dgts__okay">OK</string>
+    <string name="dgts__phone_number_edit_hint">Vaše telefónne číslo</string>
+    <string name="dgts__phone_number_text">Zadajte vaše telefónne číslo</string>
+    <string name="dgts__pin_code_verification_title">Zadajte 2-stupňový overovací kód</string>
+    <string name="dgts__resend_confirmation_button_code">Preposlať kód</string>
+    <string name="dgts__resend_confirmation_text">Preposlať potvrdzujúci kód</string>
+    <string name="dgts__sending">Odosiela sa…</string>
+    <string name="dgts__terms_email_request">Ťuknutím vyššie na %1$sPokračovať%1$s, pridávate tento e-mail do vášho Digits účtu. Všetky vaše aplikácie prepojené s Digits budú mať prístup k tejto e-mailovej adrese a ich používatelia vás budú môcť nájsť pomocou e-mailu. Váš účet môžete spravovať na %2$sDigits.com%3$s.</string>
+    <string name="dgts__terms_text">Ťuknutím vyššie na %1$sPokračovať%1$s, vám %2$sDigits by Twitter%3$s pošlú SMS správu pre potvrdenie vášho telefónneho čísla. Za SMS a dáta sa vám môžu účtovať poplatky.</string>
+    <string name="dgts__terms_text_call_me">Ťuknutím vyššie na %1$sZavolajte mi%1$s, vám %2$sDigits by Twitter%3$s zavolá pre potvrdenie vášho telefónneho čísla. Za hovor a dáta sa vám môžu účtovať poplatky.</string>
+    <string name="dgts__terms_text_create">Ťuknutím vyššie na %1$sPokračovať%1$s, vyjadrujete súhlas s %2$sPodmienkami používania%3$s, %2$sZásadami ochrany súkromia%3$s a %2$sZásadami používania súborov Cookies%3$s v Digits by Twitter a s tým, že vás ostatní používatelia tejto aplikácie môžu nájsť pomocou telefónneho čísla a/alebo e-mailu.</string>
+    <string name="dgts__terms_text_sign_in">Ťuknutím vyššie na %1$sPokračovať%1$s, vyjadrujete súhlas s aktualizovanými %2$sPodmienkami používania%3$s, %2$sZásadami ochrany súkromia%3$s a %2$sZásadami používania súborov Cookies%3$s v Digits by Twitter a s tým, že vás ostatní používatelia %1$s môžu nájsť pomocou telefónneho čísla a/alebo e-mailu.</string>
+    <string name="dgts__try_again">Skúsiť znovu</string>
+    <string name="dgts__try_again_confirmation">Skontrolujte váš kód a skúste to znovu.</string>
+    <string name="dgts__try_again_email">Skontrolujte si váš e-mail a skúste to znovu</string>
+    <string name="dgts__try_again_phone_number">Skontrolujte vaše telefónne číslo a skúste to znovu.</string>
+    <string name="dgts__try_another_phone">Skúste iné telefónne číslo</string>
+    <string name="dgts__unsupported_operator_error">Tomuto číslu je nemožné odoslať SMS správu.</string>
+    <string name="dgts__verification_code">Overovací kód</string>
+    <string name="dgts_pin_code_terms">Už ste predtým nastavili 2-stupňový overovací kód na digits.com</string>
+</resources>

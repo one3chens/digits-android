@@ -17,13 +17,17 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- button text for sign up -->
+    <!--suppress MissingTranslation-->
     <string name="dgts__login_digits_text">Use my phone number</string>
 
     <!-- Phone number screen -->
     <!-- Text on the top of the screen -->
+    <!--suppress MissingTranslation-->
     <string name="dgts__phone_number_text">Enter your phone number</string>
     <!-- hint for the user on a input field -->
+    <!--suppress MissingTranslation-->
     <string name="dgts__phone_number_edit_hint">Your Number</string>
+    <!--suppress MissingTranslation-->
     <string name="dgts__confirmation_code">Confirmation code</string>
     <!-- Button text -->
     <!-- Terms and Conditions text displayed at the bottom of the screen -->
@@ -49,21 +53,31 @@
     <string name="dgts__resend_confirmation_button_code">Resend code</string>
     <!--suppress MissingTranslation -->
     <string name="dgts__success_desc">Success Icon</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__okay">Okay</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__not_now">Not now</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__try_again_phone_number">Please check your number and try again.</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__try_again_confirmation">Please check your code and try again.</string>
     <!--suppress UnusedResources MissingTranslation-->
     <string name="dgts__confirmation_expired">This code has expired. Please resend confirmation code.</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__network_error">Please check your network and try again.</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__try_another_phone">Try a different phone number</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__dismiss">Dismiss</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__try_again">Try Again</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__confirmation_error">Unable to confirm your phone number</string>
     <!--suppress MissingTranslation -->
     <string name="dgts__confirmation_error_alternative">Sorry, we are having trouble sending you a confirmation code.</string>
     <!--suppress MissingTranslation -->
     <string name="dgts__image_header_description">Image header for login</string>
+    <!--suppress MissingTranslation -->
     <string name="dgts__find_your_friends">Find your friends</string>
     <!-- Terms and conditions for upload address book screen -->
     <!--suppress MissingTranslation -->

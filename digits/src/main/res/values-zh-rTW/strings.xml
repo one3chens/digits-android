@@ -21,7 +21,7 @@
     <string name="dgts__call_me">以電話確認</string>
     <string name="dgts__calling">撥號中…</string>
     <string name="dgts__confirmation_code">確認碼</string>
-    <string name="dgts__confirmation_edit_hint">輸入確認碼</string>
+    <string name="dgts__confirmation_edit_hint">請輸入我們傳送給你的 6 位數確認碼</string>
     <string name="dgts__confirmation_error">無法確認你的電話號碼</string>
     <string name="dgts__confirmation_error_alternative">抱歉，傳送你的確認碼時發生錯誤。</string>
     <string name="dgts__confirmation_expired">此代碼已過期。請重新發送確認碼。</string>
@@ -42,13 +42,13 @@
     <string name="dgts__phone_number_edit_hint">你的號碼</string>
     <string name="dgts__phone_number_text">輸入你的電話號碼</string>
     <string name="dgts__pin_code_verification_title">輸入 2 步驟認證碼</string>
+    <string name="dgts__resend_confirmation_button_code">重新傳送確認碼</string>
     <string name="dgts__resend_confirmation_text">重新傳送確認碼</string>
     <string name="dgts__sending">發送中…</string>
     <string name="dgts__success_desc">成功圖示</string>
     <string name="dgts__terms_email_request">如果點選「%1$s繼續%1$s」，即表示你同意將此電子郵件地址加到你的 Digits 帳戶。您所有已向 Digits 認證的應用程式都將可以存取這個電子郵件地址，而且其使用者將可以透過電子郵件地址找到你。請在 %2$sDigits.com%3$s 上管理你的帳戶。</string>
-    <string name="dgts__terms_text">如果點選上方的「%1$s繼續%1$s」，%2$sDigits\
-        by Twitter%3$s 就會發送簡訊給你，以確認你的電話號碼。可能需支付訊息和數據費用。</string>
-    <string name="dgts__terms_text_call_me">如果點選上方的「%1$s以電話確認%1$s」，%2$sDigits by Twitter%3$s 就會撥打語音通話給你，以確認你的電話號碼。可能需支付通話和數據費用。</string>
+    <string name="dgts__terms_text">如果點選上方的「%1$s繼續%1$s」，%2$sDigits by Twitter%3$s 將會發送簡訊給你，以確認你的電話號碼。你可能需要支付簡訊及數據費用。</string>
+    <string name="dgts__terms_text_call_me">如果點選上方的「%1$s以電話確認%1$s」，%2$sDigits by Twitter%3$s 就會撥打語音通話給你，以確認你的電話號碼。你可能需支付通話和數據費用。</string>
     <string name="dgts__terms_text_create">如果點選上方的「%1$s繼續%1$s」，即表示你同意 Digits by Twitter 的「%2$s服務條款%3$s」、「%2$s隱私政策%3$s」和「%2$sCookie 使用政策%3$s」，同時此應用程式的其他使用者將可以透過電話號碼和/或電子郵件地址找到你。</string>
     <string name="dgts__terms_text_sign_in">如果點選上方的「%1$s繼續%1$s」，即表示你同意 Digits by Twitter 的更新「%2$s服務條款%3$s」、「%2$s隱私政策%3$s」和「%2$sCookie 使用政策%3$s」，同時 %1$s 的其他使用者將可以透過電話號碼和/或電子郵件地址找到你。</string>
     <string name="dgts__try_again">再試一次</string>

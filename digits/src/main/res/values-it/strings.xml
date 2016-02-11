@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Chiamami</string>
     <string name="dgts__calling">Chiamata in corso…</string>
     <string name="dgts__confirmation_code">Codice di conferma</string>
-    <string name="dgts__confirmation_edit_hint">Inserisci codice di conferma</string>
+    <string name="dgts__confirmation_edit_hint">Inserisci il codice a 6 cifre che ti abbiamo inviato</string>
     <string name="dgts__confirmation_error">Impossibile confermare il tuo numero di telefono</string>
     <string name="dgts__confirmation_error_alternative">Spiacenti, non riusciamo a inviarti un codice di conferma.</string>
     <string name="dgts__confirmation_expired">Questo codice è scaduto. Reinvia codice di conferma.</string>
@@ -42,6 +42,7 @@
     <string name="dgts__phone_number_edit_hint">Il tuo numero</string>
     <string name="dgts__phone_number_text">Inserisci il tuo numero di telefono</string>
     <string name="dgts__pin_code_verification_title">Inserisci il codice di verifica in 2 passaggi</string>
+    <string name="dgts__resend_confirmation_button_code">Reinvia codice</string>
     <string name="dgts__resend_confirmation_text">Reinvia codice di conferma</string>
     <string name="dgts__sending">Invio in corso…</string>
     <string name="dgts__success_desc">Icona di avvenuta operazione</string>

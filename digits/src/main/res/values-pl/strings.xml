@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Zadzwoń do mnie</string>
     <string name="dgts__calling">Nawiązywanie połączenia…</string>
     <string name="dgts__confirmation_code">Kod potwierdzenia</string>
-    <string name="dgts__confirmation_edit_hint">Wpisz kod potwierdzenia</string>
+    <string name="dgts__confirmation_edit_hint">Wprowadź otrzymany sześciocyfrowy kod</string>
     <string name="dgts__confirmation_error">Nie udało nam się potwierdzić Twojego numeru telefonu</string>
     <string name="dgts__confirmation_error_alternative">Przepraszamy, mamy problem z wysłaniem Ci kodu potwierdzającego.</string>
     <string name="dgts__confirmation_expired">Ten kod jest już nieważny. Poproś o nowy kod potwierdzający.</string>
@@ -42,6 +42,7 @@
     <string name="dgts__phone_number_edit_hint">Twój numer</string>
     <string name="dgts__phone_number_text">Wpisz swój numer telefonu</string>
     <string name="dgts__pin_code_verification_title">Wpisz dwuetapowy kod weryfikacyjny</string>
+    <string name="dgts__resend_confirmation_button_code">Wyślij ponownie kod</string>
     <string name="dgts__resend_confirmation_text">Wyślij ponownie kod potwierdzenia</string>
     <string name="dgts__sending">Wysyłanie…</string>
     <string name="dgts__success_desc">Ikona sukcesu</string>

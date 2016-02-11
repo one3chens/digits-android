@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Позвонить мне</string>
     <string name="dgts__calling">Вызов…</string>
     <string name="dgts__confirmation_code">Код подтверждения</string>
-    <string name="dgts__confirmation_edit_hint">Введите код подтверждения</string>
+    <string name="dgts__confirmation_edit_hint">Введите 6-значный код, который мы вам отправили</string>
     <string name="dgts__confirmation_error">Не удалось подтвердить ваш номер телефона</string>
     <string name="dgts__confirmation_error_alternative">К сожалению, нам не удалось отправить вам код подтверждения.</string>
     <string name="dgts__confirmation_expired">Срок действия кода истек. Отправьте код подтверждения еще раз.</string>
@@ -42,11 +42,12 @@
     <string name="dgts__phone_number_edit_hint">Ваш номер</string>
     <string name="dgts__phone_number_text">Введите свой номер телефона</string>
     <string name="dgts__pin_code_verification_title">Введите код двухэтапной проверки</string>
+    <string name="dgts__resend_confirmation_button_code">Отправить код еще раз</string>
     <string name="dgts__resend_confirmation_text">Отправить код подтверждения ещё раз</string>
     <string name="dgts__sending">Отправка…</string>
     <string name="dgts__success_desc">Значок «Готово»</string>
     <string name="dgts__terms_email_request">Нажимая кнопку %1$sПродолжить%1$s, вы добавляете этот адрес электронной почты к вашей учетной записи Digits. Все ваши приложения, связанные с Digits, будут иметь доступ к вашему адресу электронной почты, а пользователи смогут найти вас по этому адресу. Управлять вашей учетной записью %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">После нажатия %1$sПродолжить%1$s приложение %2$sDigits by Twitter%3$s отправит вам SMS-сообщение для подтверждения вашего номера телефона. За SMS-сообщения и передачу данных может взиматься плата.</string>
+    <string name="dgts__terms_text">При нажатии на кнопку %1$sПродолжить%1$s приложение %2$sDigits by Twitter%3$s отправит вам SMS-сообщение для подтверждения вашего номера телефона. За SMS-сообщения и передачу данных может взиматься плата.</string>
     <string name="dgts__terms_text_call_me">После нажатия %1$sПозвонить мне%1$s %2$sприложение Digits by Twitter%3$s отправит вам голосовое сообщение для подтверждения вашего номера телефона. За пeрсональные сообщения и передачу данных может взиматься плата.</string>
     <string name="dgts__terms_text_create">Нажимая кнопку %1$sПродолжить%1$s, вы подтверждаете своё согласие с %2$sУсловиями предоставления услуг%3$s, %2$sПолитикой конфиденциальности%3$s и %2$sПолитикой использования файлов Сookies%3$s сервиса Digits by Twitter, а также с тем, что другие пользователи смогут найти вас по номеру телефона и (или) адресу электронной почты.</string>
     <string name="dgts__terms_text_sign_in">Нажимая %1$sПродолжить%1$s, вы соглашаетесь с %2$sУсловиями предоставления услуг%3$s, %2$sПолитикой конфиденциальности%3$s и %2$sПолитикой использования файлов Сookies%3$s приложения Digits by Twitter, а также с тем, что другие пользователи %1$s смогут найти вас по номеру телефона и (или) адресу электронной почты.</string>

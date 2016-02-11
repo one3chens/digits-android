@@ -21,7 +21,7 @@
     <string name="dgts__call_me">自分に発信</string>
     <string name="dgts__calling">発信中…</string>
     <string name="dgts__confirmation_code">認証コード</string>
-    <string name="dgts__confirmation_edit_hint">認証コードを入力</string>
+    <string name="dgts__confirmation_edit_hint">お送りした6桁のコードを入力してください</string>
     <string name="dgts__confirmation_error">電話番号の認証に失敗しました</string>
     <string name="dgts__confirmation_error_alternative">認証コードの送信に問題が発生しました。</string>
     <string name="dgts__confirmation_expired">このコードは有効期限切れです。認証コードを再送信してください。</string>
@@ -42,6 +42,7 @@
     <string name="dgts__phone_number_edit_hint">ご利用の番号</string>
     <string name="dgts__phone_number_text">電話番号を入力してください</string>
     <string name="dgts__pin_code_verification_title">2段階認証コードを入力</string>
+    <string name="dgts__resend_confirmation_button_code">コードを再送信</string>
     <string name="dgts__resend_confirmation_text">認証コードを再送信</string>
     <string name="dgts__sending">送信中…</string>
     <string name="dgts__success_desc">プロフィール画像</string>

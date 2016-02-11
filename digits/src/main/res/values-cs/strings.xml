@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Zavolejte mi</string>
     <string name="dgts__calling">Voláme…</string>
     <string name="dgts__confirmation_code">Potvrzovací kód</string>
-    <string name="dgts__confirmation_edit_hint">Zadejte potvrzovací kód</string>
+    <string name="dgts__confirmation_edit_hint">Zadejte 6místný kód, který jsme vám poslali</string>
     <string name="dgts__confirmation_error">Vaše telefonní číslo se nám nepodařilo potvrdit.</string>
     <string name="dgts__confirmation_error_alternative">Nedaří se nám odeslat vám potvrzovací kód.</string>
     <string name="dgts__confirmation_expired">Platnost tohoto kódu vypršela. Znovu odešlete potvrzovací\
@@ -43,6 +43,7 @@ kód.</string>
     <string name="dgts__phone_number_edit_hint">Vaše číslo</string>
     <string name="dgts__phone_number_text">Zadejte své telefonní číslo</string>
     <string name="dgts__pin_code_verification_title">Zadejte dvoufázový ověřovací kód</string>
+    <string name="dgts__resend_confirmation_button_code">Znovu odeslat kód</string>
     <string name="dgts__resend_confirmation_text">Znovu odeslat potvrzovací kód</string>
     <string name="dgts__sending">Odesílání…</string>
     <string name="dgts__success_desc">Ikona Úspěch</string>

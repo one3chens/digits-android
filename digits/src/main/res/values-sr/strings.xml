@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Twitter, Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="dgts__call_me">Позови ме</string>
+    <string name="dgts__calling">Позивање…</string>
+    <string name="dgts__confirmation_code">Код за потврду</string>
+    <string name="dgts__confirmation_edit_hint">Унеси шестоцифрени код који смо ти послали</string>
+    <string name="dgts__confirmation_error">Није могуће да се потврди твој број телефона</string>
+    <string name="dgts__confirmation_error_alternative">Жао нам је, дошло је до проблема приликом слања кода за потврду.</string>
+    <string name="dgts__confirmation_expired">Овај код је истекао. Поново пошаљи код за потврду.</string>
+    <string name="dgts__continue">Настави</string>
+    <string name="dgts__digits_logo_desc">иконица digits логотипа</string>
+    <string name="dgts__digits_logo_name_desc">назив digits логотипа</string>
+    <string name="dgts__dismiss">Одбаци</string>
+    <string name="dgts__done">Готово</string>
+    <string name="dgts__email_request_edit_hint">Адреса е-поште</string>
+    <string name="dgts__email_request_title">Унеси адресу е-поште</string>
+    <string name="dgts__find_your_friends">Пронађи своје пријатеље</string>
+    <string name="dgts__image_header_description">Слика заглавља за пријаву</string>
+    <string name="dgts__invalid_email">Неисправна е-пошта. Покушај поново</string>
+    <string name="dgts__login_digits_text">Користи број телефона</string>
+    <string name="dgts__network_error">Провери своју мрежу и покушај поново.</string>
+    <string name="dgts__not_now">Не сада</string>
+    <string name="dgts__okay">Добро</string>
+    <string name="dgts__phone_number_edit_hint">Твој број</string>
+    <string name="dgts__phone_number_text">Унеси свој број телефона</string>
+    <string name="dgts__pin_code_verification_title">Унеси код за верификацију у 2 корака</string>
+    <string name="dgts__resend_confirmation_button_code">Поново пошаљи код</string>
+    <string name="dgts__resend_confirmation_text">Поново пошаљи код за птврду</string>
+    <string name="dgts__sending">Слање…</string>
+    <string name="dgts__success_desc">Иконица успешно</string>
+    <string name="dgts__terms_email_request">Додиром на %1$sНастави%1$s додајеш ову е-пошту на свој Digits налог. Све твоје апликације потврђене са Digits-ом ће имати приступ овој е-пошти, и њени корисници ће моћи да те открију путем е-поште. Управљај својим налогом на %2$sDigits.com%3$s.</string>
+    <string name="dgts__terms_text">Додиром на %1$sНастави%1$s изнад, %2$sDigits од стране Твитера%3$s послаће ти СМС поруку за потврду твог броја телефона. Може се применити пренос података и порука.</string>
+    <string name="dgts__terms_text_call_me">Додиром на %1$sПозови ме%1$s изнад, %2$sDigits од стране Твитера%3$s ће те позвати за потврду твог броја телефона. Може се применити пренос података и позив.</string>
+    <string name="dgts__terms_text_create">Додиром на %1$sНастави%1$s изнад, слажеш се са %2$sУсловима коришћења%3$s, %2$sПолитиком приватности%3$s и %2$sПолитиком колачића%3$s Digits од стране Твитера, и остали корисници ове апликације могу да те открију по броју телефона и/или е-поште.</string>
+    <string name="dgts__terms_text_sign_in">Додиром на %1$sНастави%1$s изнад, слажеш се са ажурираним %2$sУсловима коришћења%3$s, %2$sПолитиком приватности%3$s и %2$sПолитиком колачића%3$s Digits-а од стране Твитера, и остали корисници %1$s могу да те открију по броју телефона и/или е-поште.</string>
+    <string name="dgts__try_again">Покушај поново</string>
+    <string name="dgts__try_again_confirmation">Провери свој код и покушај поново.</string>
+    <string name="dgts__try_again_email">Провери своју е-пошту и покушај поново</string>
+    <string name="dgts__try_again_phone_number">Провери свој број и покушај поново.</string>
+    <string name="dgts__try_another_phone">Пробај други број телефона</string>
+    <string name="dgts__unsupported_operator_error">Овом броју није могуће послати СМС поруку.</string>
+    <string name="dgts__upload_contacts">Користимо Digits од стране Твитера да пронађемо више твојих пријатеља који користе ову апликацију. Када додирнеш Ок, додађемо твој адресар на Digits од стране Твитера и омогућити другим корисницима %1$s да те знају или помогнемо другим корисницима %1$s да те пронађу.</string>
+    <string name="dgts__verification_code">Код за верификацију</string>
+    <string name="dgts_pin_code_terms">Раније је постављена верификација кода у 2 корака на digits.com</string>
+</resources>

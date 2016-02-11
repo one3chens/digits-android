@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Beni ara</string>
     <string name="dgts__calling">Aranıyor…</string>
     <string name="dgts__confirmation_code">Doğrulama kodu</string>
-    <string name="dgts__confirmation_edit_hint">Doğrulama kodunu gir</string>
+    <string name="dgts__confirmation_edit_hint">Sana gönderdiğimiz 6 basamaklı kodu gir</string>
     <string name="dgts__confirmation_error">Telefon numaran doğrulanamıyor</string>
     <string name="dgts__confirmation_error_alternative">Üzgünüz, sana bir doğrulama kodu göndermede sorun yaşıyoruz.</string>
     <string name="dgts__confirmation_expired">Bu kodun süresi doldu. Lütfen doğrulama kodunu yeniden gönder.</string>
@@ -42,12 +42,13 @@
     <string name="dgts__phone_number_edit_hint">Numaran</string>
     <string name="dgts__phone_number_text">Telefon numaranı gir</string>
     <string name="dgts__pin_code_verification_title">2 adımlı onaylama kodunu gir</string>
+    <string name="dgts__resend_confirmation_button_code">Kodu yeniden gönder</string>
     <string name="dgts__resend_confirmation_text">Doğrulama kodunu yeniden gönder</string>
     <string name="dgts__sending">Gönderiliyor…</string>
     <string name="dgts__success_desc">Başarılı Simgesi</string>
     <string name="dgts__terms_email_request">%1$sDevam%1$s düğmesine dokunarak bu e-postayı Digits hesabına eklemiş olursun. Digits ile doğrulanmış tüm uygulamaların bu e-posta adresine erişebilecek ve kullanıcılar e-posta adresinden seni keşfedebilecek. Hesabını %2$sDigits.com%3$s\'da yönet.</string>
-    <string name="dgts__terms_text">Yukarıdaki %1$sDevam%1$s düğmesine dokunduğunda, %2$sDigits by Twitter%3$s telefon numaranı doğrulamak için sana bir kısa mesaj gönderir. Mesaj ve veri ücretleri geçerlidir.</string>
-    <string name="dgts__terms_text_call_me">Yukarıdaki %1$sBeni ara%1$s düğmesine dokunduğunda, %2$sDigits by Twitter%3$s telefon numaranı doğrulamak için bir sesli arama yapar. Mesaj ve veri ücretleri geçerlidir.</string>
+    <string name="dgts__terms_text">Yukarıdaki %1$sContinue%1$s düğmesine dokunduğunda, %2$sDigits by Twitter%3$s telefon numaranı doğrulamak için sana bir kısa mesaj gönderecek. Mesaj ve veri ücretleri geçerlidir.</string>
+    <string name="dgts__terms_text_call_me">Yukarıdaki %1$sCall me%1$s düğmesine dokunduğunda, %2$sDigits by Twitter%3$s telefon numaranı doğrulamak için bir sesli mesaj gönderecek. Arama ve veri ücretleri geçerlidir.</string>
     <string name="dgts__terms_text_create">Yukarıdaki %1$sDevam%1$s düğmesine dokunarak Digits by Twitter\'ın %2$sHizmet Şartları%3$s\'nı, %2$sGizlilik Politikası%3$s\'nı ve %2$sÇerez Politikası%3$s\'nı \
 onaylamış ve bu uygulamayı kullanan diğer kullanıcıların seni telefon \
 numarandan ve/veya e-posta adresinden bulabileceğini kabul etmiş \

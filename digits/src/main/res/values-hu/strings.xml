@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Hívj fel</string>
     <string name="dgts__calling">Hívás folyamatban…</string>
     <string name="dgts__confirmation_code">Megerősítő kód</string>
-    <string name="dgts__confirmation_edit_hint">Add meg a megerősítő kódot!</string>
+    <string name="dgts__confirmation_edit_hint">Add meg az általunk küldött hatjegyű kódot</string>
     <string name="dgts__confirmation_error">A telefonszámod megerősítése sikertelen</string>
     <string name="dgts__confirmation_error_alternative">Sajnáljuk, probléma merült fel az ellenőrzőkód elküldése során.</string>
     <string name="dgts__confirmation_expired">Ez a kód lejárt. Kérjük, küldd újra a megerősítő kódot.</string>
@@ -42,6 +42,7 @@
     <string name="dgts__phone_number_edit_hint">A számod</string>
     <string name="dgts__phone_number_text">Add meg a telefonszámod</string>
     <string name="dgts__pin_code_verification_title">Add meg a kétlépcsős hitelesítés kódját</string>
+    <string name="dgts__resend_confirmation_button_code">Kód újraküldése</string>
     <string name="dgts__resend_confirmation_text">Megerősítő kód újraküldése</string>
     <string name="dgts__sending">Küldés folyamatban…</string>
     <string name="dgts__success_desc">Sikerikon</string>

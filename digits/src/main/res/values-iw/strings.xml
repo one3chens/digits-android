@@ -21,7 +21,7 @@
     <string name="dgts__call_me">התקשרו אליי</string>
     <string name="dgts__calling">מתקשר…</string>
     <string name="dgts__confirmation_code">קוד אישור</string>
-    <string name="dgts__confirmation_edit_hint">הזן קוד אישור</string>
+    <string name="dgts__confirmation_edit_hint">הכנס את הקוד בן 6 הספרות ששלחנו לך</string>
     <string name="dgts__confirmation_error">לא ניתן לאשר את מספר הטלפון שלך</string>
     <string name="dgts__confirmation_error_alternative">מצטערים, נתקלנו בבעיה בשליחת קוד האישור.</string>
     <string name="dgts__confirmation_expired">פג תוקפו של הקוד. בצע שליחה מחדש של קוד אישור.</string>
@@ -42,13 +42,14 @@
     <string name="dgts__phone_number_edit_hint">המספר שלך</string>
     <string name="dgts__phone_number_text">הזן את מספר הטלפון שלך</string>
     <string name="dgts__pin_code_verification_title">הזן קוד אימות בשני שלבים</string>
+    <string name="dgts__resend_confirmation_button_code">שליחת קוד מחדש</string>
     <string name="dgts__resend_confirmation_text">שלח מחדש קוד אישור</string>
     <string name="dgts__sending">שולח…</string>
     <string name="dgts__success_desc">סמל הצלחה</string>
     <string name="dgts__terms_email_request">הקשה על %1$sהמשך%1$s תוסיף את כתובת הדואר האלקטרוני לחשבון Digits שלך. כל היישומים שאומתו באמצעות Digits יקבלו גישה לכתובת דואר אלקטרוני זו והמשתמשים בהם יוכלו למצוא אותך לפי כתובת דואר אלקטרוני. נהל את החשבון שלך באתר %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">אם תקיש על %1$sהמשך%1$s לעיל, תישלח אליך הודעת SMS מ-%2$sDigits\
-        by Twitter%3$s כדי שתאשר את מספר הטלפון שלך. יתכן שתחויב בעלויות העברת מסרים ונתונים.</string>
-    <string name="dgts__terms_text_call_me">הקשה על %1$sהתקשרו אליי%1$s לעיל תגרום לכך שתקבל שיחה קולית מ-%2$sDigits by Twitter%3$s כדי לאמת את מספר הטלפון שלך. יתכן שתחויב בתעריפי שיחה והעברת נתונים.</string>
+    <string name="dgts__terms_text">לאחר הנגיעה ב%1$sהמשך%1$s לעיל, %2$sDigits\
+        by Twitter%3$s ישלח אליך הודעת SMS לאישור מספר הטלפון שלך. ייתכן שתחויב בעלויות העברת מסרים ונתונים.</string>
+    <string name="dgts__terms_text_call_me">לאחר הנגיעה ב%1$sהתקשר אליי%1$s לעיל, %2$sDigits by Twitter%3$s יתקשר אליך לאישור מספר הטלפון שלך. ייתכן שתחויב בעלויות שיחה ונתונים.</string>
     <string name="dgts__terms_text_create">הקשה על %1$sהמשך%1$s לעיל, מהווה את הסכמתך ל%2$sתנאי השירות%3$s‏, %2$sמדיניות הפרטיות%3$s ו%2$sהמדיניות בנושא קבצי Cookie‏%3$s של Digits by Twitter ולכך שמשתמשים אחרים ביישום יוכלו למצאו אותך לפי מספר טלפון ו/או כתובת דואר אלקטרוני.</string>
     <string name="dgts__terms_text_sign_in">הקשה על %1$sהמשך%1$s לעיל מהווה את הסכמתך ל%2$sתנאי השירות%3$s, %2$sמדיניות הפרטיות%3$s ו%2$sהמדיניות בנוגע לקבצי Cookie‏%3$s העדכניים של Digits by Twitter, ולכך שמשתמשים אחרים של %1$s יוכלו למצוא אותך לפי מספר טלפון ו/או כתובת דואר אלקטרוני.</string>
     <string name="dgts__try_again">נסה שוב</string>

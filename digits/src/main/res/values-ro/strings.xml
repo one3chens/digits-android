@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Sună-mă</string>
     <string name="dgts__calling">Se apelează…</string>
     <string name="dgts__confirmation_code">Cod de confirmare</string>
-    <string name="dgts__confirmation_edit_hint">Introdu codul de confirmare</string>
+    <string name="dgts__confirmation_edit_hint">Introdu codul de 6 cifre pe care ți l-am trimis</string>
     <string name="dgts__confirmation_error">Nu s-a putut confirma numărul de telefon</string>
     <string name="dgts__confirmation_error_alternative">Ne pare rău, nu reușim să-ți trimitem un cod de confirmare.</string>
     <string name="dgts__confirmation_expired">Acest cod a expirat. Retrimite codul de confirmare.</string>
@@ -42,6 +42,7 @@
     <string name="dgts__phone_number_edit_hint">Numărul tău</string>
     <string name="dgts__phone_number_text">Introdu numărul tău de telefon</string>
     <string name="dgts__pin_code_verification_title">Introdu codul de verificare în 2 pași</string>
+    <string name="dgts__resend_confirmation_button_code">Retrimite codul</string>
     <string name="dgts__resend_confirmation_text">Retrimite codul de confirmare</string>
     <string name="dgts__sending">Se trimite…</string>
     <string name="dgts__success_desc">Pictograma Succes</string>

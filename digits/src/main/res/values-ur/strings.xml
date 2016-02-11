@@ -19,7 +19,7 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="dgts__confirmation_code">تصدیقی کوڈ</string>
-    <string name="dgts__confirmation_edit_hint">تصدیقی کوڈ درج کریں</string>
+    <string name="dgts__confirmation_edit_hint">6 عدد کا کوڈ درج کریں جو ہم نے آپ کو بھیجا تھا</string>
     <string name="dgts__confirmation_error">آپ کے فون نمبر کی تصدیق کرنے سے قاصر</string>
     <string name="dgts__confirmation_error_alternative">معاف کیجیے گا، ہمیں آپ کو تصدیقی کوڈ بھیجنے میں مشکل درپیش ہے۔</string>
     <string name="dgts__digits_logo_desc">digits کا آئیکان</string>
@@ -34,6 +34,7 @@
     <string name="dgts__phone_number_edit_hint">آپ کا نمبر</string>
     <string name="dgts__phone_number_text">اپنا فون نمبر درج کریں</string>
     <string name="dgts__pin_code_verification_title">2-step کا تصدیقی کوڈ درج کریں</string>
+    <string name="dgts__resend_confirmation_button_code">کوڈ دوبارہ بھیجیں</string>
     <string name="dgts__resend_confirmation_text">تصدیقی کوڈ دوبارہ بھیجیں</string>
     <string name="dgts__success_desc">کامیابی کا آئیکان</string>
     <string name="dgts__try_again">دوبارہ کوشش کریں</string>

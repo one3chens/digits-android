@@ -21,7 +21,7 @@
     <string name="dgts__call_me">呼叫我</string>
     <string name="dgts__calling">呼叫中…</string>
     <string name="dgts__confirmation_code">确认码</string>
-    <string name="dgts__confirmation_edit_hint">输入确认码</string>
+    <string name="dgts__confirmation_edit_hint">输入我们发送给你的六位数验证码</string>
     <string name="dgts__confirmation_error">无法确认你的手机号码</string>
     <string name="dgts__confirmation_error_alternative">很抱歉，我们无法向你发送验证码。</string>
     <string name="dgts__confirmation_expired">此确认码已过期，请重新发送确认码。</string>
@@ -42,6 +42,7 @@
     <string name="dgts__phone_number_edit_hint">你的手机号码</string>
     <string name="dgts__phone_number_text">输入你的手机号码</string>
     <string name="dgts__pin_code_verification_title">输入两步验证码</string>
+    <string name="dgts__resend_confirmation_button_code">重新发送验证码</string>
     <string name="dgts__resend_confirmation_text">重新发送确认码</string>
     <string name="dgts__sending">发送中…</string>
     <string name="dgts__success_desc">成功图标</string>

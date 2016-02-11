@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Ring til mig</string>
     <string name="dgts__calling">Ringer…</string>
     <string name="dgts__confirmation_code">Bekræftelseskode</string>
-    <string name="dgts__confirmation_edit_hint">Indtast bekræftelseskode</string>
+    <string name="dgts__confirmation_edit_hint">Indtast den 6-cifrede kode vi har sendt dig</string>
     <string name="dgts__confirmation_error">Ikke i stand til at bekræfte dit telefonnummer</string>
     <string name="dgts__confirmation_error_alternative">Beklager, vi har problemer med at sende dig en bekræftelseskode.</string>
     <string name="dgts__confirmation_expired">Denne kode er udløbet. Send venligst bekræftelseskode igen.</string>
@@ -42,11 +42,12 @@
     <string name="dgts__phone_number_edit_hint">Dit nummer</string>
     <string name="dgts__phone_number_text">Indtast dit telefonnummer</string>
     <string name="dgts__pin_code_verification_title">Indtast 2-trins-bekræftelseskode</string>
+    <string name="dgts__resend_confirmation_button_code">Send kode igen</string>
     <string name="dgts__resend_confirmation_text">Send bekræftelseskode igen</string>
     <string name="dgts__sending">Sender…</string>
     <string name="dgts__success_desc">Ikonet Fuldført</string>
     <string name="dgts__terms_email_request">Ved at trykke på %1$sFortsæt%1$s føjer du denne e-mail til din Digits-konto. Alle de apps, der er godkendt med Digits, får adgang til denne e-mailadresse, og brugerne deraf vil kunne finde dig via e-mail. Administrer din konto på %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Når du trykker på %1$sFortsæt%1$s ovenfor, sender %2$sDigits by Twitter%3$s dig en sms-besked for at bekræfte dit telefonnummer. Besked- og data-takster kan blive pålagt.</string>
+    <string name="dgts__terms_text">Når du trykker på %1$sFortsæt%1$s ovenfor, sender %2$sDigits by Twitter%3$s dig en sms-besked for at bekræfte dit telefonnummer. Besked- og datatakst kan blive pålagt.</string>
     <string name="dgts__terms_text_call_me">Ved at trykke på %1$sRing til mig%1$s herover, vil %2$sDigits by Twitter%3$s sende dig et stemmekald for at bekræfte dit telefonnummer. Opkalds- og datatakst kan blive pålagt.</string>
     <string name="dgts__terms_text_create">Ved at trykke på %1$sFortsæt%1$s herover accepterer du %2$svilkårene for anvendelse%3$s, %2$s privatlivspolitikken%3$s og %2$sbrugen af cookies%3$s for Digits by Twitter, og at andre brugere af denne app kan finde dig ved hjælp af dit telefonnummer og/eller din e-mail.</string>
     <string name="dgts__terms_text_sign_in">Ved at trykke på %1$sFortsæt%1$s herover accepterer du opdateringen af vores %2$svilkår for anvendelse%3$s,%2$sprivatlivspolitik%3$s, og %2$sbrug af cookies%3$s for Digits by Twitter, og at andre brugere af %1$s kan finde dig ved hjælp af dit telefonnummer og/eller din e-mail.</string>

@@ -21,11 +21,11 @@
     <string name="dgts__call_me">আমাকে কল করুন</string>
     <string name="dgts__calling">কল করা হচ্ছে…</string>
     <string name="dgts__confirmation_code">নিশ্চিতকরণ কোড</string>
-    <string name="dgts__confirmation_edit_hint">নিশ্চিতকরণ কোড লিখুন</string>
+    <string name="dgts__confirmation_edit_hint">আপনাকে আমাদের পাঠানো 6 অঙ্কের কোডটি লিখুন</string>
     <string name="dgts__confirmation_error">আপনার ফোন নম্বর নিশ্চিত করা যায়নি</string>
     <string name="dgts__confirmation_error_alternative">দুঃখিত, আপনাকে একটি যাচাইকরণ কোড পাঠাতে আমরা সমস্যার সম্মুখীন হচ্ছি।</string>
     <string name="dgts__confirmation_expired">এই কোডের মেয়াদ শেষ হয়েছে। দয়া করে নিশ্চিতকরণ কোড পুনঃপাঠান।</string>
-    <string name="dgts__continue">অবিরত</string>
+    <string name="dgts__continue">অবিরত রাখুন</string>
     <string name="dgts__digits_logo_desc">digits লোগো আইকন</string>
     <string name="dgts__digits_logo_name_desc">digits লোগো নাম</string>
     <string name="dgts__dismiss">খারিজ করুন</string>
@@ -42,6 +42,7 @@
     <string name="dgts__phone_number_edit_hint">আপনার নম্বর</string>
     <string name="dgts__phone_number_text">আপনার ফোন নম্বর লিখুন</string>
     <string name="dgts__pin_code_verification_title">2-পদক্ষেপ যাচাইকরণ কোড লিখুন</string>
+    <string name="dgts__resend_confirmation_button_code">কোডটি পুনরায় পাঠান</string>
     <string name="dgts__resend_confirmation_text">নিশ্চিতকরণ কোড আবার পাঠান</string>
     <string name="dgts__sending">পাঠানো হচ্ছে…</string>
     <string name="dgts__success_desc">সফল হওয়ার আইকন</string>

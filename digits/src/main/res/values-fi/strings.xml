@@ -21,7 +21,7 @@
     <string name="dgts__call_me">Soita minulle</string>
     <string name="dgts__calling">Soitetaan…</string>
     <string name="dgts__confirmation_code">Vahvistuskoodi</string>
-    <string name="dgts__confirmation_edit_hint">Syötä vahvistuskoodi</string>
+    <string name="dgts__confirmation_edit_hint">Syötä kuusinumeroinen koodi jonka lähetimme sinulle</string>
     <string name="dgts__confirmation_error">Puhelinnumeroasi ei pystytty vahvistamaan</string>
     <string name="dgts__confirmation_error_alternative">Vahvistuskoodin lähettämisessä on nyt ongelmia.</string>
     <string name="dgts__confirmation_expired">Tämä koodi on vanhentunut. Lähetä vahvistuskoodi uudelleen.</string>
@@ -42,12 +42,12 @@
     <string name="dgts__phone_number_edit_hint">Numerosi</string>
     <string name="dgts__phone_number_text">Anna puhelinnumerosi</string>
     <string name="dgts__pin_code_verification_title">Syötä kaksivaiheinen varmennuskoodi</string>
+    <string name="dgts__resend_confirmation_button_code">Lähetä koodi uudelleen</string>
     <string name="dgts__resend_confirmation_text">Lähetä vahvistuskoodi</string>
     <string name="dgts__sending">Lähetetään…</string>
     <string name="dgts__success_desc">Onnistumiskuvake</string>
     <string name="dgts__terms_email_request">Napauttamalla %1$sJatka%1$s lisäät tämän sähköpostiosoitteen Digits-tiliisi. Kaikilla Digits-palvelulla varmennetuilla sovelluksillasi on käyttöoikeus tähän sähköpostiosoitteeseen, ja niiden käyttäjät voivat löytää sinut sähköpostiosoitteesi perusteella. Hallinnoi tiliäsi osoitteessa %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Kun napautat yltä %1$sJatka%1$s, %2$sDigits\
-        by Twitter -palvelu%3$s lähettää sinulle tekstiviestin puhelinnumerosi vahvistamista varten. Tekstiviesti- ja tiedonsiirtokustannukset ovat voimassa.</string>
+    <string name="dgts__terms_text">Kun napautat yltä %1$sJatka%1$s, %2$sDigits by Twitter -palvelu%3$s lähettää sinulle tekstiviestin puhelinnumerosi vahvistamista varten. Tekstiviesti- ja tiedonsiirtokustannukset ovat voimassa.</string>
     <string name="dgts__terms_text_call_me">Kun napautat yltä %1$sSoita minulle%1$s, %2$sDigits by Twitter -palvelu%3$s soittaa sinulle äänipuhelun puhelinnumerosi vahvistamista varten. Puhelu- ja tiedonsiirtokustannukset ovat voimassa.</string>
     <string name="dgts__terms_text_create">Napauttamalla yltä %1$sJatka%1$s hyväksyt Digits by Twitter -palvelun %2$skäyttöehdot%3$s, %2$syksityisyyskäytännön%3$s ja %2$sevästekäytännön%3$s sekä sen, että muut tämän sovelluksen käyttäjät voivat löytää sinut puhelinnumeron ja/tai sähköpostiosoitteen perusteella.</string>
     <string name="dgts__terms_text_sign_in">Napauttamalla yltä %1$sJatka%1$s hyväksyt Digits by Twitter -palvelun uudet %2$skäyttöehdot%3$s, %2$syksityisyyskäytännön%3$s ja %2$sevästekäytännön%3$s sekä sen, että muut sovelluksen %1$s käyttäjät voivat löytää sinut puhelinnumeron ja/tai sähköpostiosoitteen perusteella.</string>
