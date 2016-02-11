@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+## v1.9.4
+* Improved UX for resending confirmation code via sms/voice
+
 ## v1.9.3
 * Fixed issue when setting default three-digit country code.
 * Added public accessors to Email object.
