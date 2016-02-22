@@ -27,10 +27,10 @@ import android.widget.Button;
 
 /**
  * Digits authentication button
- * <p/>
+ * <p>
  * An {@link AuthCallback} must be set by calling
  * {@code #setCallback}
- * <p/>
+ * <p>
  * When the button is clicked the auth flows will start
  */
 public class DigitsAuthButton extends Button implements View.OnClickListener {

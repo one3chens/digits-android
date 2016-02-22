@@ -18,9 +18,7 @@
 package com.digits.sdk.android;
 
 /**
- * <p/>
  * Construct using DigitsAuthConfig.Builder {@link DigitsAuthConfig.Builder}
- * <p/>
  */
 public class DigitsAuthConfig {
     protected final boolean isEmailRequired;
@@ -38,7 +36,7 @@ public class DigitsAuthConfig {
 
     /**
      * Digits Auth Config Builder
-     * <p/>
+     * <p>
      * Used to build a Digits Auth Config object {@link DigitsAuthConfig}
      * Use {@link #withAuthCallBack} followed by {@link #build()}
      * <pre>
@@ -50,7 +48,6 @@ public class DigitsAuthConfig {
      *       .withThemeResId(R.style.LightTheme);
      * Digits.authenticate(digitsAuthConfigBuilder.build());
      * </pre>
-     * <p/>
      */
     public static class Builder {
         boolean isEmailRequired;

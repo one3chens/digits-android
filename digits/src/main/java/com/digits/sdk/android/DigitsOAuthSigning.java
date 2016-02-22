@@ -61,7 +61,7 @@ public class DigitsOAuthSigning {
     }
 
     /**
-     * Returns OAuth Echo header for <a href="https://api.digits.com/1.1/sdk/account.json</a>
+     * Returns OAuth Echo header for <a href="https://api.digits.com/1.1/sdk/account.json">/sdk/account.json</a>
      * endpoint.
      *
      * @return A map of OAuth Echo headers
@@ -72,7 +72,7 @@ public class DigitsOAuthSigning {
     }
 
     /**
-     * Returns OAuth Echo header for <a href="https://api.digits.com/1.1/sdk/account.json</a>
+     * Returns OAuth Echo header for <a href="https://api.digits.com/1.1/sdk/account.json">/sdk/account.json</a>
      * endpoint.
      *
      * @param optParams optional custom params to add the request URL. These extra parameters help

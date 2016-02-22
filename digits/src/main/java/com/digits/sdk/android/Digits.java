@@ -153,10 +153,10 @@ public class Digits extends Kit<Void> {
 
     /**
      * Adds a {@link SessionListener} to the list of notifiers when the session changes.
-     * <p/>
+     * <p>
      * Internally a strong reference is held to this sessionListener. In case this
      * sessionListener is instantiated inside an Activity context, when the Activity is being
-     * destroyed, the sessionListener must be remove from the list {@see removeSessionListener}
+     * destroyed, the sessionListener must be remove from the list {@link #removeSessionListener}
      *
      * @param sessionListener element to add to the list of notifiers.
      */
