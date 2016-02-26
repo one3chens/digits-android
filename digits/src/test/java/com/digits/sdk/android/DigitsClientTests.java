@@ -300,7 +300,8 @@ public class DigitsClientTests {
         final Callback listener = mock(Callback.class);
         digitsClient.authDevice(TestConstants.PHONE, Verification.sms, listener);
 
-        verify(sdkService).auth(eq(TestConstants.PHONE), eq(Verification.sms.name()), eq(listener));
+        verify(sdkService).auth(eq(TestConstants.PHONE), eq(Verification.sms.name()),
+                eq(Locale.getDefault().getLanguage()), eq(listener));
     }
 
     @Test
@@ -309,7 +310,7 @@ public class DigitsClientTests {
         digitsClient.authDevice(TestConstants.PHONE, Verification.voicecall, listener);
 
         verify(sdkService).auth(eq(TestConstants.PHONE), eq(Verification.voicecall.name()),
-                eq(listener));
+                eq(Locale.getDefault().getLanguage()), eq(listener));
     }
 
     @Test

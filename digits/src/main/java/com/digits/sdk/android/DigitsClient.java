@@ -146,7 +146,8 @@ public class DigitsClient {
 
             @Override
             public void success(Result<DigitsApiClient> result) {
-                result.data.getSdkService().auth(phoneNumber, verificationType.name(), callback);
+                result.data.getSdkService().auth(phoneNumber, verificationType.name(),
+                        Locale.getDefault().getLanguage(), callback);
             }
 
         });
