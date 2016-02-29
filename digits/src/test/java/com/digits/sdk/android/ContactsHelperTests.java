@@ -35,7 +35,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.AdditionalMatchers.aryEq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
@@ -95,7 +94,7 @@ public class ContactsHelperTests {
         final Cursor cursor = contactsHelper.getContactsCursor();
 
         verify(context).getContentResolver();
-        verify(contentResolver).query(any(Uri.class), aryEq(COLUMNS), any(String.class),
+        verify(contentResolver).query(any(Uri.class), any(String[].class), any(String.class),
                 any(String[].class), isNull(String.class));
         assertArrayEquals(COLUMNS, cursor.getColumnNames());
     }
