@@ -20,8 +20,12 @@ package com.digits.sdk.android;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import io.fabric.sdk.android.Fabric;
 import io.fabric.sdk.android.FabricTestUtils;
@@ -38,14 +42,15 @@ public class DigitsTest extends DigitsAndroidTestCase {
     public void testGetDigitClients_multipleThreads() throws Exception {
         try {
             Fabric.with(getContext(), new TwitterCore(new TwitterAuthConfig("", "")), new Digits());
-            final ParallelCallableExecutor<DigitsClient> executor =
-                    new ParallelCallableExecutor<>(
-                            new DigitsClientCallable(),
-                            new DigitsClientCallable());
+            final List<DigitsClientCallable> callables = Arrays.asList(
+                    new DigitsClientCallable(),
+                    new DigitsClientCallable());
+            final ExecutorService executorService = Executors.newFixedThreadPool(callables.size());
+            final List<Future<DigitsClient>> digitsClients = executorService.invokeAll(callables);
 
-            final List<DigitsClient> values = executor.getAllValues();
-            assertNotNull(values.get(0));
-            assertSame(values.get(0), values.get(1));
+            assertNotNull(digitsClients.get(0).get());
+            assertNotNull(digitsClients.get(1).get());
+            assertSame(digitsClients.get(0).get(), digitsClients.get(1).get());
         } finally {
             FabricTestUtils.resetFabric();
         }
