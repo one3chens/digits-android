@@ -27,6 +27,7 @@ import android.test.mock.MockContext;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.SessionManager;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
 import org.junit.Before;
@@ -72,6 +73,7 @@ public class DigitsClientTests {
     private Digits digits;
     private DigitsUserAgent digitsUserAgent;
     private TwitterCore twitterCore;
+    private TwitterAuthConfig twitterAuthConfig;
     private SessionManager<DigitsSession> sessionManager;
     private DigitsApiClient.DeviceService deviceService;
     private DigitsApiClient.SdkService sdkService;
@@ -93,6 +95,8 @@ public class DigitsClientTests {
         digitsUserAgent = mock(DigitsUserAgent.class);
         sessionManager = mock(SessionManager.class);
         twitterCore = mock(TwitterCore.class);
+        twitterAuthConfig = new TwitterAuthConfig(TestConstants.CONSUMER_KEY,
+                TestConstants.CONSUMER_SECRET);
         digitsApiClient = mock(DigitsApiClient.class);
         deviceService = mock(DigitsApiClient.DeviceService.class);
         sdkService = mock(DigitsApiClient.SdkService.class);
@@ -112,6 +116,7 @@ public class DigitsClientTests {
         when(digitsApiClient.getDeviceService()).thenReturn(deviceService);
         when(digitsApiClient.getSdkService()).thenReturn(sdkService);
         when(twitterCore.getContext()).thenReturn(context);
+        when(twitterCore.getAuthConfig()).thenReturn(twitterAuthConfig);
         when(twitterCore.getSSLSocketFactory()).thenReturn(mock(SSLSocketFactory.class));
         when(digits.getExecutorService()).thenReturn(mock(ExecutorService.class));
         when(digits.getActivityClassManager()).thenReturn(new ActivityClassManagerImp());
@@ -285,8 +290,22 @@ public class DigitsClientTests {
     }
 
     @Test
-    public void testStartSignUp_withCustomPhoneUI() throws Exception {
-        verifySignUpWithCustomPhoneUI(activity, callback, TestConstants.PHONE,
+    public void testStartSignUp_withCustomPhoneUIAndBadPartnerKeythrowsException()
+            throws Exception {
+        try {
+            verifySignUpWithCustomPhoneUIAndBadPartnerKey(activity, callback, TestConstants.PHONE,
+                    TestConstants.ANY_BOOLEAN, TEST_NO_INTENT_FLAGS);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            assertEquals("Invalid partner key",
+                    ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testStartSignUp_withCustomPhoneUIAndPartnerKey()
+            throws Exception {
+        verifySignUpWithCustomPhoneUIAndPartnerKey(activity, callback, TestConstants.PHONE,
                 TestConstants.ANY_BOOLEAN, TEST_NO_INTENT_FLAGS);
     }
 
@@ -436,9 +455,10 @@ public class DigitsClientTests {
         assertEquals(expectedBundle, capturedIntent.getExtras());
     }
 
-    private void verifySignUpWithCustomPhoneUI(Context context, AuthCallback callback,
-                                               String phone, boolean emailCollection,
-                                               int expectedFlags) {
+    private void verifySignUpWithCustomPhoneUIAndBadPartnerKey(Context context,
+                                                               AuthCallback callback, String phone,
+                                                               boolean emailCollection,
+                                                               int expectedFlags) {
         final ConfirmationCodeCallback confirmationCodeCallback =
                 mock(ConfirmationCodeCallback.class);
 
@@ -446,6 +466,36 @@ public class DigitsClientTests {
                 .withAuthCallBack(callback)
                 .withEmailCollection(emailCollection)
                 .withPhoneNumber(phone)
+                .withPartnerKey("bad_key")
+                .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
+
+        final MockDigitsClient digitsClient = new MockDigitsClient(digits, digitsUserAgent,
+                twitterCore, sessionManager,
+                authRequestQueue,
+                scribeService) {
+            @Override
+            LoginResultReceiver createResultReceiver(AuthCallback callback) {
+                return loginResultReceiver;
+            }
+        };
+
+        digitsClient.startSignUp(digitsAuthConfig);
+        verify(scribeService).impression();
+        verifyNoMoreInteractions(scribeService);
+        verifyNoMoreInteractions(digitsClient.loginOrSignupComposer);
+    }
+
+    private void verifySignUpWithCustomPhoneUIAndPartnerKey(Context context, AuthCallback callback,
+                                                            String phone, boolean emailCollection,
+                                                            int expectedFlags) {
+        final ConfirmationCodeCallback confirmationCodeCallback =
+                mock(ConfirmationCodeCallback.class);
+
+        final DigitsAuthConfig digitsAuthConfig = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withEmailCollection(emailCollection)
+                .withPhoneNumber(phone)
+                .withPartnerKey(TestConstants.PARTNER_KEY)
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
         final MockDigitsClient digitsClient = new MockDigitsClient(digits, digitsUserAgent,

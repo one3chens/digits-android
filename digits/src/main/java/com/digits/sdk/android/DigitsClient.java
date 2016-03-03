@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -29,6 +30,7 @@ import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -102,15 +104,30 @@ public class DigitsClient {
         scribeService.impression();
         final DigitsSession session = sessionManager.getActiveSession();
         final boolean isCustomPhoneUI = (digitsAuthConfig.confirmationCodeCallback != null);
+        final boolean isAuthorizedPartner = isAuthorizedPartner(digitsAuthConfig);
 
         if (session != null && !session.isLoggedOutUser()) {
             digitsAuthConfig.authCallback.success(session, null);
             scribeService.success();
-        } else if (isCustomPhoneUI) {
+        } else if (isCustomPhoneUI && isAuthorizedPartner) {
             sendConfirmationCode(digitsAuthConfig);
+        } else if (isCustomPhoneUI) {
+            throw new IllegalArgumentException("Invalid partner key");
         } else {
             startPhoneNumberActivity(createBundleForAuthFlow(digitsAuthConfig));
         }
+    }
+
+    private boolean isAuthorizedPartner(DigitsAuthConfig digitsAuthConfig) {
+        final String partnerKey = digitsAuthConfig.partnerKey;
+        final String consumerKey = twitterCore.getAuthConfig().getConsumerKey();
+        final String expectedPartnerKey = getPartnerKeyByConsumerKey(consumerKey);
+        return expectedPartnerKey.equals(partnerKey);
+    }
+
+    private String getPartnerKeyByConsumerKey(String consumerKey) {
+        final String toEncode = "__Digits@P@rtner__" + consumerKey;
+        return Base64.encodeToString(toEncode.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP);
     }
 
     private Bundle createBundleForAuthFlow(DigitsAuthConfig digitsAuthConfig) {

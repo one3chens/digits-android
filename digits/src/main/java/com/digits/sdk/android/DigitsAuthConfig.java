@@ -24,17 +24,19 @@ public class DigitsAuthConfig {
     protected final boolean isEmailRequired;
     protected final int themeResId;
     protected final String phoneNumber;
+    protected final String partnerKey;
     protected final AuthCallback authCallback;
     protected final ConfirmationCodeCallback confirmationCodeCallback;
 
     protected DigitsAuthConfig(boolean isEmailRequired, String phoneNumber,
                      AuthCallback authCallback, int themeResId,
-                     ConfirmationCodeCallback confirmationCodeCallback){
+                     ConfirmationCodeCallback confirmationCodeCallback, String partnerKey){
         this.isEmailRequired = isEmailRequired;
         this.themeResId = themeResId;
         this.phoneNumber = phoneNumber;
         this.authCallback = authCallback;
         this.confirmationCodeCallback = confirmationCodeCallback;
+        this.partnerKey = partnerKey;
     }
 
     /**
@@ -55,6 +57,7 @@ public class DigitsAuthConfig {
     public static class Builder {
         boolean isEmailRequired;
         String phoneNumber;
+        String partnerKey;
         AuthCallback authCallback;
         int themeResId;
         ConfirmationCodeCallback confirmationCodeCallback;
@@ -134,6 +137,12 @@ public class DigitsAuthConfig {
             return this;
         }
 
+
+        public Builder withPartnerKey(String partnerKey) {
+            this.partnerKey = partnerKey;
+            return this;
+        }
+
         /**
          * Returns DigitsAuthConfig constructed using the builder.
          */
@@ -142,14 +151,15 @@ public class DigitsAuthConfig {
                 throw new IllegalArgumentException("AuthCallback must not be null");
             }
 
-            if ((confirmationCodeCallback != null) && (phoneNumber == null)) {
-                throw new IllegalArgumentException("PhoneNumber must be set when " +
+            if ((confirmationCodeCallback != null) &&
+                    ((phoneNumber == null) || (partnerKey == null))) {
+                throw new IllegalArgumentException("PhoneNumber and partnerKey must be set when " +
                         "confirmationCodeCallback is used");
             }
 
             return new DigitsAuthConfig(isEmailRequired,
                     phoneNumber == null ? "": phoneNumber, authCallback, themeResId,
-                    confirmationCodeCallback);
+                    confirmationCodeCallback, partnerKey);
         }
     }
 }

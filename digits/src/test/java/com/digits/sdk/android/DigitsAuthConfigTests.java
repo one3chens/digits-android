@@ -52,13 +52,32 @@ public class DigitsAuthConfigTests {
     public void testDigitsAuthConfigBuilder_nullPhoneNumberWithConfirmationCodeCallback() {
         final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
                 .withThemeResId(TestConstants.THEME_ID)
+                .withPartnerKey(TestConstants.PARTNER_KEY)
                 .withAuthCallBack(callback)
                 .withEmailCollection()
                 .withCustomPhoneNumberScreen(confirmationCodeCallback);
         try {
             digitsAuthConfigBuilder.build();
         } catch (IllegalArgumentException ex) {
-            assertEquals("PhoneNumber must be set when confirmationCodeCallback is used",
+            assertEquals("PhoneNumber and partnerKey must be set when confirmationCodeCallback " +
+                            "is used",
+                    ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testDigitsAuthConfigBuilder_nullPartnerKeyWithConfirmationCodeCallback() {
+        final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
+                .withThemeResId(TestConstants.THEME_ID)
+                .withPhoneNumber(TestConstants.PHONE)
+                .withAuthCallBack(callback)
+                .withEmailCollection()
+                .withCustomPhoneNumberScreen(confirmationCodeCallback);
+        try {
+            digitsAuthConfigBuilder.build();
+        } catch (IllegalArgumentException ex) {
+            assertEquals("PhoneNumber and partnerKey must be set when confirmationCodeCallback " +
+                            "is used",
                     ex.getMessage());
         }
     }
@@ -70,6 +89,7 @@ public class DigitsAuthConfigTests {
                 .withThemeResId(TestConstants.THEME_ID)
                 .withAuthCallBack(callback)
                 .withCustomPhoneNumberScreen(confirmationCodeCallback)
+                .withPartnerKey(TestConstants.PARTNER_KEY)
                 .withEmailCollection();
 
         final DigitsAuthConfig digitsAuthConfig = digitsAuthConfigBuilder.build();
@@ -84,6 +104,7 @@ public class DigitsAuthConfigTests {
         final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
                 .withAuthCallBack(callback)
                 .withCustomPhoneNumberScreen(confirmationCodeCallback)
+                .withPartnerKey(TestConstants.PARTNER_KEY)
                 .withPhoneNumber(TestConstants.PHONE);
 
         final DigitsAuthConfig digitsAuthConfig = digitsAuthConfigBuilder.build();

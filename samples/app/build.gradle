@@ -63,10 +63,12 @@ android {
         debug {
             buildConfigField "String", "CONSUMER_KEY", "\"${props.getProperty("twitterConsumerKey")}\""
             buildConfigField "String", "CONSUMER_SECRET", "\"${props.getProperty("twitterConsumerSecret")}\""
+            buildConfigField "String", "PARTNER_KEY", "\"${props.getProperty("twitterPartnerKey")}\""
         }
         release {
             buildConfigField "String", "CONSUMER_KEY", "\"${props.getProperty("twitterConsumerKey")}\""
             buildConfigField "String", "CONSUMER_SECRET", "\"${props.getProperty("twitterConsumerSecret")}\""
+            buildConfigField "String", "PARTNER_KEY", "\"${props.getProperty("twitterPartnerKey")}\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
         }

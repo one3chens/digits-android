@@ -14,6 +14,7 @@ import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsAuthConfig;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
+import com.example.app.BuildConfig;
 import com.example.app.R;
 import com.twitter.sdk.android.core.TwitterAuthToken;
 
@@ -66,6 +67,7 @@ public class CustomPhoneNumberActivity extends Activity {
                         .withPhoneNumber(phoneNumber)
                         .withEmailCollection()
                         .withCustomPhoneNumberScreen(confirmationCodeCallback)
+                        .withPartnerKey(BuildConfig.PARTNER_KEY)
                         .withThemeResId(R.style.LightTheme);
 
                 Digits.authenticate(digitsAuthConfigBuilder.build());

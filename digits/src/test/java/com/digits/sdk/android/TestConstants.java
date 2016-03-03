@@ -24,6 +24,7 @@ public class TestConstants {
     public static final String TWITTER_URL = "http://twitter.com";
     public static final String CONSUMER_KEY = "testKey";
     public static final String CONSUMER_SECRET = "testSecret";
+    public static final String PARTNER_KEY = "X19EaWdpdHNAUEBydG5lcl9fdGVzdEtleQ==";
     public static final String TOKEN = "token";
     public static final String SECRET = "secret";
     public static final long USER_ID = 11;
