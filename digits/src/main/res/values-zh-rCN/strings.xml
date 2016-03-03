@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">重新发送确认码</string>
     <string name="dgts__sending">发送中…</string>
     <string name="dgts__success_desc">成功图标</string>
-    <string name="dgts__terms_email_request">点击%1$s继续%1$s后，你会向你的 Digits 账号添加这个邮件地址。经过 Digits 认证的所有应用都可以访问这个邮件地址，而它们的用户将能够通过邮件地址找到你。在 %2$sDigits.com%3$s 上管理你的账号。</string>
-    <string name="dgts__terms_text">点击上面的%1$s继续%1$s按钮，%2$sDigits by Twitter%3$s 便会向你的手机号码发送验证短信。运营商可能会收取短信或数据传输费。</string>
-    <string name="dgts__terms_text_call_me">点击上面的%1$s呼叫我%1$s按钮，%2$sDigits by Twitter%3$s 便会向你进行语音呼叫。运营商可能会收取短信或数据传输费。</string>
-    <string name="dgts__terms_text_create">点击上面的%1$s继续%1$s按钮即表示你同意 Digits by Twitter 的 %2$s服务条款%3$s、%2$s隐私政策%3$s和 %2$sCookies 政策%3$s，而且该应用程序的其他用户可以通过手机号码和/或邮件地址找到你。</string>
-    <string name="dgts__terms_text_sign_in">轻按上面的%1$s继续%1$s按钮即表示你同意 Digits by Twitter 的%2$s服务条款%3$s、%2$s隐私政策%3$s和 %2$sCookies 政策%3$s，而 %1$s 的其他用户可以通过手机号码和/或邮件地址找到你。</string>
     <string name="dgts__try_again">重试</string>
     <string name="dgts__try_again_confirmation">请检查你的确认码并重试。</string>
     <string name="dgts__try_again_email">请检查你的邮件并重试</string>

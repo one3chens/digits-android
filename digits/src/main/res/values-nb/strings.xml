@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">Send bekreftelseskoden på nytt</string>
     <string name="dgts__sending">Sender …</string>
     <string name="dgts__success_desc">Suksess-ikon</string>
-    <string name="dgts__terms_email_request">Ved å trykke på %1$sFortsett%1$s knytter du denne e-postadressen til Digits-kontoen din. Alle apper du har autentisert med Digits, vil ha tilgang til adressen, og brukerne av appene vil kunne finne deg ved hjelp av den. Administrer kontoen din på %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Når du trykker på %1$sFortsett%1$s ovenfor, vil %2$sDigits by Twitter%3$s sende deg en tekstmelding for å bekrefte telefonnummeret ditt. Meldings- og datakostnader kan påløpe.</string>
-    <string name="dgts__terms_text_call_me">Når du trykker på %1$sRing meg%1$s ovenfor, vil %2$sDigits by Twitter%3$s sende deg en tekstmelding for å bekrefte telefonnummeret ditt. Anrops- og datakostnader kan påløpe.</string>
-    <string name="dgts__terms_text_create">Ved å trykke på %1$sFortsett%1$s ovenfor samtykker du i Digits by Twitters %2$stjenestevilkår%3$s, %2$spersonvernpolicy%3$s og %2$sbruk av informasjonskapsler%3$s. Du samtykker også i at brukerne av denne appen kan finne deg ved hjelp av telefonnummer og/eller e-postadresse.</string>
-    <string name="dgts__terms_text_sign_in">Ved å trykke på %1$sFortsett%1$s ovenfor samtykker du i Digits by Twitters oppdaterte %2$stjenestevilkår%3$s, %2$spersonvernpolicy%3$s og %2$sbruk av informasjonskapsler%3$s. Du samtykker også i at brukerne av %1$s kan finne deg ved hjelp av telefonnummer og/eller e-postadresse.</string>
     <string name="dgts__try_again">Prøv igjen</string>
     <string name="dgts__try_again_confirmation">Sjekk koden din, og prøv igjen.</string>
     <string name="dgts__try_again_email">Sjekk e-postadressen din, og prøv igjen</string>

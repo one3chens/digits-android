@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">Ipadala ulit code ng kumpirmasyon</string>
     <string name="dgts__sending">Pinapadala…</string>
     <string name="dgts__success_desc">Success Icon</string>
-    <string name="dgts__terms_email_request">Sa pag-tap sa  %1$sMagpatuloy%1$s idinadagdag mo ang email na ito sa Digits account mo. Ang lahat ng app mo na napatunayan gamit ang Digits ay magkakaroon ng access sa email address na ito, at mahahanap ka ng kanilang mga user sa pamamagitan ng email. Pamahalaan ang account mo sa %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Sa pag-tap ng %1$sMagpatuloy%1$s sa itaas, papadalhan ka ng %2$sDigits by Twitter%3$s ng mensahe upang kumpirmahin ang numero ng telepono mo. Maaaring magkaroon ng singil sa mensahe at data.</string>
-    <string name="dgts__terms_text_call_me">Sa pag-tap ng %1$sTawagan ako%1$s sa itaas, tatawagan ka ng %2$sDigits by Twitter%3$s upang kumpirmahin ang numero ng telepono mo. Maaaring magkaroon ng singil sa tawag at data.</string>
-    <string name="dgts__terms_text_create">Sa pag-tap sa %1$sMagpatuloy%1$s sa itaas, sumasang-ayon ka sa %2$sMga Tuntunin ng Serbisyo%3$s, %2$sPatakaran sa Pagkapribado%3$s, at %2$sPatakaran sa Cookies%3$s ng Digits by Twitter, at sumasang-ayon ka rin na maaari kang mahanap ng ibang mga user ng app na ito sa pamamagitan ng numero ng telepono at/o email.</string>
-    <string name="dgts__terms_text_sign_in">Sa pag-tap sa %1$sMagpatuloy%1$s sa itaas, sumasang-ayon ka sa %2$sMga Tuntunin ng Serbisyo%3$s, %2$sPatakaran sa Pagkapribado%3$s, at %2$sPatakaran sa Cookies%3$s ng Digits by Twitter, at sumasang-ayon ka rin na maaari kang mahanap ng ibang mga user ng %1$s sa pamamagitan ng numero ng telepono at/o email.</string>
     <string name="dgts__try_again">Subukan ulit</string>
     <string name="dgts__try_again_confirmation">Pakitingan ulit ang inyong code a subukan ulit.</string>
     <string name="dgts__try_again_email">Pakitingnan ang email mo at subukan ulit</string>

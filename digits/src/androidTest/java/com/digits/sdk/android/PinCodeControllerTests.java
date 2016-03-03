@@ -49,12 +49,6 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
                 errors, new ActivityClassManagerImp(), scribeService, false);
     }
 
-    @Override
-    public void testShowTOS() throws Exception {
-        controller.showTOS(context);
-        verifyNoInteractions(context);
-    }
-
     public void testExecuteRequest_success() throws Exception {
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;

@@ -65,10 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/tw__login_btn_height"
             android:layout_marginBottom="@dimen/dgts__margin_bottom"
-            android:layout_below="@+id/dgts__confirmationEditText"
-            digits:finishStateText="@string/dgts__done"
-            digits:progressStateText="@string/dgts__sending"
-            digits:startStateText="@string/dgts__continue"/>
+            android:layout_below="@+id/dgts__confirmationEditText"/>
 
         <com.digits.sdk.android.InvertedStateButton
             android:id="@+id/dgts__resendConfirmationButton"
@@ -107,8 +104,7 @@
             style="@style/dgts__Terms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/dgts__resendConfirmationButton"
-            android:text="@string/dgts__terms_text_create"/>
+            android:layout_below="@+id/dgts__resendConfirmationButton"/>
     </RelativeLayout>
 
 </ScrollView>

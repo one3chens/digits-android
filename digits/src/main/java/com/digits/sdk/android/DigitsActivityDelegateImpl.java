@@ -19,9 +19,7 @@ package com.digits.sdk.android;
 
 
 import android.app.Activity;
-import android.support.annotation.StringRes;
-import android.text.Html;
-import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -117,17 +115,14 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
 
     public void setUpTermsText(final Activity activity, final DigitsController controller,
                                TextView termsText) {
+        termsText.setMovementMethod(LinkMovementMethod.getInstance());
+
         termsText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 controller.clearError();
-                controller.showTOS(activity);
             }
         });
-    }
-
-    protected Spanned getFormattedTerms(Activity activity, @StringRes int termsResId) {
-        return Html.fromHtml(activity.getString(termsResId, "\"", "<u>", "</u>"));
     }
 
     @Override

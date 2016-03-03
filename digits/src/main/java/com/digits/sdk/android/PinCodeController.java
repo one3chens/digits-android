@@ -58,11 +58,6 @@ class PinCodeController extends DigitsControllerImpl {
     }
 
     @Override
-    public void showTOS(Context context) {
-        //nothing to do
-    }
-
-    @Override
     Uri getTosUri() {
         return null;
     }

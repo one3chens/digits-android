@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">ارسال مجدد کد تأیید</string>
     <string name="dgts__sending">در حال ارسال…</string>
     <string name="dgts__success_desc">نماد موفقیت</string>
-    <string name="dgts__terms_email_request">با ضربه زدن روی %1$s ادامه %1$s  این ایمیل را به حساب کاربری Digits خود اضافه می‌کنید. تمام برنامه‌های شما که با Digits تصدیق داده شده به این آدرس ایمیل دسترسی خواهند داشت و کاربران آنها قادر به پیدا کردن شما از طریق ایمیل خواهند بود. حساب کاربری خود را در%2$sDigits.com%3$s مدیریت کنید.</string>
-    <string name="dgts__terms_text">با ضربه زدن روی %1$sادامه%1$s در بالا،  %2$sDigits by Twitter%3$s به شما پیامکی برای تایید شماره تلفنتان ارسال خواهد کرد. هزینه پیامک و داده ممکن است محاسبه شود.</string>
-    <string name="dgts__terms_text_call_me">با ضربه زدن روی %1$s تماس با من %1$s در بالا، %2$sDigits by Twitter%3$s پیامی صوتی برای شما ارسال خواهد کرد تا شماره تلفن خود را تایید کنید. هزینه داده و تماس ممکن است اعمال شود.</string>
-    <string name="dgts__terms_text_create">با ضربه زدن روی %1$s ادامه %1$s در بالا، %2$sشرایط استفاده از خدمات%3$s,  %2$s سیاست حریم خصوصی %3$s و %2$s سیاست کوکی‌های %3$s، Digits by Twitter را می‌پذیرید و کاربران دیگر این برنامه می‌توانند شما را از طریق شماره تلفن و/یا ایمیل پیدا کنند.</string>
-    <string name="dgts__terms_text_sign_in">با ضربه زدن روی %1$s ادامه %1$s در بالا،  شما با نسخه به‌روزشده %2$sشرایط استفاده از خدمات%3$s، %2$s سیاست حریم خصوصی %3$s و %2$sسیاست کوکی‌های%3$s Digits by Twitter  موافقت می‌کنید و کاربران دیگر %1$s  می‌توانند از طریق شماره تلفن و/یا ایمیل شما را پیدا کنند.</string>
     <string name="dgts__try_again">تلاش مجدد</string>
     <string name="dgts__try_again_confirmation">لطفاً کدتان را بررسی کنید و دوباره امتحان کنید.</string>
     <string name="dgts__try_again_email">لطفا ايميلتان را بررسی کرده و دوباره امتحان کنید</string>

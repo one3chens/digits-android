@@ -18,6 +18,7 @@
 package com.digits.sdk.android;
 
 import android.app.Activity;
+import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 
 import org.mockito.ArgumentCaptor;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -49,6 +51,7 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
     TextView timerText;
     DigitsScribeService scribeService;
     RelativeLayout.LayoutParams layoutParams;
+    TosFormatHelper tosFormatHelper;
 
     @Override
     public void setUp() throws Exception {
@@ -67,6 +70,7 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
         textView = mock(TextView.class);
         timerText = mock(TextView.class);
         layoutParams = mock(RelativeLayout.LayoutParams.class);
+        tosFormatHelper = mock(TosFormatHelper.class);
     }
 
     public abstract T getDelegate();
@@ -106,11 +110,11 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
 
     public void testSetUpTermsText() throws Exception {
         delegate.setUpTermsText(activity, controller, textView);
+        verify(textView).setMovementMethod(any(LinkMovementMethod.class));
         verify(textView).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
         verify(controller).clearError();
-        verify(controller).showTOS(activity);
     }
 
 }

@@ -42,7 +42,6 @@
     <string name="dgts__resend_confirmation_text">Επαναποστολή κωδικού επιβεβαίωσης</string>
     <string name="dgts__sending">Αποστολή…</string>
     <string name="dgts__success_desc">Εικονίδιο επιτυχίας</string>
-    <string name="dgts__terms_email_request">Πληκτρολογώντας %1$sΣυνέχεια%1$s θα προσθέσετε αυτή την διεύθυνση ηλεκτρονικού ταχυδρομείου στον λογαριασμό σας του Digits Όλες οι εφαρμογές σας που είναι πιστοποιημένες με τo Digits θα έχουν πρόσβαση σε αυτή την διεύθυνση ηλεκτρονικού ταχυδρομείου, και οι χρήστες της θα έχουν την δυνατότητα να σας βρουν από το ηλεκτρονικό σας ταχυδρομείο. Διαχειριστείτε τον λογαριασμό σας εδώ %2$sDigits.com%3$s.</string>
     <string name="dgts__try_again">Προσπαθήστε ξανά</string>
     <string name="dgts__try_again_confirmation">Παρακαλούμε ελέγξτε τον κωδικό σας και προσπαθήστε ξανά.</string>
     <string name="dgts__try_again_phone_number">Παρακαλούμε ελέγξτε τον αριθμό του τηλεφώνου σας και προσπαθήστε ξανά.</string>

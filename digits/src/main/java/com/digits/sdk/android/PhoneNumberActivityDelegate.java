@@ -37,6 +37,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     EditText phoneEditText;
     TextView termsTextView;
     PhoneNumberController controller;
+    TosFormatHelper tosFormatHelper;
 
     public PhoneNumberActivityDelegate(DigitsScribeService scribeService) {
         this.scribeService = scribeService;
@@ -60,6 +61,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
         phoneEditText = (EditText) activity.findViewById(R.id.dgts__phoneNumberEditText);
         termsTextView = (TextView) activity.findViewById(R.id.dgts__termsText);
         controller = initController(bundle);
+        tosFormatHelper = new TosFormatHelper(activity);
 
         setUpEditText(activity, controller, phoneEditText);
 
@@ -96,7 +98,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
     @Override
     public void setUpTermsText(Activity activity, DigitsController controller, TextView termsText) {
-        termsText.setText(getFormattedTerms(activity, R.string.dgts__terms_text));
+        termsText.setText(tosFormatHelper.getFormattedTerms(R.string.dgts__terms_text));
         super.setUpTermsText(activity, controller, termsText);
     }
 
@@ -123,6 +125,6 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
     @Override
     public void setText(int resourceId) {
-        termsTextView.setText(getFormattedTerms(activity, resourceId));
+        termsTextView.setText(tosFormatHelper.getFormattedTerms(resourceId));
     }
 }

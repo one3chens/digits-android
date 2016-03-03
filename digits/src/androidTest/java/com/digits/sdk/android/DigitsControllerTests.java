@@ -89,14 +89,6 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         when(context.getResources()).thenReturn(getContext().getResources());
     }
 
-    public void testShowTOS() throws Exception {
-        controller.showTOS(context);
-        verify(context).startActivity(intentCaptor.capture());
-        final Intent intent = intentCaptor.getValue();
-        assertEquals(controller.getTosUri(), intent.getData());
-        assertEquals(Intent.ACTION_VIEW, intent.getAction());
-    }
-
     public void testHandleError() throws Exception {
         controller.handleError(context, EXCEPTION);
         verify(scribeService).error(EXCEPTION);

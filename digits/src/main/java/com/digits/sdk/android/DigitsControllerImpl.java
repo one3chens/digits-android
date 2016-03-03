@@ -65,13 +65,6 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     }
 
     @Override
-    public void showTOS(Context context) {
-        final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(getTosUri());
-        context.startActivity(intent);
-    }
-
-    @Override
     public void handleError(Context context, DigitsException exception) {
         errorCount++;
         scribeService.error(exception);

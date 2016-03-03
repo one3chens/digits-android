@@ -46,13 +46,6 @@
     <string name="dgts__resend_confirmation_text">Kirim ulang kode konfirmasi</string>
     <string name="dgts__sending">Mengirim…</string>
     <string name="dgts__success_desc">Ikon Berhasil</string>
-    <string name="dgts__terms_email_request">Dengan menyentuh %1$sLanjut%1$s Anda menambahkan email ini ke akun Digits Anda. Semua aplikasi yang diotentikasi dengan Digits akan memiliki akses ke alamat email ini, dan penggunanya akan dapat menemukan Anda berdasarkan email. Kelola akun Anda di %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Dengan menyentuh %1$sLanjut%1$s di atas, %2$sDigits by Twitter%3$s\
-akan mengirimkan pesan SMS untuk mengonfirmasi nomor ponsel Anda. Tarif SMS &amp; data mungkin berlaku.</string>
-    <string name="dgts__terms_text_call_me">Dengan menyentuh %1$sHubungi saya%1$s di atas, %2$sDigits by Twitter%3$s akan mengirimkan panggilan suara untuk mengonfirmasi nomor ponsel Anda. Tarif telepon &amp; data mungkin berlaku.</string>
-    <string name="dgts__terms_text_create">Dengan menyentuh %1$sLanjut%1$s di atas, Anda menyetujui %2$sPersyaratan \
-Layanan%3$s, %2$sKebijakan Privasi%3$s, dan %2$sKebijakan Kuki%3$s dari Digits by Twitter, dan bahwa pengguna lain aplikasi ini dapat menemukan Anda berdasarkan nomor ponsel dan/atau email.</string>
-    <string name="dgts__terms_text_sign_in">Dengan menyentuh %1$sLanjut%1$s di atas, Anda menyetujui pembaruan %2$sPersyaratan Layanan%3$s, %2$sKebijakan Privasi%3$s, dan %2$sKebijakan Kuki%3$s dari Digits by Twitter, dan bahwa pengguna %1$s lainnya dapat menemukan Anda berdasarkan nomor ponsel dan/atau email.</string>
     <string name="dgts__try_again">Coba Lagi</string>
     <string name="dgts__try_again_confirmation">Silakan periksa kode Anda dan coba lagi.</string>
     <string name="dgts__try_again_email">Silakan periksa email Anda dan coba lagi</string>

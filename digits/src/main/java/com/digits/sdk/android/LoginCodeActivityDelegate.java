@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.ResultReceiver;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -39,6 +38,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     SmsBroadcastReceiver receiver;
     Activity activity;
     AuthConfig config;
+    TosFormatHelper tosFormatHelper;
 
     LoginCodeActivityDelegate(DigitsScribeService scribeService) {
         this.scribeService = scribeService;
@@ -59,6 +59,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
+        tosFormatHelper = new TosFormatHelper(activity);
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
@@ -84,13 +85,22 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     }
 
     @Override
+    public void setUpSendButton(Activity activity, DigitsController controller,
+                                StateButton stateButton) {
+        stateButton.setStatesText(R.string.dgts__continue, R.string.dgts__sending,
+                R.string.dgts__done);
+        stateButton.showStart();
+        super.setUpSendButton(activity, controller, stateButton);
+    }
+
+    @Override
     public void setUpTermsText(Activity activity, DigitsController controller, TextView termsText) {
         if (config != null && config.tosUpdate) {
-            termsText.setText(getFormattedTerms(activity, R.string.dgts__terms_text_sign_in));
-            super.setUpTermsText(activity, controller, termsText);
+            termsText.setText(tosFormatHelper.getFormattedTerms(R.string.dgts__terms_text_updated));
         } else {
-            termsText.setVisibility(View.GONE);
+            termsText.setText(tosFormatHelper.getFormattedTerms(R.string.dgts__terms_text_sign_in));
         }
+        super.setUpTermsText(activity, controller, termsText);
     }
 
     @Override

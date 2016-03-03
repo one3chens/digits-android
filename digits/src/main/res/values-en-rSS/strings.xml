@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">[[59329]] Resend confirmation code</string>
     <string name="dgts__sending">[[141538]] Sending…</string>
     <string name="dgts__success_desc">[[60971]] Success Icon</string>
-    <string name="dgts__terms_email_request">[[141535]] By tapping %1$sContinue%1$s you are adding this email to your Digits account. All your apps authenticated with Digits will have access to this email address, and their users will be able to discover you by email. Manage your account on %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">[[142929]] By tapping %1$sContinue%1$s above, %2$sDigits by Twitter%3$s will send you an SMS message to confirm your phone number. Message &amp; data rates may apply.</string>
-    <string name="dgts__terms_text_call_me">[[142930]] By tapping %1$sCall me%1$s above, %2$sDigits by Twitter%3$s will send you a voice call to confirm your phone number. Call &amp; data rates may apply.</string>
-    <string name="dgts__terms_text_create">[[141529]] By tapping %1$sContinue%1$s above, you agree to the %2$sTerms of Service%3$s, %2$sPrivacy Policy%3$s, and %2$sCookies Policy%3$s of Digits by Twitter, and that other users of this app can discover you by phone number and/or email.</string>
-    <string name="dgts__terms_text_sign_in">[[141530]] By tapping %1$sContinue%1$s above, you agree to the updated %2$sTerms of Service%3$s, %2$sPrivacy Policy%3$s, and %2$sCookies Policy%3$s of Digits by Twitter, and that other users of %1$s can discover you by phone number and/or email.</string>
     <string name="dgts__try_again">[[59342]] Try Again</string>
     <string name="dgts__try_again_confirmation">[[59336]] Please check your code and try again.</string>
     <string name="dgts__try_again_email">[[141541]] Please check your email and try again</string>

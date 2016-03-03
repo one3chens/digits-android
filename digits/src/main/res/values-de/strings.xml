@@ -46,17 +46,6 @@
     <string name="dgts__resend_confirmation_text">Bestätigungscode erneut senden</string>
     <string name="dgts__sending">Sendet…</string>
     <string name="dgts__success_desc">Erfolgssymbol</string>
-    <string name="dgts__terms_email_request">Wenn Du oben %1$sWeiter%1$s \
-antippst, fügst Du diese E-Mail Adresse zu Deinem Digits Account hinzu. \
-Alle Deine Apps, die mit Digits authentifiziert sind, haben dann Zugriff \
-zu dieser \
-E-Mail Adresse und ihre Nutzer können Dich anhand dieser E-Mail Adresse \
-finden. Verwalte Deinen Account auf %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Wenn Du oben %1$sWeiter%1$s antippst, sendet %2$sDigits by Twitter%3$s Dir eine SMS zu, um Deine Telefonnummer zu bestätigen. SMS- und Datengebühren können anfallen.</string>
-    <string name="dgts__terms_text_call_me">Wenn Du oben %1$sRuf mich an%1$s antippst, sendet %2$sDigits by Twitter%3$s Dir eine SMS zu, um Deine Telefonnummer zu bestätigen. SMS- und Datengebühren können anfallen.</string>
-    <string name="dgts__terms_text_create">Wenn Du oben %1$sWeiter%1$s antippst, stimmst Du den %2$sAllgemeinen Geschäftsbedingungen%3$s, den %2$sDatenschutzbestimmungen%3$s und den %2$sCookie-Richtlinien%3$s von Digits by Twitter zu und erklärst Dich damit einverstanden, dass andere Nutzer dieser App Dich anhand Deiner Telefonnummer und/oder E-Mail Adresse finden können.</string>
-    <string name="dgts__terms_text_sign_in">Wenn Du oben %1$sWeiter%1$s antippst, stimmst Du den aktualisierten %2$sAllgemeinen Geschäftsbedingungen%3$s, den %2$sDatenschutzbestimmungen%3$s und den %2$sCookie-Richtlinien%3$s von Digits by Twitter zu  und erklärst Dich damit einverstanden, dass andere Nutzer von %1$s Dich\
- anhand Deiner Telefonnummer und/oder E-Mail Adresse finden können.</string>
     <string name="dgts__try_again">Erneut versuchen</string>
     <string name="dgts__try_again_confirmation">Prüfe bitte Deinen Code und versuche es erneut.</string>
     <string name="dgts__try_again_email">Prüfe bitte Deine E-Mail Adresse und versuche es erneut</string>

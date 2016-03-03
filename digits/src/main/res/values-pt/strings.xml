@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">Reenviar código de confirmação</string>
     <string name="dgts__sending">Enviando…</string>
     <string name="dgts__success_desc">Ícone Sucesso</string>
-    <string name="dgts__terms_email_request">Ao tocar em %1$sContinuar%1$s, você estará adicionando este e-mail à sua conta do Digits. Todos os seus aplicativos terão acesso a esse endereço de e-mail, e outros usuários poderão descobrir você por e-mail. Gerencie sua conta em %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Ao tocar em %1$sContinuar%1$s acima, o %2$sDigits by Twitter%3$s irá enviar uma mensagem de SMS para você a fim de confirmar seu número de celular. Sujeito à cobrança de tarifas de mensagem e dados.</string>
-    <string name="dgts__terms_text_call_me">Ao tocar em %1$sLigar para mim%1$s acima, o %2$sDigits by Twitter%3$s irá fazer uma chamada de voz para você a fim de confirmar seu número de celular. Sujeito à cobrança de tarifas de chamada e dados.</string>
-    <string name="dgts__terms_text_create">Ao tocar em %1$sContinue%1$s acima, você concorda com os %2$sTermos de Serviço%3$s, a %2$sPolítica de Privacidade%3$s e a %2$sPolítica de Cookies%3$s do Digits by Twitter, e também que outros usuários deste aplicativo descubram você pelo número de celular e/ou e-mail.</string>
-    <string name="dgts__terms_text_sign_in">Ao tocar em %1$sContinue%1$s acima, você concorda em atualizar os %2$sTermos de Serviço%3$s, a %2$sPolítica de Privacidade%3$s e a %2$sPolítica de Cookies%3$s do Digits by Twitter, e também que outros usuários do aplicativo %1$s descubram seu número de celular e/ou e-mail.</string>
     <string name="dgts__try_again">Tentar Novamente</string>
     <string name="dgts__try_again_confirmation">Por favor, verifique seu código e tente novamente.</string>
     <string name="dgts__try_again_email">Por favor, verifique o seu e-mail e tente novamente</string>

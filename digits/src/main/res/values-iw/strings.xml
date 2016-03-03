@@ -46,12 +46,6 @@
     <string name="dgts__resend_confirmation_text">שלח מחדש קוד אישור</string>
     <string name="dgts__sending">שולח…</string>
     <string name="dgts__success_desc">סמל הצלחה</string>
-    <string name="dgts__terms_email_request">הקשה על %1$sהמשך%1$s תוסיף את כתובת הדואר האלקטרוני לחשבון Digits שלך. כל היישומים שאומתו באמצעות Digits יקבלו גישה לכתובת דואר אלקטרוני זו והמשתמשים בהם יוכלו למצוא אותך לפי כתובת דואר אלקטרוני. נהל את החשבון שלך באתר %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">לאחר הנגיעה ב%1$sהמשך%1$s לעיל, %2$sDigits\
-        by Twitter%3$s ישלח אליך הודעת SMS לאישור מספר הטלפון שלך. ייתכן שתחויב בעלויות העברת מסרים ונתונים.</string>
-    <string name="dgts__terms_text_call_me">לאחר הנגיעה ב%1$sהתקשר אליי%1$s לעיל, %2$sDigits by Twitter%3$s יתקשר אליך לאישור מספר הטלפון שלך. ייתכן שתחויב בעלויות שיחה ונתונים.</string>
-    <string name="dgts__terms_text_create">הקשה על %1$sהמשך%1$s לעיל, מהווה את הסכמתך ל%2$sתנאי השירות%3$s‏, %2$sמדיניות הפרטיות%3$s ו%2$sהמדיניות בנושא קבצי Cookie‏%3$s של Digits by Twitter ולכך שמשתמשים אחרים ביישום יוכלו למצאו אותך לפי מספר טלפון ו/או כתובת דואר אלקטרוני.</string>
-    <string name="dgts__terms_text_sign_in">הקשה על %1$sהמשך%1$s לעיל מהווה את הסכמתך ל%2$sתנאי השירות%3$s, %2$sמדיניות הפרטיות%3$s ו%2$sהמדיניות בנוגע לקבצי Cookie‏%3$s העדכניים של Digits by Twitter, ולכך שמשתמשים אחרים של %1$s יוכלו למצוא אותך לפי מספר טלפון ו/או כתובת דואר אלקטרוני.</string>
     <string name="dgts__try_again">נסה שוב</string>
     <string name="dgts__try_again_confirmation">בדוק את הקוד שלך ונסה שוב.</string>
     <string name="dgts__try_again_email">בדוק את כתובת הדואר האלקטרוני ונסה שוב.</string>

@@ -26,8 +26,6 @@ import android.text.TextWatcher;
  * DigitsActivity
  */
 interface DigitsController {
-    void showTOS(Context context);
-
     void executeRequest(final Context context);
 
     void resendCode(final Context context, final InvertedStateButton resendButton,

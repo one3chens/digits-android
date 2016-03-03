@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">Lähetä vahvistuskoodi</string>
     <string name="dgts__sending">Lähetetään…</string>
     <string name="dgts__success_desc">Onnistumiskuvake</string>
-    <string name="dgts__terms_email_request">Napauttamalla %1$sJatka%1$s lisäät tämän sähköpostiosoitteen Digits-tiliisi. Kaikilla Digits-palvelulla varmennetuilla sovelluksillasi on käyttöoikeus tähän sähköpostiosoitteeseen, ja niiden käyttäjät voivat löytää sinut sähköpostiosoitteesi perusteella. Hallinnoi tiliäsi osoitteessa %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Kun napautat yltä %1$sJatka%1$s, %2$sDigits by Twitter -palvelu%3$s lähettää sinulle tekstiviestin puhelinnumerosi vahvistamista varten. Tekstiviesti- ja tiedonsiirtokustannukset ovat voimassa.</string>
-    <string name="dgts__terms_text_call_me">Kun napautat yltä %1$sSoita minulle%1$s, %2$sDigits by Twitter -palvelu%3$s soittaa sinulle äänipuhelun puhelinnumerosi vahvistamista varten. Puhelu- ja tiedonsiirtokustannukset ovat voimassa.</string>
-    <string name="dgts__terms_text_create">Napauttamalla yltä %1$sJatka%1$s hyväksyt Digits by Twitter -palvelun %2$skäyttöehdot%3$s, %2$syksityisyyskäytännön%3$s ja %2$sevästekäytännön%3$s sekä sen, että muut tämän sovelluksen käyttäjät voivat löytää sinut puhelinnumeron ja/tai sähköpostiosoitteen perusteella.</string>
-    <string name="dgts__terms_text_sign_in">Napauttamalla yltä %1$sJatka%1$s hyväksyt Digits by Twitter -palvelun uudet %2$skäyttöehdot%3$s, %2$syksityisyyskäytännön%3$s ja %2$sevästekäytännön%3$s sekä sen, että muut sovelluksen %1$s käyttäjät voivat löytää sinut puhelinnumeron ja/tai sähköpostiosoitteen perusteella.</string>
     <string name="dgts__try_again">Yritä uudelleen</string>
     <string name="dgts__try_again_confirmation">Tarkista koodi ja yritä uudelleen.</string>
     <string name="dgts__try_again_email">Tarkista sähköpostiosoitteesi ja yritä uudelleen</string>

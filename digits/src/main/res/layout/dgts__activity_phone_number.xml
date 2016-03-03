@@ -69,7 +69,7 @@
             android:layout_marginBottom="@dimen/dgts__margin_bottom"
             digits:finishStateText="@string/dgts__done"
             digits:progressStateText="@string/dgts__sending"
-            digits:startStateText="@string/dgts__continue"/>
+            digits:startStateText="@string/dgts__send_confirmation_code"/>
 
         <TextView
             android:id="@+id/dgts__termsText"

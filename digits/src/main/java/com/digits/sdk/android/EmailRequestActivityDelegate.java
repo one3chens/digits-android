@@ -37,6 +37,7 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     Activity activity;
     DigitsScribeService scribeService;
     TextView titleText;
+    TosFormatHelper tosFormatHelper;
 
     EmailRequestActivityDelegate(DigitsScribeService scribeService) {
         this.scribeService = scribeService;
@@ -68,6 +69,7 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         final AuthConfig config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
+        tosFormatHelper = new TosFormatHelper(activity);
 
         editText.setHint(R.string.dgts__email_request_edit_hint);
         titleText.setText(R.string.dgts__email_request_title);
@@ -121,8 +123,17 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     }
 
     @Override
+    public void setUpSendButton(final Activity activity, final DigitsController controller,
+                                StateButton stateButton) {
+        stateButton.setStatesText(R.string.dgts__continue, R.string.dgts__sending,
+                R.string.dgts__done);
+        stateButton.showStart();
+        super.setUpSendButton(activity, controller, stateButton);
+    }
+
+    @Override
     public void setUpTermsText(Activity activity, DigitsController controller, TextView termsText) {
-        termsText.setText(getFormattedTerms(activity, R.string.dgts__terms_email_request));
+        termsText.setText(tosFormatHelper.getFormattedTerms(R.string.dgts__terms_email_request));
         super.setUpTermsText(activity, controller, termsText);
     }
 

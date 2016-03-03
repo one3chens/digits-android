@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">নিশ্চিতকরণ কোড আবার পাঠান</string>
     <string name="dgts__sending">পাঠানো হচ্ছে…</string>
     <string name="dgts__success_desc">সফল হওয়ার আইকন</string>
-    <string name="dgts__terms_email_request">%1$sঅবিরত%1$s ট্যাপ করে আপনি আপনার Digits by Twitter অ্যাকাউন্টে এই ইমেল যোগ করছেন। Digits-এর সাথে প্রমাণীকৃত আপনার সমস্ত অ্যাপের এই ইমেল ঠিকানাতে অ্যাক্সেস থাকবে ও তাদের ব্যবহারকারীরা আপনাকে ইমেল দিয়ে আবিষ্কার করতে সক্ষম হবে। %2$sDigits.com%3$s-এ আপনার অ্যাকাউন্ট পরিচালনা করুন।</string>
-    <string name="dgts__terms_text">উপরে %1$sঅবিরত%1$s ট্যাপ করলে আপনার ফোন নম্বর নিশ্চিত করতে %2$sDigits by Twitter%3$s আপনাকে একটি এসএমএস বার্তা পাঠাবে। বার্তা ও ডেটা দর প্রয়োগ হতে পারে।</string>
-    <string name="dgts__terms_text_call_me">উপরে %1$sআমাকে কল করুন%1$s ট্যাপ করলে আপনার ফোন নম্বর নিশ্চিত করতে %2$sDigits by Twitter%3$s আপনাকে একটি ভয়েস কল পাঠাবে। কল ও ডেটা দর প্রয়োগ হতে পারে।</string>
-    <string name="dgts__terms_text_create">উপরে %1$sঅবিরত%1$s ট্যাপ করে আপনি Digits by Twitter-এর %2$sপরিষেবার শর্তাবলী%3$s, %2$sগোপনীয়তা নীতি%3$s, ও %2$sকুকিজ নীতির%3$s সাথে এবং এই অ্যাপের অন্যান্য ব্যবহারকারীরা আপনাকে ফোন নম্বর এবং/অথবা ইমেলের মাধ্যমে আবিষ্কার করতে পারবেন তাতে সম্মত হন।</string>
-    <string name="dgts__terms_text_sign_in">উপরে %1$sঅবিরত%1$s ট্যাপ করে আপনি Digits by Twitter-এর আপডেট হওয়া %2$sপরিষেবার শর্তাবলী%3$s, %2$sগোপনীয়তা নীতি%3$s, ও %2$sকুকিজ নীতির%3$s সাথে এবং %1$s-এর অন্যান্য ব্যবহারকারীরা আপনাকে ফোন নম্বর এবং/অথবা ইমেলের মাধ্যমে আবিষ্কার করতে পারবেন তাতে সম্মত হন।</string>
     <string name="dgts__try_again">আবার চেষ্টা করুন</string>
     <string name="dgts__try_again_confirmation">অনুগ্রহ করে আপনার কোড পরীক্ষা করে আবার চেষ্টা করুন।</string>
     <string name="dgts__try_again_email">দয়া করে আপনার ইমেল পরীক্ষা করুন ও আবার চেষ্টা করুন</string>

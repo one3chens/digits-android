@@ -47,26 +47,6 @@ kód.</string>
     <string name="dgts__resend_confirmation_text">Znovu odeslat potvrzovací kód</string>
     <string name="dgts__sending">Odesílání…</string>
     <string name="dgts__success_desc">Ikona Úspěch</string>
-    <string name="dgts__terms_email_request">Klepnutím na tlačítko %1$sPokračovat%1$s přidáte e-mailovou\
-adresu do svého účtu ve službě Digits. Všechny aplikace ověřené prostřednictvím\
-služby Digits k ní budou mít přístup a jejich uživatelé vás podle ní budou moct\
-najít. Svůj účet můžete nastavit zde: %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Když klepnete na výše uvedené tlačítko %1$sPokračovat%1$s,\
-služba %2$sDigits by Twitter%3$s vám pošle SMS, pomocí které potvrdíte své\
-telefonní číslo. Zprávy a přenos dat mohou být zpoplatněny.</string>
-    <string name="dgts__terms_text_call_me">Když klepnete na výše uvedené tlačítko %1$sZavolejte mi%1$s,\
-služba %2$sDigits by Twitter%3$s vám zavolá, aby potvrdila vaše telefonní\
-číslo. Hovory a přenos dat mohou být zpoplatněny.</string>
-    <string name="dgts__terms_text_create">Klepnutím na výše uvedené tlačítko %1$sPokračovat%1$s\
-vyjadřujete souhlas se %2$ssmluvními podmínkami%3$s, %2$szásadami ochrany\
-osobních údajů%3$s a %2$szásadami používání souborů cookie%3$s služby Digits by\
-Twitter a s tím, že vás ostatní uživatelé této aplikace budou moct najít podle\
-telefonního čísla nebo e-mailové adresy.</string>
-    <string name="dgts__terms_text_sign_in">Klepnutím na výše uvedené tlačítko %1$sPokračovat%1$s\
-vyjadřujete souhlas s aktualizovanými %2$ssmluvními podmínkami%3$s, %2$szásadami\
-ochrany osobních údajů%3$s a %2$szásadami používání souborů cookie%3$s služby\
-Digits by Twitter a s tím, že vás ostatní uživatelé aplikace %1$s budou moct\
-najít podle telefonního čísla nebo e-mailové adresy.</string>
     <string name="dgts__try_again">Zkusit znovu</string>
     <string name="dgts__try_again_confirmation">Zkontrolujte kód a zkuste to znovu.</string>
     <string name="dgts__try_again_email">Zkontrolujte e-mailovou adresu a zkuste to znovu.</string>

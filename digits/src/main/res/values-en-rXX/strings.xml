@@ -46,7 +46,6 @@
     <string name="dgts__resend_confirmation_text">[Réêséênd cöønfïírmåätïíöøn cöødéê]</string>
     <string name="dgts__sending">[Séêndïíng…]</string>
     <string name="dgts__success_desc">[Süccéêss Icöøn]</string>
-    <string name="dgts__terms_email_request">[By tåäppïíng %1$sCöøntïínüéê%1$s yöøü åäréê åäddïíng thïís éêmåäïíl töø yöøür Dïígïíts åäccöøünt. All yöøür åäpps åäüthéêntïícåätéêd wïíth Dïígïíts wïíll håävéê åäccéêss töø thïís éêmåäïíl åäddréêss, åänd théêïír üséêrs wïíll béê åäbléê töø dïíscöøvéêr yöøü by éêmåäïíl. Måänåägéê yöøür åäccöøünt öøn %2$sDïígïíts.cöøm%3$s.]</string>
     <string name="dgts__terms_text">[By tåäppïíng %1$sCöøntïínüéê%1$s åäböøvéê, %2$sDïígïíts by Twïíttéêr%3$s wïíll séênd yöøü åän SMS méêssåägéê töø cöønfïírm yöøür phöønéê nümbéêr. Méêssåägéê &amp; dåätåä råätéês måäy åäpply.]</string>
     <string name="dgts__terms_text_call_me">[By tåäppïíng %1$sCåäll méê%1$s åäböøvéê, %2$sDïígïíts by Twïíttéêr%3$s wïíll séênd yöøü åä vöøïícéê cåäll töø cöønfïírm yöøür phöønéê nümbéêr. Cåäll &amp; dåätåä råätéês måäy åäpply.]</string>
     <string name="dgts__terms_text_create">[By tåäppïíng %1$sCöøntïínüéê%1$s åäböøvéê, yöøü åägréêéê töø théê %2$sTéêrms öøf Séêrvïícéê%3$s, %2$sPrïívåäcy Pöølïícy%3$s, åänd %2$sCöøöøkïíéês Pöølïícy%3$s öøf Dïígïíts by Twïíttéêr, åänd thåät öøthéêr üséêrs öøf thïís åäpp cåän dïíscöøvéêr yöøü by phöønéê nümbéêr åänd/öør éêmåäïíl.]</string>

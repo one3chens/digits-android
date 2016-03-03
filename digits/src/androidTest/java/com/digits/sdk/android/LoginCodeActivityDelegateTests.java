@@ -17,13 +17,11 @@
 
 package com.digits.sdk.android;
 
-import android.app.Activity;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.SpannedString;
-import android.view.View;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -95,20 +93,30 @@ public class LoginCodeActivityDelegateTests extends
     public void testSetUpTermsText() throws Exception {
         delegate.config = new AuthConfig();
         delegate.config.tosUpdate = Boolean.FALSE;
-        delegate.setUpTermsText(activity, controller, textView);
-
-        verify(textView).setVisibility(View.GONE);
+        delegate.tosFormatHelper = tosFormatHelper;
+        doReturn(new SpannedString("")).when(tosFormatHelper).getFormattedTerms(anyInt());
+        super.testSetUpTermsText();
+        verify(tosFormatHelper).getFormattedTerms(R.string.dgts__terms_text_sign_in);
+        verify(textView).setText(new SpannedString(""));
     }
 
     public void testSetUpTermsText_tosUpdated() throws Exception {
-        doReturn(new SpannedString("")).when(delegate).getFormattedTerms(any(Activity.class),
-                anyInt());
+        delegate.tosFormatHelper = tosFormatHelper;
+        doReturn(new SpannedString("")).when(tosFormatHelper)
+                .getFormattedTerms(anyInt());
         delegate.config = new AuthConfig();
         delegate.config.tosUpdate = Boolean.TRUE;
-        delegate.setUpTermsText(activity, controller, textView);
+        super.testSetUpTermsText();
+        verify(tosFormatHelper).getFormattedTerms(eq(R.string.dgts__terms_text_updated));
+        verify(textView).setText(new SpannedString(""));
+    }
 
-        verify(delegate).getFormattedTerms(any(Activity.class),
-                eq(R.string.dgts__terms_text_sign_in));
+    @Override
+    public void testSetUpSendButton() throws Exception {
+        super.testSetUpSendButton();
+        verify(button).setStatesText(R.string.dgts__continue, R.string.dgts__sending,
+                R.string.dgts__done);
+        verify(button).showStart();
     }
 
     public void testOnResume() {

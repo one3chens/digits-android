@@ -45,11 +45,6 @@
     <string name="dgts__resend_confirmation_button_code">Preposlať kód</string>
     <string name="dgts__resend_confirmation_text">Preposlať potvrdzujúci kód</string>
     <string name="dgts__sending">Odosiela sa…</string>
-    <string name="dgts__terms_email_request">Ťuknutím vyššie na %1$sPokračovať%1$s, pridávate tento e-mail do vášho Digits účtu. Všetky vaše aplikácie prepojené s Digits budú mať prístup k tejto e-mailovej adrese a ich používatelia vás budú môcť nájsť pomocou e-mailu. Váš účet môžete spravovať na %2$sDigits.com%3$s.</string>
-    <string name="dgts__terms_text">Ťuknutím vyššie na %1$sPokračovať%1$s, vám %2$sDigits by Twitter%3$s pošlú SMS správu pre potvrdenie vášho telefónneho čísla. Za SMS a dáta sa vám môžu účtovať poplatky.</string>
-    <string name="dgts__terms_text_call_me">Ťuknutím vyššie na %1$sZavolajte mi%1$s, vám %2$sDigits by Twitter%3$s zavolá pre potvrdenie vášho telefónneho čísla. Za hovor a dáta sa vám môžu účtovať poplatky.</string>
-    <string name="dgts__terms_text_create">Ťuknutím vyššie na %1$sPokračovať%1$s, vyjadrujete súhlas s %2$sPodmienkami používania%3$s, %2$sZásadami ochrany súkromia%3$s a %2$sZásadami používania súborov Cookies%3$s v Digits by Twitter a s tým, že vás ostatní používatelia tejto aplikácie môžu nájsť pomocou telefónneho čísla a/alebo e-mailu.</string>
-    <string name="dgts__terms_text_sign_in">Ťuknutím vyššie na %1$sPokračovať%1$s, vyjadrujete súhlas s aktualizovanými %2$sPodmienkami používania%3$s, %2$sZásadami ochrany súkromia%3$s a %2$sZásadami používania súborov Cookies%3$s v Digits by Twitter a s tým, že vás ostatní používatelia %1$s môžu nájsť pomocou telefónneho čísla a/alebo e-mailu.</string>
     <string name="dgts__try_again">Skúsiť znovu</string>
     <string name="dgts__try_again_confirmation">Skontrolujte váš kód a skúste to znovu.</string>
     <string name="dgts__try_again_email">Skontrolujte si váš e-mail a skúste to znovu</string>

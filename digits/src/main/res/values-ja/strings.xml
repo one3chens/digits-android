@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">認証コードを再送信</string>
     <string name="dgts__sending">送信中…</string>
     <string name="dgts__success_desc">プロフィール画像</string>
-    <string name="dgts__terms_email_request">上の%1$s続ける%1$sをタップすると、このメールアドレスがDigitsアカウントに登録されます。 Digitsで認証したすべてのアプリはメールアドレスにアクセスでき、そのアプリのユーザーはメールアドレスであなたを見つけることができるようになります。アカウントの管理は%2$sDigits.com%3$sから行えます。</string>
-    <string name="dgts__terms_text">上の%1$s続ける%1$sをタップすると、電話番号を認証するためのSMSメッセージが%2$sDigits by Twitter%3$sから送信されます。SMS使用料がかかる場合があります。</string>
-    <string name="dgts__terms_text_call_me">上の%1$s自分に発信%1$sをタップすると、電話番号を認証するための電話が%2$sDigits by Twitter%3$sから発信されます。通話料金がかかる場合があります。</string>
-    <string name="dgts__terms_text_create">上の%1$s続ける%1$sをタップすることで、%2$s利用規約%3$s、%2$sプライバシーポリシー%3$s、およびDigits by Twitterの%2$sCookieポリシー%3$s、さらにこのアプリの他のユーザーが電話番号やメールアドレスからあなたを見つけることができることに同意します。</string>
-    <string name="dgts__terms_text_sign_in">上の%1$s続ける%1$sをタップすることで、更新された%2$s利用規約%3$s、%2$sプライバシーポリシー%3$s、およびDigits by Twitterの%2$sCookieポリシー%3$s、さらに%1$sの他のユーザーが電話番号やメールアドレスからあなたを見つけることができることに同意します。</string>
     <string name="dgts__try_again">やり直してください</string>
     <string name="dgts__try_again_confirmation">コードを確認し、やり直してください。</string>
     <string name="dgts__try_again_email">メールアドレスを確認し、やり直してください</string>

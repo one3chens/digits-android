@@ -17,7 +17,6 @@
 
 package com.digits.sdk.android;
 
-import android.app.Activity;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -66,6 +65,14 @@ public class ConfirmationCodeActivityDelegateTests extends
         assertEquals(R.layout.dgts__activity_confirmation, delegate.getLayoutId());
     }
 
+    @Override
+    public void testSetUpSendButton() throws Exception {
+        super.testSetUpSendButton();
+        verify(button).setStatesText(R.string.dgts__create_account, R.string.dgts__sending,
+                R.string.dgts__done);
+        verify(button).showStart();
+    }
+
     public void testOnResume() {
         delegate.controller = controller;
         delegate.onResume();
@@ -95,10 +102,10 @@ public class ConfirmationCodeActivityDelegateTests extends
 
     @Override
     public void testSetUpTermsText() throws Exception {
-        doReturn(new SpannedString("")).when(delegate).getFormattedTerms(any(Activity.class),
-                anyInt());
+        delegate.tosFormatHelper = tosFormatHelper;
+        doReturn(new SpannedString("")).when(tosFormatHelper).getFormattedTerms(anyInt());
         super.testSetUpTermsText();
-        verify(delegate).getFormattedTerms(activity, R.string.dgts__terms_text_create);
+        verify(tosFormatHelper).getFormattedTerms(R.string.dgts__terms_text_create);
         verify(textView).setText(new SpannedString(""));
     }
 

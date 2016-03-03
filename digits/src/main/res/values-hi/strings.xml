@@ -46,11 +46,6 @@
     <string name="dgts__resend_confirmation_text">पुष्टिकरण कोड पुन: भेजें</string>
     <string name="dgts__sending">भेजा जा रहा है…</string>
     <string name="dgts__success_desc">सफलता चिह्न</string>
-    <string name="dgts__terms_email_request">%1$sजारी रखें%1$s टैप करके आप इस ईमेल को अपने Digits खाते से जोड़ देंगे. Digits के साथ प्रमाणीकृत आपके सभी ऐप्स की पहुँच इस ईमेल पते तक होगी और उनके उपयोगकर्ता ईमेल द्वारा आप को खोज पाएंगे. %2$sDigits.com%3$s पर अपने खाते को प्रबंधित करें.</string>
-    <string name="dgts__terms_text">ऊपर %1$sजारी रखें%1$s टैप करने से, %2$sDigits by Twitter%3$s आपके फ़ोन नंबर की पुष्टि करने के लिए आपको एक SMS संदेश भेजेंगे. संदेश और डेटा दरें लागू हो सकती हैं.</string>
-    <string name="dgts__terms_text_call_me">ऊपर %1$sमुझे कॉल करें%1$s टैप करने से, %2$sDigits by Twitter%3$s आपके फ़ोन नंबर की पुष्टि करने के लिए आपको वॉयस कॉल करेंगे. कॉल और डेटा दरें लागू हो सकती हैं.</string>
-    <string name="dgts__terms_text_create">ऊपर %1$sजारी रखें%1$s टैप करके, आप Digits by Twitter की %2$sसेवा की शर्तें%3$s, %2$sगोपनीयता नीति%3$s, और %2$sकुकीज़ नीति%3$s से सहमत होते हैं, और इससे भी कि इस ऐप के अन्य उपयोगकर्ता आपको फ़ोन नंबर और/या ईमेल के द्वारा खोज सकते हैं.</string>
-    <string name="dgts__terms_text_sign_in">ऊपर %1$sजारी रखें%1$s टैप करके, आप Digits by Twitter की अपडेट की गई %2$sसेवा की शर्तें%3$s, %2$sगोपनीयता नीति%3$s, और %2$sकुकीज़ नीति%3$s से सहमत होते हैं, और इससे भी कि%1$s के अन्य उपयोगकर्ता फ़ोन नंबर और/या ईमेल के द्वारा आपको खोज सकते हैं.</string>
     <string name="dgts__try_again">फिर से कोशिश करें</string>
     <string name="dgts__try_again_confirmation">कृपया अपने कोड की जांच करें और फिर कोशिश करें.</string>
     <string name="dgts__try_again_email">कृपया अपने ईमेल की जांच करें और फिर कोशिश करें.</string>
