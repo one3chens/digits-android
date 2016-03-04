@@ -60,7 +60,7 @@ public class DigitsAuthConfigTests {
             digitsAuthConfigBuilder.build();
         } catch (IllegalArgumentException ex) {
             assertEquals("PhoneNumber and partnerKey must be set when confirmationCodeCallback " +
-                            "is used",
+                            "is used. Please contact support for more information.",
                     ex.getMessage());
         }
     }
@@ -77,7 +77,7 @@ public class DigitsAuthConfigTests {
             digitsAuthConfigBuilder.build();
         } catch (IllegalArgumentException ex) {
             assertEquals("PhoneNumber and partnerKey must be set when confirmationCodeCallback " +
-                            "is used",
+                            "is used. Please contact support for more information.",
                     ex.getMessage());
         }
     }

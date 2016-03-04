@@ -154,7 +154,8 @@ public class DigitsAuthConfig {
             if ((confirmationCodeCallback != null) &&
                     ((phoneNumber == null) || (partnerKey == null))) {
                 throw new IllegalArgumentException("PhoneNumber and partnerKey must be set when " +
-                        "confirmationCodeCallback is used");
+                        "confirmationCodeCallback is used. Please contact support for more " +
+                        "information.");
             }
 
             return new DigitsAuthConfig(isEmailRequired,
