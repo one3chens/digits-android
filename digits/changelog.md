@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+## v1.10.0
+* Headless UI allowing apps to use a custom phone number screen.
+
 ## v1.9.4
 * Improved UX for resending confirmation code via sms/voice
 
