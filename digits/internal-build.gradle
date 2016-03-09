@@ -141,7 +141,11 @@ fabricKitRelease {
     name = "${project.pom_group_id}.${project.pom_artifact_id}"
     description = "Add phone number signup and login to your app with just a few lines of code."
     version = project.version
-    artifactUrl = "https://maven.fabric.io/repo/com/digits/sdk/android/digits/${project.version}/digits-${project.version}.pom"
+    artifactUrl {
+        repository = "https://maven.fabric.io/public"
+        groupId = project.pom_group_id
+        artifactId = project.pom_artifact_id
+    }
     releaseNotesUrl = "https://s3.amazonaws.com/kits-crashlytics-com/android/com/digits/sdk/android/digits/${project.version}/digits-${project.version}-release-notes.html"
     learnMoreUrl = "http://docs.fabric.io/android/digits/index.html"
     price {
