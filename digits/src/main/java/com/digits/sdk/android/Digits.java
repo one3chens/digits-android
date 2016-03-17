@@ -272,8 +272,14 @@ public class Digits extends Kit<Void> {
     private DigitsScribeClient setUpScribing() {
         final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>();
         sessionManagers.add(sessionManager);
-        return new DigitsScribeClientImpl(new DefaultScribeClient(this, KIT_SCRIBE_NAME,
-                sessionManagers, getIdManager()));
+        if (digitsClient != null && digitsClient.getUserAgent() != null){
+            return new DigitsScribeClientImpl(
+                    new DefaultScribeClient(this, digitsClient.getUserAgent().toString(),
+                    sessionManagers, getIdManager()));
+        } else {
+            return new DigitsScribeClientImpl(new DefaultScribeClient(this, KIT_SCRIBE_NAME,
+                    sessionManagers, getIdManager()));
+        }
     }
 
     protected ActivityClassManager getActivityClassManager() {

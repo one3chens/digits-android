@@ -253,6 +253,10 @@ public class DigitsClient {
         });
     }
 
+    protected DigitsUserAgent getUserAgent(){
+        return userAgent;
+    }
+
     static abstract class CallbackWrapper<T> extends Callback<DigitsApiClient> {
         final Callback<T> callback;
 
