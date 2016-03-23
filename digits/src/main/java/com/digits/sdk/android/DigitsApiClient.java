@@ -34,7 +34,6 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
-import retrofit.http.Query;
 
 class DigitsApiClient {
     private final ConcurrentHashMap<Class, Object> services;
@@ -131,8 +130,9 @@ class DigitsApiClient {
                        @Field("pin") String pin,
                        Callback<DigitsSessionResponse> cb);
 
+        @FormUrlEncoded
         @POST("/1.1/sdk/account/email")
-        void email(@Query("email_address") String email, Callback<DigitsSessionResponse> cb);
+        void email(@Field("email_address") String email, Callback<DigitsSessionResponse> cb);
     }
 
     public interface AccountService {
