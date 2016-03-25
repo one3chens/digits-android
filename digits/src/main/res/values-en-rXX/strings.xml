@@ -26,6 +26,7 @@
     <string name="dgts__confirmation_error_alternative">[Söørry, wéê åäréê håävïíng tröøübléê séêndïíng yöøü åä cöønfïírmåätïíöøn cöødéê.]</string>
     <string name="dgts__confirmation_expired">[Thïís cöødéê håäs éêxpïíréêd. Pléêåäséê réêséênd cöønfïírmåätïíöøn cöødéê.]</string>
     <string name="dgts__continue">[Cöøntïínüéê]</string>
+    <string name="dgts__create_account">[Créêåätéê åäccöøünt]</string>
     <string name="dgts__digits_logo_desc">[dïígïíts löøgöø ïícöøn]</string>
     <string name="dgts__digits_logo_name_desc">[dïígïíts löøgöø nåäméê]</string>
     <string name="dgts__dismiss">[Dïísmïíss]</string>
@@ -44,12 +45,15 @@
     <string name="dgts__pin_code_verification_title">[Entéêr 2-stéêp véêrïífïícåätïíöøn cöødéê]</string>
     <string name="dgts__resend_confirmation_button_code">[Réêséênd cöødéê]</string>
     <string name="dgts__resend_confirmation_text">[Réêséênd cöønfïírmåätïíöøn cöødéê]</string>
+    <string name="dgts__send_confirmation_code">[Séênd cöønfïírmåätïíöøn cöødéê]</string>
     <string name="dgts__sending">[Séêndïíng…]</string>
     <string name="dgts__success_desc">[Süccéêss Icöøn]</string>
-    <string name="dgts__terms_text">[By tåäppïíng %1$sCöøntïínüéê%1$s åäböøvéê, %2$sDïígïíts by Twïíttéêr%3$s wïíll séênd yöøü åän SMS méêssåägéê töø cöønfïírm yöøür phöønéê nümbéêr. Méêssåägéê &amp; dåätåä råätéês måäy åäpply.]</string>
-    <string name="dgts__terms_text_call_me">[By tåäppïíng %1$sCåäll méê%1$s åäböøvéê, %2$sDïígïíts by Twïíttéêr%3$s wïíll séênd yöøü åä vöøïícéê cåäll töø cöønfïírm yöøür phöønéê nümbéêr. Cåäll &amp; dåätåä råätéês måäy åäpply.]</string>
-    <string name="dgts__terms_text_create">[By tåäppïíng %1$sCöøntïínüéê%1$s åäböøvéê, yöøü åägréêéê töø théê %2$sTéêrms öøf Séêrvïícéê%3$s, %2$sPrïívåäcy Pöølïícy%3$s, åänd %2$sCöøöøkïíéês Pöølïícy%3$s öøf Dïígïíts by Twïíttéêr, åänd thåät öøthéêr üséêrs öøf thïís åäpp cåän dïíscöøvéêr yöøü by phöønéê nümbéêr åänd/öør éêmåäïíl.]</string>
-    <string name="dgts__terms_text_sign_in">[By tåäppïíng %1$sCöøntïínüéê%1$s åäböøvéê, yöøü åägréêéê töø théê üpdåätéêd %2$sTéêrms öøf Séêrvïícéê%3$s, %2$sPrïívåäcy Pöølïícy%3$s, åänd %2$sCöøöøkïíéês Pöølïícy%3$s öøf Dïígïíts by Twïíttéêr, åänd thåät öøthéêr üséêrs öøf %1$s cåän dïíscöøvéêr yöøü by phöønéê nümbéêr åänd/öør éêmåäïíl.]</string>
+    <string name="dgts__terms_email_request">[By tåäppïíng %1$sCöøntïínüéê%1$s åäböøvéê, yöøü åäréê åäddïíng thïís éêmåäïíl töø yöøür Dïígïíts åäccöøünt. Yöøü åägréêéê thåät thïís åäpp åänd %7$såäll åäpps lïístéêd ïín yöøür Dïígïíts åäccöøünt%5$s cåän åäccéêss thïís éêmåäïíl åäddréêss åänd théêïír üséêrs cåän dïíscöøvéêr yöøü by éêmåäïíl.]</string>
+    <string name="dgts__terms_text">[By tåäppïíng %1$sSéênd cöønfïírmåätïíöøn cöødéê%1$s åäböøvéê, %6$sDïígïíts by Twïíttéêr%5$s wïíll séênd yöøü åän SMS töø cöønfïírm yöøür phöønéê nümbéêr. On théê néêxt scréêéên, yöøü cåän chöøöøséê “Réêséênd cöødéê” töø réêcéêïívéê åä néêw SMS öør “Cåäll méê” töø ïínïítïíåätéê åä phöønéê cåäll töø cöønfïírm yöøür phöønéê nümbéêr. Méêssåägéê, cåäll &amp; dåätåä råätéês måäy åäpply.]</string>
+    <string name="dgts__terms_text_call_me">[By tåäppïíng %1$sCåäll méê%1$s åäböøvéê, %6$sDïígïíts by Twïíttéêr%5$s wïíll séênd yöøü åä vöøïícéê cåäll töø cöønfïírm yöøür phöønéê nümbéêr. Cåäll &amp; dåätåä råätéês måäy åäpply.]</string>
+    <string name="dgts__terms_text_create">[By tåäppïíng %1$sCréêåätéê åäccöøünt%1$s åäböøvéê, yöøü åägréêéê töø théê %8$sTéêrms öøf Séêrvïícéê%5$s, %9$sPrïívåäcy Pöølïícy%5$s, åänd %10$sCöøöøkïíéês Uséê%5$s öøf %6$sDïígïíts by Twïíttéêr%5$s, töø shåäréê yöøür phöønéê nümbéêr wïíth %4$s, åänd thåät öøthéêr üséêrs öøf %4$s cåän dïíscöøvéêr yöøü by phöønéê nümbéêr.]</string>
+    <string name="dgts__terms_text_sign_in">[By tåäppïíng %1$sCöøntïínüéê%1$s åäböøvéê, yöøür %7$sDïígïíts phöønéê nümbéêr åänd/öør éêmåäïíl åäddréêss%5$s wïíll béê shåäréêd wïíth %4$s åänd öøthéêr üséêrs öøf %4$s cåän dïíscöøvéêr yöøü by phöønéê nümbéêr åänd/öør éêmåäïíl.]</string>
+    <string name="dgts__terms_text_updated">[By tåäppïíng %1$sCöøntïínüéê%1$s åäböøvéê, yöøü åägréêéê töø théê %8$sTéêrms öøf Séêrvïícéê%5$s, %9$sPrïívåäcy Pöølïícy%5$s, åänd %10$sCöøöøkïíéês Uséê%5$s öøf %6$sDïígïíts by Twïíttéêr%5$s, töø shåäréê yöøür %7$sDïígïíts phöønéê nümbéêr åänd/öør éêmåäïíl åäddréêss%5$s wïíth %4$s, åänd öøthéêr üséêrs öøf %4$s cåän dïíscöøvéêr yöøü by phöønéê nümbéêr åänd/öør éêmåäïíl.]</string>
     <string name="dgts__try_again">[Try Agåäïín]</string>
     <string name="dgts__try_again_confirmation">[Pléêåäséê chéêck yöøür cöødéê åänd try åägåäïín.]</string>
     <string name="dgts__try_again_email">[Pléêåäséê chéêck yöøür éêmåäïíl åänd try åägåäïín]</string>

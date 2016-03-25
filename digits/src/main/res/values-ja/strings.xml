@@ -26,6 +26,7 @@
     <string name="dgts__confirmation_error_alternative">認証コードの送信に問題が発生しました。</string>
     <string name="dgts__confirmation_expired">このコードは有効期限切れです。認証コードを再送信してください。</string>
     <string name="dgts__continue">続ける</string>
+    <string name="dgts__create_account">アカウントを作成</string>
     <string name="dgts__digits_logo_desc">digitsロゴのアイコン</string>
     <string name="dgts__digits_logo_name_desc">digitsロゴの名前</string>
     <string name="dgts__dismiss">非表示</string>
@@ -44,8 +45,15 @@
     <string name="dgts__pin_code_verification_title">2段階認証コードを入力</string>
     <string name="dgts__resend_confirmation_button_code">コードを再送信</string>
     <string name="dgts__resend_confirmation_text">認証コードを再送信</string>
+    <string name="dgts__send_confirmation_code">認証コードを送信</string>
     <string name="dgts__sending">送信中…</string>
     <string name="dgts__success_desc">プロフィール画像</string>
+    <string name="dgts__terms_email_request">上の%1$s続ける%1$sをタップすると、このメールアドレスがDigitsアカウントに登録されます。これにより、このアプリと%7$sDigitsアカウントに登録されたすべてのアプリ%5$sがこのメールアドレスにアクセスできること、およびアプリのユーザーがこのメールアドレスであなたを照合できることに同意したと見なされます。</string>
+    <string name="dgts__terms_text">上の%1$s認証コードを送信%1$sをタップすると、電話番号を認証するためのテキストメッセージが%6$sDigits by Twitter%5$sから送信されます。次の画面で [認証コードを再送信] をタップすると、新しいテキストメッセージがもう一度送信されます。[自分に発信] をタップすると、電話番号を認証するためにDigitsから音声通話が発信されます。通話料やデータ通信料がかかる場合があります。</string>
+    <string name="dgts__terms_text_call_me">上の%1$s自分に発信%1$sをタップすると、ご利用の電話番号を認証するために%6$sDigits by Twitter%5$sから音声通話が発信されます。通話料やデータ通信料がかかる場合があります。</string>
+    <string name="dgts__terms_text_create">上の%1$sアカウントを作成%1$sをタップすると、%8$s利用規約%5$s、 %9$sプライバシーポリシー%5$s、%6$sDigits by Twitter%5$sでの%10$sCookieの使用%5$s、%4$sと電話番号を共有すること、および%4$sの他のユーザーが電話番号であなたを照合できることに同意したと見なされます。</string>
+    <string name="dgts__terms_text_sign_in">上の%1$s続ける%1$s をタップすると、%7$sDigitsの電話番号またはメールアドレス、またはその両方%5$sが%4$sと共有され、%4$sの他のユーザーが電話番号やメールアドレスであなたを照合できるようになります。</string>
+    <string name="dgts__terms_text_updated">上の%1$s続ける%1$sをタップすると、%8$s利用規約%5$s、 %9$sプライバシーポリシー%5$s、%6$sDigits by Twitter%5$sでの%10$sCookieの使用%5$s、%4$sと%7$sDigitsの電話番号またはメールアドレス、またはその両方%5$sを共有すること、および%4$sの他のユーザーが電話番号であなたを照合できることに同意したと見なされます。</string>
     <string name="dgts__try_again">やり直してください</string>
     <string name="dgts__try_again_confirmation">コードを確認し、やり直してください。</string>
     <string name="dgts__try_again_email">メールアドレスを確認し、やり直してください</string>

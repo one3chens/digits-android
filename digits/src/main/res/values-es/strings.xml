@@ -26,6 +26,7 @@
     <string name="dgts__confirmation_error_alternative">Lo sentimos, estamos teniendo problemas para enviarte un código de confirmación.</string>
     <string name="dgts__confirmation_expired">Este código ha caducado. Solicitar el reenvío del código de confirmación.</string>
     <string name="dgts__continue">Continuar</string>
+    <string name="dgts__create_account">Crear cuenta</string>
     <string name="dgts__digits_logo_desc">ícono del logo de digits</string>
     <string name="dgts__digits_logo_name_desc">nombre del logo de digits</string>
     <string name="dgts__dismiss">Descartar</string>
@@ -44,8 +45,17 @@
     <string name="dgts__pin_code_verification_title">Ingresa el código de doble verificación</string>
     <string name="dgts__resend_confirmation_button_code">Reenviar código</string>
     <string name="dgts__resend_confirmation_text">Reenviar código de confirmación</string>
+    <string name="dgts__send_confirmation_code">Enviar código de confirmación</string>
     <string name="dgts__sending">Enviando…</string>
     <string name="dgts__success_desc">Icono Éxito</string>
+    <string name="dgts__terms_email_request">Al pulsar %1$sContinuar%1$s arriba, agregas este correo electrónico a tu cuenta de Digits. Aceptas que esta aplicación y %7$stodas las aplicaciones que aparecen en tu cuenta de Digits%5$s pueden acceder a esta dirección de correo electrónico y que sus usuarios puedan descubrirte por el correo electrónico.</string>
+    <string name="dgts__terms_text">Al pulsar %1$sEnviar código de confirmación%1$s arriba, %6$sDigits by Twitter%5$s te enviará un SMS para confirmar tu número de teléfono. En la siguiente pantalla, puedes escoger “Reenviar código” para recibir un nuevo SMS o “Llámame” \
+para iniciar una llamada telefónica que confirme tu número de teléfono. \
+Se pueden aplicar cargos por mensajes, llamadas y datos.</string>
+    <string name="dgts__terms_text_call_me">Al pulsar %1$s\"Llámame\"%1$s arriba, %6$sDigits by Twitter%5$s te llamará para confirmar tu número de teléfono. Se pueden aplicar cargos por llamadas y datos.</string>
+    <string name="dgts__terms_text_create">Al pulsar %1$sCrear cuenta%1$s arriba, aceptas los %8$sTérminos de servicio%5$s, la %9$sPolítica de privacidad%5$s y la %10$sPolítica de cookies%5$s de %6$sDigits by Twitter%5$s, para compartir tu número de teléfono con %4$s, y que otros usuarios de %4$s puedan descubrirte por el número de teléfono.</string>
+    <string name="dgts__terms_text_sign_in">Al pulsar %1$sContinuar%1$s arriba, tu %7$snúmero de teléfono o dirección de correo electrónico de Digits%5$s se compartirá con %4$s y otros usuarios de %4$s pueden descubrirte por el número de teléfono o correo electrónico.</string>
+    <string name="dgts__terms_text_updated">Al pulsar %1$sContinuar%1$s arriba, aceptas los %8$sTérminos de servicio%5$s, la %9$sPolítica de privacidad%5$s y el %10$sUso de cookies%5$s de %6$sDigits by Twitter%5$s, para compartir tu %7$snúmero de teléfono o correo electrónico de Digits%5$s con %4$s, y que otros usuarios de %4$s puedan descubrirte por el número de teléfono o correo electrónico.</string>
     <string name="dgts__try_again">Reintentar</string>
     <string name="dgts__try_again_confirmation">Revisa tu código e inténtalo de nuevo.</string>
     <string name="dgts__try_again_email">Revisa tu correo electrónico e inténtalo de nuevo</string>

@@ -26,6 +26,7 @@
     <string name="dgts__confirmation_error_alternative">很抱歉，我们无法向你发送验证码。</string>
     <string name="dgts__confirmation_expired">此确认码已过期，请重新发送确认码。</string>
     <string name="dgts__continue">继续</string>
+    <string name="dgts__create_account">创建账号</string>
     <string name="dgts__digits_logo_desc">digits logo 图标</string>
     <string name="dgts__digits_logo_name_desc">digits logo 名字</string>
     <string name="dgts__dismiss">忽略</string>
@@ -44,8 +45,26 @@
     <string name="dgts__pin_code_verification_title">输入两步验证码</string>
     <string name="dgts__resend_confirmation_button_code">重新发送验证码</string>
     <string name="dgts__resend_confirmation_text">重新发送确认码</string>
+    <string name="dgts__send_confirmation_code">发送确认码</string>
     <string name="dgts__sending">发送中…</string>
     <string name="dgts__success_desc">成功图标</string>
+    <string name="dgts__terms_email_request">点击上方 %1$s继续%1$s ，表明您正在将该电子邮箱添加至 Digits 账户。您同意该应用和  %7$sDigits\
+账户中列出的所有应用%5$s \
+\
+可以访问该电子邮箱地址并且其用户可以通过电子邮箱找到您。</string>
+    <string name="dgts__terms_text">点击上面的%1$s发送验证码%1$s按钮，%6$sTwitter 的 Digits%5$s便会向你的手机号码发送验证短信。运营商可能会收取额外的短信或数据传输费。</string>
+    <string name="dgts__terms_text_call_me">点击上方%1$s呼叫我%1$s ， %6$sTwitter\
+Digits%5$s\
+\
+将向你发起语音呼叫，确认你的电话号码，相关呼叫和数据费率适用。</string>
+    <string name="dgts__terms_text_create">点击上方 %1$s创建账户%1$s，表明您同意 Twitter\
+Digits %8$s服务条款%5$s, %9$s隐私政策%5$s 和 %10$sCookie\
+使用%5$s  %6$s%5$s, 与 %4$s共享您的电话号码并且其他%4$s 用户能够通过电话号码找到您。</string>
+    <string name="dgts__terms_text_sign_in">点击上方 %1$s继续%1$s 表明您的 Digits 电话号码和/或电子邮箱地址%7$s将与%5$s  %4$s 共享，其他%4$s \
+\
+用户能够通过电话号码和/或电子邮箱找到您。</string>
+    <string name="dgts__terms_text_updated">点击上方 %1$s继续%1$s ，表明您同意 Twitter Gigits %8$s服务条款%5$s, %9$s隐私政策%5$s, and %10$sCookie\
+使用%5$s %6$s%5$s与%7$s共享您的 Digits 电话号码和/或电子邮箱地址%5$s 并且 %4$s其他用户%4$s 能够通过电话号码和/或电子邮箱找到您。</string>
     <string name="dgts__try_again">重试</string>
     <string name="dgts__try_again_confirmation">请检查你的确认码并重试。</string>
     <string name="dgts__try_again_email">请检查你的邮件并重试</string>

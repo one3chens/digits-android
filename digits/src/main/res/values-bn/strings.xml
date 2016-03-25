@@ -26,6 +26,7 @@
     <string name="dgts__confirmation_error_alternative">দুঃখিত, আপনাকে একটি যাচাইকরণ কোড পাঠাতে আমরা সমস্যার সম্মুখীন হচ্ছি।</string>
     <string name="dgts__confirmation_expired">এই কোডের মেয়াদ শেষ হয়েছে। দয়া করে নিশ্চিতকরণ কোড পুনঃপাঠান।</string>
     <string name="dgts__continue">অবিরত রাখুন</string>
+    <string name="dgts__create_account">অ্যাকাউন্ট তৈরি করুন</string>
     <string name="dgts__digits_logo_desc">digits লোগো আইকন</string>
     <string name="dgts__digits_logo_name_desc">digits লোগো নাম</string>
     <string name="dgts__dismiss">খারিজ করুন</string>
@@ -44,8 +45,15 @@
     <string name="dgts__pin_code_verification_title">2-পদক্ষেপ যাচাইকরণ কোড লিখুন</string>
     <string name="dgts__resend_confirmation_button_code">কোডটি পুনরায় পাঠান</string>
     <string name="dgts__resend_confirmation_text">নিশ্চিতকরণ কোড আবার পাঠান</string>
+    <string name="dgts__send_confirmation_code">নিশ্চিতকরণ কোড পাঠান</string>
     <string name="dgts__sending">পাঠানো হচ্ছে…</string>
     <string name="dgts__success_desc">সফল হওয়ার আইকন</string>
+    <string name="dgts__terms_email_request">উপরে %1$sঅবিরত%1$s ট্যাপ করে আপনি এই ইমেলটিকে আপনার Digits অ্যাকাউন্টের সাথে যোগ করছেন। আপনি সম্মত হন যে এই অ্যাপ ও %7$sআপনার Digits অ্যাকাউন্টে তালিকাবদ্ধ সমস্ত অ্যাপ%5$s এই ইমেল ঠিকানাতে অ্যাক্সেস করতে এবং এর ব্যবহারকারীদেরকে তাদের ইমেল দিয়ে অ্যাবিষ্কার করতে পারবে।</string>
+    <string name="dgts__terms_text">উপরে %1$sনিশ্চয়তা কোড পাঠান%1$s ট্যাপ করলে, আপনার ফোন নম্বর নিশ্চিত করতে %6$sDigits by Twitter%5$s আপনাকে একটি এসএমএস পাঠাবে। পরবর্তী স্ক্রীনে একটি নতুন এসএমএস পেতে আপনি \"কোড পুনঃপাঠান\" অথবা আপনার ফোন নম্বর নিশ্চিত করার জন্য একটি ফোন কল শুরু করতে \"আমাকে কল করুন\" বাছতে পারেন। বার্তা, কল ও ডেটা দর প্রয়োগ হতে পারে।</string>
+    <string name="dgts__terms_text_call_me">উপরে %1$sআমাকে কল করুন%1$s ট্যাপ করলে, আপনার ফোন নম্বর নিশ্চিত করতে %6$sDigits by Twitter%5$s আপনাকে একটি ভয়েস কল করবে। কল ও ডেটা দর প্রয়োগ হতে পারে।</string>
+    <string name="dgts__terms_text_create">উপরে %1$sঅ্যাকাউন্ট তৈরি করুন%1$s ট্যাপ করে আপনার ফোন নম্বর %4$s-এর সাথে শেয়ার করার জন্য আপনি %6$sDigits by Twitter%5$s-এর %8$sপরিষেবার শর্তাবলী%5$s, %9$sগোপনীয়তা নীতি%5$s ও %10$sকুকিজ ব্যবহার%5$s-এর সাথে এবং %4$s-এর অন্যান্য ব্যবহারকারীরা আপনাকে ফোন নম্বরের মাধ্যমে আবিষ্কার করতে পারবেন তাতে সম্মত হন।</string>
+    <string name="dgts__terms_text_sign_in">উপরে %1$sঅবিরত%1$s ট্যাপ করলে আপনার %7$sDigits ফোন নম্বর এবং/অথবা ইমেল ঠিকানা%5$s %4$s-এর সাথে শেয়ার করা হবে এবং %4$s-এর অন্যান্য ব্যবহারকারীরা আপনাকে ফোন নম্বর এবং/অথবা ইমেলের মাধ্যমে আবিষ্কার করতে পারবেন।</string>
+    <string name="dgts__terms_text_updated">উপরে %1$sঅবিরত%1$s ট্যাপ করে আপনি %4$s-এর সাথে আপনার %7$sDigits ফোন নম্বর এবং/অথবা ইমেল ঠিকানা%5$s শেয়ার করার জন্য %6$sDigits by Twitter%5$s-এর %8$sপরিষেবার শর্তাবলী%5$s, %9$sগোপনীয়তা নীতি%5$s ও %10$sকুকিজ ব্যবহার%5$s-এর সাথে এবং %4$s-এর অন্যান্য ব্যবহারকারীরা আপনাকে ফোন নম্বর এবং/অথবা ইমেলের মাধ্যমে আবিষ্কার করতে পারবেন তাতে সম্মত হন।</string>
     <string name="dgts__try_again">আবার চেষ্টা করুন</string>
     <string name="dgts__try_again_confirmation">অনুগ্রহ করে আপনার কোড পরীক্ষা করে আবার চেষ্টা করুন।</string>
     <string name="dgts__try_again_email">দয়া করে আপনার ইমেল পরীক্ষা করুন ও আবার চেষ্টা করুন</string>

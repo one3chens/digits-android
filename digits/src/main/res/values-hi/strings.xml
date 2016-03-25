@@ -26,6 +26,7 @@
     <string name="dgts__confirmation_error_alternative">क्षमा करें, हमें आपको एक पुष्टिकरण कोड भेजने में परेशानी हो रही है.</string>
     <string name="dgts__confirmation_expired">यह कोड समाप्त हो गया है. कृपया पुष्टिकरण कोड पुनः भेजें.</string>
     <string name="dgts__continue">जारी रखें</string>
+    <string name="dgts__create_account">खाता बनाएं</string>
     <string name="dgts__digits_logo_desc">डिजिट्स लोगो आइकन</string>
     <string name="dgts__digits_logo_name_desc">डिजिट्स लोगो नाम</string>
     <string name="dgts__dismiss">बर्खास्त करें</string>
@@ -44,8 +45,15 @@
     <string name="dgts__pin_code_verification_title">2-चरणीय सत्यापन कोड दर्ज करें</string>
     <string name="dgts__resend_confirmation_button_code">कोड फिर से भेजें</string>
     <string name="dgts__resend_confirmation_text">पुष्टिकरण कोड पुन: भेजें</string>
+    <string name="dgts__send_confirmation_code">पुष्टिकरण कोड भेजें</string>
     <string name="dgts__sending">भेजा जा रहा है…</string>
     <string name="dgts__success_desc">सफलता चिह्न</string>
+    <string name="dgts__terms_email_request">ऊपर %1$sजारी रखें%1$s टैप करके, आप इस ईमेल को अपने डिजिट खाते से जोड़ेंगे. इसके साथ आप अपनी सहमति भी देते हैं कि यह एप्प एवं %7$s वो सभी एप्स जो आपके डिजिट अकाउंट में सूचीबद्ध हैं%5$s, आपके इस ईमेल को देख सकते हैं तथा उनके उपयोगकर्ता आपको ईमेल से खोज सकते हैं.</string>
+    <string name="dgts__terms_text">ऊपर %1$sपुष्टिकरण कोड भेजें%1$s टैप करने से, %6$sDigits by Twitter%5$s, आपके फ़ोन नंबर की पुष्टि करने के लिए आपको एक एस.एम.एस भेजेंगे. इसके बाद की स्क्रीन पर, आप नये एस.एम.एस. के लिये \"कोड दोबारा भेजें\" या फिर फ़ोन कॉल के लिए \"कॉल करें\" चुन सकते हैं ताकी आपके फ़ोन नंबर की पुष्टि हो सके. संदेश और डेटा दरें लागू हो सकती है.</string>
+    <string name="dgts__terms_text_call_me">ऊपर %1$sमुझे कॉल करें%1$s पर टैप करने से, %6$sDigits by Twitter%5$s आपके फ़ोन नंबर की पुष्टि करने के लिए आपको वॉयस कॉल करेंगे. कॉल और डेटा दरें लागू हो सकती हैं.</string>
+    <string name="dgts__terms_text_create">ऊपर %1$sखाता बनायें%1$s पर टैप करके, आप %6$sDigits by Twitter%5$s की %8$sसेवा की शर्तों%5$s, %9$sगोपनीयता नीति%5$s, और %10$sकुकीज़ नीति%5$s से सहमत होते हैं, और इससे भी कि आपका फ़ोन नंबर %4$s से शेयर होगा एवं %4$s के अन्य उपयोगकर्ता फ़ोन नंबर के द्वारा आपको खोज सकते हैं.</string>
+    <string name="dgts__terms_text_sign_in">ऊपर %1$sजारी रखें%1$s पर टैप करके, आप इससे सहमत होते हैं कि आपका %7$s डिजिट फ़ोन नंबर और/या ईमेल%5$s,  %4$s से शेयर होगा एवं %4$s के अन्य उपयोगकर्ता फ़ोन नंबर और/या ईमेल के द्वारा आपको खोज सकते हैं.</string>
+    <string name="dgts__terms_text_updated">ऊपर %1$sजारी रखें%1$s पर टैप करके, आप %6$sDigits by Twitter%5$s की %8$sसेवा की शर्तों%5$s, %9$sगोपनीयता नीति%5$s, और %10$sकुकीज़ नीति%5$s से सहमत होते हैं, और इससे भी कि आपका %7$s  फ़ोन नंबर और/या ईमेल%5$s,  %4$s से शेयर होगा एवं %4$s के अन्य उपयोगकर्ता फ़ोन नंबर और/या ईमेल के द्वारा आपको खोज सकते हैं.</string>
     <string name="dgts__try_again">फिर से कोशिश करें</string>
     <string name="dgts__try_again_confirmation">कृपया अपने कोड की जांच करें और फिर कोशिश करें.</string>
     <string name="dgts__try_again_email">कृपया अपने ईमेल की जांच करें और फिर कोशिश करें.</string>

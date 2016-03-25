@@ -26,6 +26,7 @@
     <string name="dgts__confirmation_error_alternative">Maaf, ada masalah saat kami mengirim kode konfirmasi.</string>
     <string name="dgts__confirmation_expired">Kode ini telah kedaluwarsa. Silakan kirim ulang kode konfirmasi.</string>
     <string name="dgts__continue">Lanjut</string>
+    <string name="dgts__create_account">Buat akun</string>
     <string name="dgts__digits_logo_desc">ikon logo digits</string>
     <string name="dgts__digits_logo_name_desc">nama logo digits</string>
     <string name="dgts__dismiss">Singkirkan</string>
@@ -44,8 +45,18 @@
     <string name="dgts__pin_code_verification_title">Masukkan kode verifikasi 2 langkah</string>
     <string name="dgts__resend_confirmation_button_code">Kirim ulang kode</string>
     <string name="dgts__resend_confirmation_text">Kirim ulang kode konfirmasi</string>
+    <string name="dgts__send_confirmation_code">Kirim kode konfirmasi</string>
     <string name="dgts__sending">Mengirim…</string>
     <string name="dgts__success_desc">Ikon Berhasil</string>
+    <string name="dgts__terms_email_request">Dengan menyentuh %1$sLanjut%1$s di atas, Anda menambahkan email ini ke akun Digits Anda. Anda menyetujui bahwa aplikasi ini dan %7$ssemua aplikasi yang terdaftar di akun Digits Anda%5$s dapat mengakses alamat email ini dan penggunanya dapat menemukan Anda berdasarkan email.</string>
+    <string name="dgts__terms_text">Dengan menyentuh %1$sKirim kode konfirmasi%1$s di atas, %6$sDigits by Twitter%5$s akan mengirim SMS untuk mengonfirmasi nomor ponsel Anda. Pada layar \
+berikutnya, Anda dapat memilih “Kirim ulang kode” untuk menerima SMS \
+baru atau “Hubungi saya” untuk dihubungi guna mengonfirmasi nomor ponsel Anda. Tarif SMS, telepon, &amp; data mungkin \
+berlaku.</string>
+    <string name="dgts__terms_text_call_me">Dengan menyentuh %1$sHubungi saya%1$s di atas, %6$sDigits by Twitter%5$s akan mengirimkan panggilan suara untuk mengonfirmasi nomor ponsel Anda. Tarif telepon &amp; data mungkin berlaku.</string>
+    <string name="dgts__terms_text_create">Dengan menyentuh %1$sBuat akun%1$s di atas, Anda menyetujui %8$sPersyaratan Layanan%5$s, %9$sKebijakan Privasi%5$s, dan %10$sPenggunaan Kuki%5$s dari %6$sDigits by Twitter%5$s, untuk membagikan nomor ponsel Anda dengan %4$s, dan pengguna %4$s lainnya dapat menemukan Anda berdasarkan nomor ponsel.</string>
+    <string name="dgts__terms_text_sign_in">Dengan menyentuh %1$sLanjut%1$s di atas, %7$snomor ponsel dan/atau alamat email Digits%5$s Anda akan dibagikan ke %4$s  dan pengguna %4$s lainnya dapat menemukan Anda berdasarkan nomor ponsel dan/atau email.</string>
+    <string name="dgts__terms_text_updated">Dengan menyentuh %1$sLanjut%1$s di atas, Anda menyetujui %8$sPersyaratan Layanan%5$s, %9$sKebijakan Privasi%5$s, dan %10$sPenggunaan Kuki%5$s dari %6$sDigits by Twitter%5$s, untuk membagikan %7$snomor ponsel dan/atau alamat email Digits Anda%5$s dengan %4$s, dan pengguna %4$s lainnya dapat menemukan Anda berdasarkan nomor ponsel dan/atau email.</string>
     <string name="dgts__try_again">Coba Lagi</string>
     <string name="dgts__try_again_confirmation">Silakan periksa kode Anda dan coba lagi.</string>
     <string name="dgts__try_again_email">Silakan periksa email Anda dan coba lagi</string>

@@ -26,6 +26,7 @@
     <string name="dgts__confirmation_error_alternative">מצטערים, נתקלנו בבעיה בשליחת קוד האישור.</string>
     <string name="dgts__confirmation_expired">פג תוקפו של הקוד. בצע שליחה מחדש של קוד אישור.</string>
     <string name="dgts__continue">המשך</string>
+    <string name="dgts__create_account">צור חשבון</string>
     <string name="dgts__digits_logo_desc">הסמל של Digits</string>
     <string name="dgts__digits_logo_name_desc">שם הסמל של Digits</string>
     <string name="dgts__dismiss">התעלם</string>
@@ -44,8 +45,15 @@
     <string name="dgts__pin_code_verification_title">הזן קוד אימות בשני שלבים</string>
     <string name="dgts__resend_confirmation_button_code">שליחת קוד מחדש</string>
     <string name="dgts__resend_confirmation_text">שלח מחדש קוד אישור</string>
+    <string name="dgts__send_confirmation_code">שלח קוד אישור</string>
     <string name="dgts__sending">שולח…</string>
     <string name="dgts__success_desc">סמל הצלחה</string>
+    <string name="dgts__terms_email_request">בעצם הנגיעה ב%1$sהמשך%1$s לעיל, אתה מוסיף דואר אלקטרוני זה לחשבון Digits שלך. אתה מסכים לכך שיישום זה %7$sוכל היישומים הרשומים בחשבון Digits שלך%5$s יוכלו לגשת לכתובת דואר אלקטרוני זו ולכך שהמשתמשים שלהם יוכלו לאתר אותך לפי הדואר האלקטרוני.</string>
+    <string name="dgts__terms_text">לאחר הנגיעה ב%1$sשלח קוד אישור%1$s לעיל, %6$sDigits by Twitter%5$s ישלח לך הודעת SMS כדי לאשר את מספר הטלפון שלך. במסך הבא, תוכל לבחור \"שלח קוד מחדש\" כדי לקבל הודעת SMS חדשה, או \"התקשר אליי\" כדי ליזום שיחת טלפון לאישור מספר הטלפון שלך. ייתכן שתחויב בתשלום על ההודעה, השיחה והנתונים.</string>
+    <string name="dgts__terms_text_call_me">לאחר הנגיעה ב%1$sהתקשר אליי%1$s לעיל, %6$sDigits by Twitter%5$s ישלח לך הודעת קולית כדי לאשר את מספר הטלפון שלך. ייתכן שתחויב בגין השיחה והנתונים.</string>
+    <string name="dgts__terms_text_create">בעצם הנגיעה ב%1$sצור חשבון%1$s לעיל, אתה מסכים ל%8$sתנאי השימוש%5$s, ל%9$sמדיניות הפרטיות%5$s ול%10$sשימוש בקובצי Cookie%5$s של %6$sDigits by Twitter%5$s, לשיתוף מספר הטלפון שלך עם %4$s, ולכך שמשתמשים אחרים של %4$s יוכלו לאתר אותך לפי מספר הטלפון.</string>
+    <string name="dgts__terms_text_sign_in">לאחר הנגיעה ב%1$sהמשך%1$s לעיל, %7$sמספר הטלפון ו/או כתובת הדואר האלקטרוני שלך ב-Digits%5$s ישותפו עם %4$s ומשתמשים אחרים של %4$s יוכלו לאתר אותך לפי מספר הטלפון ו/או הדואר האלקטרוני שלך.</string>
+    <string name="dgts__terms_text_updated">בעצם הנגיעה ב%1$sהמשך%1$s לעיל, אתה מסכים ל%8$sתנאי השימוש%5$s, ל%9$sמדיניות הפרטיות%5$s ול%10$sשימוש בקובצי Cookie%5$s של %6$sDigits by Twitter%5$s, לשיתוף %7$sמספר הטלפון ו/או כתובת הדואר האלקטרוני שלך ב-Digits%5$s עם %4$s, ולכך שמשתמשים אחרים של %4$s יוכלו לאתר אותך לפי מספר הטלפון ו/או הדואר האלקטרוני שלך.</string>
     <string name="dgts__try_again">נסה שוב</string>
     <string name="dgts__try_again_confirmation">בדוק את הקוד שלך ונסה שוב.</string>
     <string name="dgts__try_again_email">בדוק את כתובת הדואר האלקטרוני ונסה שוב.</string>
