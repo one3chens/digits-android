@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## v1.10.1
+ * Bug fixes when used alongside OKHttp 2.3+
+ * Updated Translations
+
 ## v1.10.0
 * Headless UI allowing apps to use a custom phone number screen.
 
