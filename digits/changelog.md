@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## v1.10.2
+
+## v1.10.2
+ * Bug fixes and error log improvements
 ## v1.10.1
  * Bug fixes when used alongside OKHttp 2.3+
  * Updated Translations
