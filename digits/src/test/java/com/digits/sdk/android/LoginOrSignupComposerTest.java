@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.os.ResultReceiver;
 import android.test.mock.MockContext;
 
+import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.MockDigitsApiException;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
@@ -55,7 +56,7 @@ public class LoginOrSignupComposerTest {
     DigitsClient digitsClient;
     ResultReceiver resultReceiver;
     ActivityClassManager activityClassManager;
-    ArgumentCaptor<DigitsCallback> callbackCaptor;
+    ArgumentCaptor<Callback> callbackCaptor;
     AuthResponse authResponse;
     DeviceRegistrationResponse deviceRegistrationResponse;
     AuthConfig authConfig;
@@ -79,7 +80,7 @@ public class LoginOrSignupComposerTest {
         digitsClient = mock(DigitsClient.class);
         resultReceiver = mock(ResultReceiver.class);
         activityClassManager = mock(ActivityClassManager.class);
-        callbackCaptor = ArgumentCaptor.forClass(DigitsCallback.class);
+        callbackCaptor = ArgumentCaptor.forClass(Callback.class);
         loginCodeActivity = LoginCodeActivity.class;
         confirmationCodeActivity = ConfirmationCodeActivity.class;
         retrofitError = mock(RetrofitError.class);
@@ -142,7 +143,7 @@ public class LoginOrSignupComposerTest {
         //Simulate Auth success
         verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
-        final DigitsCallback loginCallback = callbackCaptor.getValue();
+        final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.success(new Result(authResponse, null));
     }
 
@@ -167,13 +168,13 @@ public class LoginOrSignupComposerTest {
         //Simulate Auth failure
         verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
-        final DigitsCallback loginCallback = callbackCaptor.getValue();
+        final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.failure(couldNotAuthenticateException);
 
         //Simulate Signup success
         verify(digitsClient).registerDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
-        final DigitsCallback signupCallback = callbackCaptor.getValue();
+        final Callback signupCallback = callbackCaptor.getValue();
         signupCallback.success(new Result(deviceRegistrationResponse, null));
     }
 
@@ -202,7 +203,7 @@ public class LoginOrSignupComposerTest {
         //Simulate Auth success
         verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
-        final DigitsCallback loginCallback = callbackCaptor.getValue();
+        final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.success(new Result(authResponse, null));
     }
 
@@ -230,7 +231,7 @@ public class LoginOrSignupComposerTest {
         //Simulate Auth success
         verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
-        final DigitsCallback loginCallback = callbackCaptor.getValue();
+        final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.success(new Result(authResponse, null));
     }
 
@@ -258,7 +259,7 @@ public class LoginOrSignupComposerTest {
         verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
 
-        final DigitsCallback loginCallback = callbackCaptor.getValue();
+        final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.failure(userIsNotSdkUserException);
     }
 
@@ -285,14 +286,14 @@ public class LoginOrSignupComposerTest {
         verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
 
-        final DigitsCallback loginCallback = callbackCaptor.getValue();
+        final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.failure(couldNotAuthenticateException);
 
         //Simulate Signup failure
         verify(digitsClient).registerDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
 
-        final DigitsCallback signupCallback = callbackCaptor.getValue();
+        final Callback signupCallback = callbackCaptor.getValue();
         signupCallback.failure(registrationRateExceededException);
     }
 

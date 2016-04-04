@@ -23,13 +23,16 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
 
+import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 
+import io.fabric.sdk.android.Fabric;
+
 abstract class LoginOrSignupComposer {
     final private Context context;
-    protected final DigitsCallback<DeviceRegistrationResponse> deviceRegCallback;
-    protected final DigitsCallback<AuthResponse> loginCallback;
+    protected final Callback<DeviceRegistrationResponse> deviceRegCallback;
+    protected final Callback<AuthResponse> loginCallback;
     final DigitsClient digitsClient;
     final String phoneNumber;
     final Verification verificationType;
@@ -49,7 +52,7 @@ abstract class LoginOrSignupComposer {
         this.resultReceiver = resultReceiver;
         this.activityClassManager = activityClassManager;
 
-        loginCallback = new DigitsCallback<AuthResponse>(context, null) {
+        loginCallback = new Callback<AuthResponse>() {
             @Override
             public void success(Result<AuthResponse> result) {
                 LoginOrSignupComposer.this.success(createIntentToLogin(result.data));
@@ -58,7 +61,9 @@ abstract class LoginOrSignupComposer {
             @Override
             public void failure(TwitterException twitterException) {
                 final DigitsException digitsException = createDigitsException(twitterException);
-
+                Fabric.getLogger().e(Digits.TAG, "HTTP Error: " + twitterException.getMessage() +
+                        ", API Error: " + "" + digitsException.getErrorCode() + ", User Message: "
+                        + digitsException.getMessage());
                 if (digitsException instanceof CouldNotAuthenticateException) {
                     beginRegistration();
                 } else {
@@ -67,15 +72,18 @@ abstract class LoginOrSignupComposer {
             }
         };
 
-        deviceRegCallback = new DigitsCallback<DeviceRegistrationResponse>(context, null) {
+        deviceRegCallback = new Callback<DeviceRegistrationResponse>() {
             @Override
             public void success(Result<DeviceRegistrationResponse> result) {
                 LoginOrSignupComposer.this.success(createIntentToSignup(result.data));
             }
 
             @Override
-            public void failure(TwitterException exception) {
-                final DigitsException digitsException = createDigitsException(exception);
+            public void failure(TwitterException twitterException) {
+                final DigitsException digitsException = createDigitsException(twitterException);
+                Fabric.getLogger().e(Digits.TAG, "HTTP Error: " + twitterException.getMessage() +
+                        ", API Error: " + "" + digitsException.getErrorCode() + ", User Message: "
+                        + digitsException.getMessage());
                 LoginOrSignupComposer.this.failure(digitsException);
             }
         };
