@@ -17,6 +17,7 @@
   -->
 
 <resources>
+    <!--suppress UnusedResources-->
     <style name="DigitsDebugLightTheme">
         <item name="dgts__logoDrawable">@drawable/dgts__logo</item>
     </style>

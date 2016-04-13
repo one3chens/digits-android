@@ -22,7 +22,6 @@
     <issue id="StringFormatCount" severity="ignore">
         <ignore path="src/main/res/values/strings.xml"/>
     </issue>
-    <issue id="GoogleAppIndexingWarning" severity="ignore"/>
     <issue id="ParcelCreator" severity="error">
         <ignore
             path="src/main/java/com/digits/sdk/android/LoginResultReceiver.java"/>
