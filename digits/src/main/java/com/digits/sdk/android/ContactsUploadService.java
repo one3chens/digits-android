@@ -21,14 +21,21 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.database.Cursor;
 
+import com.twitter.sdk.android.core.TwitterApiException;
+
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.Logger;
 import io.fabric.sdk.android.services.concurrency.internal.DefaultRetryPolicy;
 import io.fabric.sdk.android.services.concurrency.internal.ExponentialBackoff;
 import io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class ContactsUploadService extends IntentService {
     private static final String THREAD_NAME = "UPLOAD_WORKER";
@@ -36,6 +43,8 @@ public class ContactsUploadService extends IntentService {
     public static final String UPLOAD_COMPLETE = "com.digits.sdk.android.UPLOAD_COMPLETE";
     public static final String UPLOAD_COMPLETE_EXTRA = "com.digits.sdk.android.UPLOAD_COMPLETE_EXTRA";
     public static final String UPLOAD_FAILED = "com.digits.sdk.android.UPLOAD_FAILED";
+    public static final String ERROR_LOG_FORMAT =
+            "contact upload error, httpStatus=%d, errorCode=%d, errorMessage=%s";
     private static final int MAX_RETRIES = 1;
     private static final int CORE_THREAD_POOL_SIZE = 2;
     private static final int INITIAL_BACKOFF_MS = 1000;
@@ -43,6 +52,8 @@ public class ContactsUploadService extends IntentService {
     private ContactsHelper helper;
     private ContactsPreferenceManager prefManager;
     private RetryThreadPoolExecutor executor;
+    private Logger logger;
+    private Locale locale;
 
     public ContactsUploadService() {
         super(THREAD_NAME);
@@ -51,25 +62,30 @@ public class ContactsUploadService extends IntentService {
                 new ContactsPreferenceManager(),
                 new RetryThreadPoolExecutor(CORE_THREAD_POOL_SIZE,
                         new DefaultRetryPolicy(MAX_RETRIES),
-                        new ExponentialBackoff(INITIAL_BACKOFF_MS)));
+                        new ExponentialBackoff(INITIAL_BACKOFF_MS)),
+                Fabric.getLogger(), Locale.getDefault());
     }
 
     /*
      * Testing only
      */
     ContactsUploadService(ContactsClient contactsClient, ContactsHelper helper,
-                          ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor) {
+                          ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
+                          Logger logger, Locale locale) {
         super(THREAD_NAME);
 
-        init(contactsClient, helper, prefManager, executor);
+        init(contactsClient, helper, prefManager, executor, logger, locale);
     }
 
     private void init(ContactsClient contactsClient, ContactsHelper helper,
-              ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor) {
+              ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
+                      Logger logger, Locale locale) {
         this.contactsClient = contactsClient;
         this.helper = helper;
         this.prefManager = prefManager;
         this.executor = executor;
+        this.logger = logger;
+        this.locale = locale;
 
         setIntentRedelivery(true);
     }
@@ -95,8 +111,12 @@ public class ContactsUploadService extends IntentService {
                 executor.scheduleWithRetry(new Runnable() {
                     @Override
                     public void run() {
-                        contactsClient.uploadContacts(vCards);
-                        successCount.addAndGet(vCards.vcards.size());
+                        try {
+                            contactsClient.uploadContacts(vCards);
+                            successCount.addAndGet(vCards.vcards.size());
+                        } catch (RetrofitError retrofitError) {
+                            log(retrofitError);
+                        }
                     }
                 });
             }
@@ -148,5 +168,14 @@ public class ContactsUploadService extends IntentService {
         final Intent intent = new Intent(UPLOAD_COMPLETE);
         intent.putExtra(UPLOAD_COMPLETE_EXTRA, extra);
         sendBroadcast(intent);
+    }
+
+    void log(RetrofitError retrofitError) {
+        final Response response = retrofitError.getResponse();
+        final int httpStatus = response == null ? 0 : response.getStatus();
+        final TwitterApiException twitterApiException = TwitterApiException.convert(retrofitError);
+        logger.e(Digits.TAG, String.format(locale, ERROR_LOG_FORMAT,
+                httpStatus, twitterApiException.getErrorCode(),
+                twitterApiException.getErrorMessage()));
     }
 }
