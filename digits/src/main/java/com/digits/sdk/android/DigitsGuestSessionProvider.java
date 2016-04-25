@@ -36,7 +36,8 @@ class DigitsGuestSessionProvider extends SessionProvider {
     DigitsGuestSessionProvider(SessionManager<DigitsSession> defaultSessionManager,
             List<SessionManager<? extends Session>> sessionManagers) {
         this(defaultSessionManager, sessionManagers,
-                new OAuth2Service(TwitterCore.getInstance(), null, new DigitsApi()));
+                new OAuth2Service(TwitterCore.getInstance(),
+                        TwitterCore.getInstance().getSSLSocketFactory(), new DigitsApi()));
     }
 
     DigitsGuestSessionProvider(SessionManager<DigitsSession> defaultSessionManager,
