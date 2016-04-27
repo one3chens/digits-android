@@ -3,13 +3,16 @@
 
 ## Unreleased
 
-## v1.10.2
+## v1.10.3
+* Log errors from contact upload requests in logcat.
+* Fixed security issue where certificate pinning wasn't happening for some requests.
 
 ## v1.10.2
- * Bug fixes and error log improvements
+* Bug fixes and error log improvements
+
 ## v1.10.1
- * Bug fixes when used alongside OKHttp 2.3+
- * Updated Translations
+* Bug fixes when used alongside OKHttp 2.3+
+* Updated Translations
 
 ## v1.10.0
 * Headless UI allowing apps to use a custom phone number screen.
