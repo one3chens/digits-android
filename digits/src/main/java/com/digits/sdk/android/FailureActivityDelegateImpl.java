@@ -32,8 +32,8 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
     final DigitsScribeService scribeService;
 
     public FailureActivityDelegateImpl(Activity activity) {
-        this(activity, new FailureControllerImpl(), new FailureScribeService(Digits.getInstance()
-                .getScribeClient()));
+        this(activity, new FailureControllerImpl(), new DigitsScribeServiceBaseImpl(
+                Digits.getInstance().getScribeClient(), DigitsScribeConstants.Component.FAILURE));
     }
 
     public FailureActivityDelegateImpl(Activity activity, FailureController controller,

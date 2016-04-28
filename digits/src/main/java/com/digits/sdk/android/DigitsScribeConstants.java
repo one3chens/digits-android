@@ -16,30 +16,10 @@
  */
 package com.digits.sdk.android;
 
-import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
-
 class DigitsScribeConstants {
-    static final String SCRIBE_CLIENT = "tfw";
-    static final String SCRIBE_PAGE = "android";
-    static final String SCRIBE_SECTION = "digits";
-
-    static final String EMPTY_SCRIBE_COMPONENT = "";
-    static final String EMPTY_SCRIBE_ELEMENT = "";
-
-    static final String IMPRESSION_ACTION = "impression";
-    static final String FAILURE_ACTION = "failure";
-    static final String SUCCESS_ACTION = "success";
-    static final String CLICK_ACTION = "click";
-    static final String ERROR_ACTION = "error";
-
-    static final EventNamespace.Builder DIGITS_EVENT_BUILDER = new EventNamespace.Builder()
-            .setClient(SCRIBE_CLIENT)
-            .setPage(SCRIBE_PAGE)
-            .setSection(SCRIBE_SECTION);
-
     enum Element {
         COUNTRY_CODE("country_code"), SUBMIT("submit"), RETRY("retry"), CALL("call"), CANCEL
-                ("cancel"), RESEND("resend"), DISMISS("dismiss");
+                ("cancel"), RESEND("resend"), DISMISS("dismiss"), EMPTY("");
 
         private final String element;
 
@@ -49,6 +29,36 @@ class DigitsScribeConstants {
 
         public String getElement() {
             return element;
+        }
+    }
+
+    enum Component {
+        AUTH("auth"), LOGIN("login"), SIGNUP("signup"), PIN("pin"), EMAIL("email"),
+        CONTACTS("contacts"), FAILURE("failure"), EMPTY("");
+
+        private final String component;
+
+        Component(String component) {
+            this.component = component;
+        }
+
+        public String getComponent() {
+            return component;
+        }
+    }
+
+    enum Action{
+        IMPRESSION("impression"), FAILURE("failure"), SUCCESS("success"), CLICK("click"),
+        ERROR("error");
+
+        private final String action;
+
+        Action(String action) {
+            this.action = action;
+        }
+
+        public String getAction() {
+            return action;
         }
     }
 }

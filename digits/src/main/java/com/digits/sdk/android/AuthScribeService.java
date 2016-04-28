@@ -17,55 +17,24 @@
 package com.digits.sdk.android;
 
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
+import com.digits.sdk.android.DigitsScribeConstants.Component;
 
-class AuthScribeService implements DigitsScribeService {
+class AuthScribeService extends DigitsScribeServiceBaseImpl {
     static final String LOGGED_IN_ACTION = "logged_in";
     private final DigitsScribeClient scribeClient;
 
-    AuthScribeService(DigitsScribeClient scribeClient) {
-        if (scribeClient == null) {
-            throw new NullPointerException("scribeClient must not be null");
-        }
-        this.scribeClient = scribeClient;
-    }
-
-    @Override
-    public void impression() {
-        final EventNamespace ns = DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(DigitsScribeConstants.EMPTY_SCRIBE_COMPONENT)
-                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
-                .setAction(DigitsScribeConstants.IMPRESSION_ACTION)
-                .builder();
-        scribeClient.scribe(ns);
-    }
-
-    @Override
-    public void failure() {
-        final EventNamespace ns = DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(DigitsScribeConstants.EMPTY_SCRIBE_COMPONENT)
-                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
-                .setAction(DigitsScribeConstants.FAILURE_ACTION)
-                .builder();
-        scribeClient.scribe(ns);
-    }
-
-    @Override
-    public void click(DigitsScribeConstants.Element element) {
-        //nothing to do
+    AuthScribeService(DigitsScribeClient digitsScribeClient) {
+        super(Digits.getInstance().getScribeClient(), Component.EMPTY);
+        this.scribeClient = digitsScribeClient;
     }
 
     @Override
     public void success() {
-        final EventNamespace ns = DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(DigitsScribeConstants.EMPTY_SCRIBE_COMPONENT)
-                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
+        final EventNamespace ns = DIGITS_EVENT_BUILDER
+                .setComponent(Component.EMPTY.getComponent())
+                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
                 .setAction(LOGGED_IN_ACTION)
                 .builder();
-        scribeClient.scribe(ns);
-    }
-
-    @Override
-    public void error(DigitsException exception) {
-        //nothing to do
+        this.scribeClient.scribe(ns);
     }
 }

@@ -29,7 +29,8 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
 
     public ContactsActivityDelegateImpl(Activity activity) {
         this(activity, new ContactsControllerImpl(),
-                new ContactsScribeService(Digits.getInstance().getScribeClient()));
+                new DigitsScribeServiceBaseImpl(Digits.getInstance().getScribeClient(),
+                DigitsScribeConstants.Component.CONTACTS));
     }
 
     public ContactsActivityDelegateImpl(Activity activity, ContactsController controller,
