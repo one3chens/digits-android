@@ -37,14 +37,14 @@ import static org.mockito.Mockito.when;
 public class DigitsSessionVerifierTest {
     private DigitsSessionVerifier.VerificationCallback verificationCallback;
     private DigitsSessionVerifier verifier;
-    private DigitsApiClient.AccountService accountService;
+    private DigitsApiClient.SdkService accountService;
     private SessionListener listener;
 
     @Before
     public void setUp() throws Exception {
         verificationCallback = mock(DigitsSessionVerifier.VerificationCallback.class);
         verifier = spy(new DigitsSessionVerifier(verificationCallback));
-        accountService = mock(DigitsApiClient.AccountService.class);
+        accountService = mock(DigitsApiClient.SdkService.class);
         listener = mock(SessionListener.class);
     }
 

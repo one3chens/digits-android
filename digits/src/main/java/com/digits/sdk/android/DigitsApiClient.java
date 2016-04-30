@@ -23,7 +23,6 @@ import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -36,8 +35,7 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 
 class DigitsApiClient {
-    private final ConcurrentHashMap<Class, Object> services;
-    private final RestAdapter restAdapter;
+    private final SdkService service;
     private final Session session;
 
     DigitsApiClient(Session session) {
@@ -56,53 +54,34 @@ class DigitsApiClient {
             SSLSocketFactory sslFactory, ExecutorService executorService,
             DigitsUserAgent userAgent) {
         this.session = session;
-        this.services = new ConcurrentHashMap<>();
-        this.restAdapter = new RestAdapter.Builder()
+        final RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(new DigitsApi().getBaseHostUrl())
                 .setRequestInterceptor(new DigitsRequestInterceptor(userAgent))
                 .setExecutors(executorService, new MainThreadExecutor())
                 .setClient(new AuthenticatedClient(authConfig, session, sslFactory))
                 .build();
+        this.service = restAdapter.create(SdkService.class);
     }
 
     public Session getSession() {
         return session;
     }
 
-    public SdkService getSdkService() {
-        return getService(SdkService.class);
-    }
-
-    public DeviceService getDeviceService() {
-        return getService(DeviceService.class);
-    }
-
-    public AccountService getAccountService() {
-        return getService(AccountService.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getService(Class<T> cls) {
-        if (!services.containsKey(cls)) {
-            services.put(cls, restAdapter.create(cls));
-        }
-        return (T) services.<T>get(cls);
-    }
-
-
-    protected interface DeviceService {
-        @FormUrlEncoded
-        @POST("/1.1/device/register.json")
-        void register(@Field("raw_phone_number") String rawPhoneNumber,
-                @Field("text_key") String textKey,
-                @Field("send_numeric_pin") Boolean sendNumericPin,
-                @Field("lang") String lang,
-                @Field("client_identifier_string") String id,
-                @Field("verification_type") String verificationType,
-                Callback<DeviceRegistrationResponse> cb);
+    public SdkService getService() {
+        return service;
     }
 
     protected interface SdkService {
+        @FormUrlEncoded
+        @POST("/1.1/device/register.json")
+        void register(@Field("raw_phone_number") String rawPhoneNumber,
+                      @Field("text_key") String textKey,
+                      @Field("send_numeric_pin") Boolean sendNumericPin,
+                      @Field("lang") String lang,
+                      @Field("client_identifier_string") String id,
+                      @Field("verification_type") String verificationType,
+                      Callback<DeviceRegistrationResponse> cb);
+
         @FormUrlEncoded
         @POST("/1.1/sdk/account.json")
         void account(@Field("phone_number") String phoneNumber,
@@ -133,9 +112,7 @@ class DigitsApiClient {
         @FormUrlEncoded
         @POST("/1.1/sdk/account/email")
         void email(@Field("email_address") String email, Callback<DigitsSessionResponse> cb);
-    }
 
-    public interface AccountService {
         @GET("/1.1/sdk/account.json")
         void verifyAccount(Callback<VerifyAccountResponse> cb);
     }

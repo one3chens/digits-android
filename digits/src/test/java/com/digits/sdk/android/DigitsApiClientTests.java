@@ -53,24 +53,9 @@ public class DigitsApiClientTests {
 
     @Test
     public void testGetSdkService() throws Exception {
-        final DigitsApiClient.SdkService sdkService = digitsApiClient.getSdkService();
-        final DigitsApiClient.SdkService newSdkService = digitsApiClient.getSdkService();
+        final DigitsApiClient.SdkService sdkService = digitsApiClient.getService();
+        final DigitsApiClient.SdkService newSdkService = digitsApiClient.getService();
         assertTrue(sdkService == newSdkService);
-    }
-
-    @Test
-    public void testGetDeviceService() throws Exception {
-        final DigitsApiClient.DeviceService deviceService = digitsApiClient.getDeviceService();
-        final DigitsApiClient.DeviceService newDeviceService = digitsApiClient.getDeviceService();
-        assertTrue(deviceService == newDeviceService);
-    }
-
-    @Test
-    public void testGetAccountService() throws Exception {
-        final DigitsApiClient.AccountService accountService = digitsApiClient.getAccountService();
-        final DigitsApiClient.AccountService newAccountService = digitsApiClient
-                .getAccountService();
-        assertTrue(accountService == newAccountService);
     }
 }
 

@@ -166,7 +166,7 @@ public class DigitsClient {
 
             @Override
             public void success(Result<DigitsApiClient> result) {
-                result.data.getSdkService().auth(phoneNumber, verificationType.name(),
+                result.data.getService().auth(phoneNumber, verificationType.name(),
                         Locale.getDefault().getLanguage(), callback);
             }
 
@@ -179,7 +179,7 @@ public class DigitsClient {
 
             @Override
             public void success(Result<DigitsApiClient> result) {
-                result.data.getSdkService().account(phoneNumber, pin, callback);
+                result.data.getService().account(phoneNumber, pin, callback);
             }
 
         });
@@ -220,7 +220,7 @@ public class DigitsClient {
 
             @Override
             public void success(Result<DigitsApiClient> result) {
-                result.data.getSdkService().login(requestId, userId, code, callback);
+                result.data.getService().login(requestId, userId, code, callback);
             }
 
         });
@@ -233,7 +233,7 @@ public class DigitsClient {
 
             @Override
             public void success(Result<DigitsApiClient> result) {
-                result.data.getDeviceService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
+                result.data.getService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
                         true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER,
                         verificationType.name(), callback);
             }
@@ -247,7 +247,7 @@ public class DigitsClient {
 
             @Override
             public void success(Result<DigitsApiClient> result) {
-                result.data.getSdkService().verifyPin(requestId, userId, pin, callback);
+                result.data.getService().verifyPin(requestId, userId, pin, callback);
             }
 
         });

@@ -83,7 +83,7 @@ public class EmailRequestController extends DigitsControllerImpl {
     }
 
     DigitsApiClient.SdkService getSdkService(DigitsSession session) {
-        return new DigitsApiClient(session).getSdkService();
+        return new DigitsApiClient(session).getService();
     }
 
     @Override

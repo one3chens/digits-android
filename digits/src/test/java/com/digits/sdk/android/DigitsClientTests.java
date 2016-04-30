@@ -75,8 +75,7 @@ public class DigitsClientTests {
     private TwitterCore twitterCore;
     private TwitterAuthConfig twitterAuthConfig;
     private SessionManager<DigitsSession> sessionManager;
-    private DigitsApiClient.DeviceService deviceService;
-    private DigitsApiClient.SdkService sdkService;
+    private DigitsApiClient.SdkService service;
     private DigitsController controller;
     private AuthCallback callback;
     private DigitsSession guestSession;
@@ -98,8 +97,7 @@ public class DigitsClientTests {
         twitterAuthConfig = new TwitterAuthConfig(TestConstants.CONSUMER_KEY,
                 TestConstants.CONSUMER_SECRET);
         digitsApiClient = mock(DigitsApiClient.class);
-        deviceService = mock(DigitsApiClient.DeviceService.class);
-        sdkService = mock(DigitsApiClient.SdkService.class);
+        service = mock(DigitsApiClient.SdkService.class);
         context = mock(MockContext.class);
         controller = mock(DigitsController.class);
         callback = mock(AuthCallback.class);
@@ -113,8 +111,7 @@ public class DigitsClientTests {
         userSession = DigitsSession.create(TestConstants.DIGITS_USER, TestConstants.PHONE);
         guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
 
-        when(digitsApiClient.getDeviceService()).thenReturn(deviceService);
-        when(digitsApiClient.getSdkService()).thenReturn(sdkService);
+        when(digitsApiClient.getService()).thenReturn(service);
         when(twitterCore.getContext()).thenReturn(context);
         when(twitterCore.getAuthConfig()).thenReturn(twitterAuthConfig);
         when(twitterCore.getSSLSocketFactory()).thenReturn(mock(SSLSocketFactory.class));
@@ -362,7 +359,7 @@ public class DigitsClientTests {
         final Callback listener = mock(Callback.class);
         digitsClient.authDevice(TestConstants.PHONE, Verification.sms, listener);
 
-        verify(sdkService).auth(eq(TestConstants.PHONE), eq(Verification.sms.name()),
+        verify(service).auth(eq(TestConstants.PHONE), eq(Verification.sms.name()),
                 eq(Locale.getDefault().getLanguage()), eq(listener));
     }
 
@@ -371,7 +368,7 @@ public class DigitsClientTests {
         final Callback listener = mock(Callback.class);
         digitsClient.authDevice(TestConstants.PHONE, Verification.voicecall, listener);
 
-        verify(sdkService).auth(eq(TestConstants.PHONE), eq(Verification.voicecall.name()),
+        verify(service).auth(eq(TestConstants.PHONE), eq(Verification.voicecall.name()),
                 eq(Locale.getDefault().getLanguage()), eq(listener));
     }
 
@@ -379,7 +376,7 @@ public class DigitsClientTests {
     public void testRegisterDevice_withSmsVerification() throws Exception {
         final Callback listener = mock(Callback.class);
         digitsClient.registerDevice(TestConstants.PHONE, Verification.sms, listener);
-        verify(deviceService).register(TestConstants.PHONE,
+        verify(service).register(TestConstants.PHONE,
                 DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
                 DigitsClient.CLIENT_IDENTIFIER, Verification.sms.name(), listener);
     }
@@ -388,7 +385,7 @@ public class DigitsClientTests {
     public void testRegisterDevice_withVoiceVerification() throws Exception {
         final Callback listener = mock(Callback.class);
         digitsClient.registerDevice(TestConstants.PHONE, Verification.voicecall, listener);
-        verify(deviceService).register(TestConstants.PHONE,
+        verify(service).register(TestConstants.PHONE,
                 DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
                 DigitsClient.CLIENT_IDENTIFIER, Verification.voicecall.name(), listener);
     }
@@ -397,7 +394,7 @@ public class DigitsClientTests {
     public void testLoginDevice() throws Exception {
         final Callback listener = mock(Callback.class);
         digitsClient.loginDevice(ANY_REQUEST_ID, TestConstants.USER_ID, ANY_CODE, listener);
-        verify(sdkService).login(eq(ANY_REQUEST_ID), eq(TestConstants.USER_ID), eq(ANY_CODE),
+        verify(service).login(eq(ANY_REQUEST_ID), eq(TestConstants.USER_ID), eq(ANY_CODE),
                 eq(listener));
     }
 
@@ -405,7 +402,7 @@ public class DigitsClientTests {
     public void testVerifyPin() throws Exception {
         final Callback listener = mock(Callback.class);
         digitsClient.verifyPin(ANY_REQUEST_ID, TestConstants.USER_ID, ANY_CODE, listener);
-        verify(sdkService).verifyPin(eq(ANY_REQUEST_ID), eq(TestConstants.USER_ID), eq(ANY_CODE),
+        verify(service).verifyPin(eq(ANY_REQUEST_ID), eq(TestConstants.USER_ID), eq(ANY_CODE),
                 eq(listener));
     }
 

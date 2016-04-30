@@ -25,7 +25,7 @@ import com.twitter.sdk.android.core.SessionManager;
 import static org.mockito.Mockito.mock;
 
 public class DummyPinCodeController extends PinCodeController {
-    private final DigitsApiClient.AccountService accountService;
+    private final DigitsApiClient.SdkService accountService;
 
     DummyPinCodeController(ResultReceiver resultReceiver, StateButton sendButton,
                            EditText phoneEditText,
@@ -37,12 +37,12 @@ public class DummyPinCodeController extends PinCodeController {
         super(resultReceiver, sendButton, phoneEditText, sessionManager, digitsClient, requestId,
                 userId, phoneWithCountryCode, errors, activityClassManagerImp, scribeService,
                 emailCollection);
-        accountService = mock(DigitsApiClient.AccountService.class);
+        accountService = mock(DigitsApiClient.SdkService.class);
 
     }
 
     @Override
-    DigitsApiClient.AccountService getAccountService(DigitsSession session) {
+    DigitsApiClient.SdkService getAccountService(DigitsSession session) {
         return accountService;
     }
 }
