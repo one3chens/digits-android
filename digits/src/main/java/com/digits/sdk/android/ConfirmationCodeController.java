@@ -37,12 +37,12 @@ class ConfirmationCodeController extends DigitsControllerImpl {
     ConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                                InvertedStateButton resendButton, InvertedStateButton callMeButton,
                                EditText phoneEditText, String phoneNumber,
-                               DigitsScribeService scribeService, boolean isEmailCollection,
+                               DigitsEventCollector digitsEventCollector, boolean isEmailCollection,
                                TextView timerText) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText, phoneNumber,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(),
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
-                Digits.getInstance().getActivityClassManager(), scribeService,
+                Digits.getInstance().getActivityClassManager(), digitsEventCollector,
                 isEmailCollection, timerText);
     }
 
@@ -54,10 +54,10 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                                EditText phoneEditText, String phoneNumber,
                                SessionManager<DigitsSession> sessionManager, DigitsClient client,
                                ErrorCodes errors, ActivityClassManager activityClassManager,
-                               DigitsScribeService scribeService, boolean isEmailCollection,
+                               DigitsEventCollector digitsEventCollector, boolean isEmailCollection,
                                TextView timerText) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
-                sessionManager, scribeService);
+                sessionManager, digitsEventCollector);
         this.phoneNumber = phoneNumber;
         this.isEmailCollection = isEmailCollection;
         this.resendButton = resendButton;
@@ -70,7 +70,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        scribeService.click(DigitsScribeConstants.Element.SUBMIT);
+        digitsEventCollector.submitClickOnSignupScreen();
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -79,7 +79,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                     new DigitsCallback<DigitsUser>(context, this) {
                         @Override
                         public void success(Result<DigitsUser> result) {
-                            scribeService.success();
+                            digitsEventCollector.signupSuccess();
                             final DigitsSession session =
                                     DigitsSession.create(result, phoneNumber);
                             if (isEmailCollection) {
@@ -116,6 +116,16 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                     }, POST_DELAY_MS);
                 }
             });
+    }
+
+    @Override
+    public void scribeControllerFailure() {
+        digitsEventCollector.signupFailure();
+    }
+
+    @Override
+    public void scribeControllerException(DigitsException exception) {
+        digitsEventCollector.signupException(exception);
     }
 
     @Override

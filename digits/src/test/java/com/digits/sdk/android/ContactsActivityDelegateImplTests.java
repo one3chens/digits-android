@@ -44,7 +44,7 @@ public class ContactsActivityDelegateImplTests {
     ArgumentCaptor<View.OnClickListener> captorClick;
     Button button;
     TextView textView;
-    private DigitsScribeService scribeService;
+    private DigitsEventCollector digitsEventCollector;
 
     @Before
     public void setUp() throws Exception {
@@ -52,8 +52,8 @@ public class ContactsActivityDelegateImplTests {
 
         activity = mock(Activity.class);
         controller = mock(ContactsController.class);
-        scribeService = mock(DigitsScribeService.class);
-        delegate = spy(new DummyContactsDelegateImpl(activity, controller, scribeService));
+        digitsEventCollector = mock(DigitsEventCollector.class);
+        delegate = spy(new DummyContactsDelegateImpl(activity, controller, digitsEventCollector));
         captorClick = ArgumentCaptor.forClass(View.OnClickListener.class);
         button = mock(Button.class);
         textView = mock(TextView.class);
@@ -67,7 +67,7 @@ public class ContactsActivityDelegateImplTests {
 
         delegate.init();
 
-        verify(scribeService).impression();
+        verify(digitsEventCollector).contactScreenImpression();
         verify(delegate).setContentView();
         verify(delegate).setUpViews();
     }
@@ -99,7 +99,7 @@ public class ContactsActivityDelegateImplTests {
         verify(button).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
-        verify(scribeService).click(DigitsScribeConstants.Element.CANCEL);
+        verify(digitsEventCollector).cancelClickOnContactScreen();
         verify(activity).finish();
     }
 
@@ -110,7 +110,7 @@ public class ContactsActivityDelegateImplTests {
         verify(button).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
-        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
+        verify(digitsEventCollector).submitClickOnContactScreen();
         verify(controller).startUploadService(activity);
         verify(activity).finish();
     }
@@ -118,8 +118,8 @@ public class ContactsActivityDelegateImplTests {
     public class DummyContactsDelegateImpl extends ContactsActivityDelegateImpl {
 
         public DummyContactsDelegateImpl(Activity activity, ContactsController controller,
-                                         DigitsScribeService scribeService) {
-            super(activity, controller, scribeService);
+                                         DigitsEventCollector digitsEventCollector) {
+            super(activity, controller, digitsEventCollector);
         }
 
         protected String getFormattedDescription() {

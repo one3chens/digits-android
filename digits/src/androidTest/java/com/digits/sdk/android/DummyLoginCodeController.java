@@ -34,11 +34,11 @@ public class DummyLoginCodeController extends LoginCodeController {
                                     DigitsClient digitsClient, String requestId,
                                     long userId, String phoneWithCountryCode, ErrorCodes errors,
                                     ActivityClassManagerImp activityClassManagerImp,
-                                    DigitsScribeService scribeService, boolean emailCollection,
-                                    TextView timerTextView) {
+                                    DigitsEventCollector digitsEventCollector,
+                                    boolean emailCollection, TextView timerTextView) {
         super(resultReceiver, sendButton, resendButton, callMeButton, phoneEditText,
                 sessionManager, digitsClient, requestId, userId, phoneWithCountryCode, errors,
-                activityClassManagerImp, scribeService, emailCollection, timerTextView);
+                activityClassManagerImp, digitsEventCollector, emailCollection, timerTextView);
         accountService = mock(DigitsApiClient.SdkService.class);
     }
 

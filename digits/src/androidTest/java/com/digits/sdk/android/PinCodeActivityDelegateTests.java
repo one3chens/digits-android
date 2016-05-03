@@ -28,7 +28,7 @@ public class PinCodeActivityDelegateTests extends
 
     @Override
     public PinCodeActivityDelegate getDelegate() {
-        return spy(new DummyPinCodeActivityDelegate(scribeService));
+        return spy(new DummyPinCodeActivityDelegate(digitsEventCollector));
     }
 
     public void testIsValid() {
@@ -85,13 +85,13 @@ public class PinCodeActivityDelegateTests extends
         delegate.controller = controller;
         delegate.onResume();
         verify(controller).onResume();
-        verify(scribeService).impression();
+        verify(digitsEventCollector).pinScreenImpression();
     }
 
     public class DummyPinCodeActivityDelegate extends PinCodeActivityDelegate {
 
-        DummyPinCodeActivityDelegate(DigitsScribeService scribeService) {
-            super(scribeService);
+        DummyPinCodeActivityDelegate(DigitsEventCollector digitsEventCollector) {
+            super(digitsEventCollector);
         }
     }
 }

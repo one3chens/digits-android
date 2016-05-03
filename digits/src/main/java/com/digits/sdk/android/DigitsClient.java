@@ -51,18 +51,18 @@ public class DigitsClient {
     private final SessionManager<DigitsSession> sessionManager;
     private final TwitterCore twitterCore;
     private final DigitsAuthRequestQueue authRequestQueue;
-    private final DigitsScribeService scribeService;
+    private final DigitsEventCollector digitsEventCollector;
     private DigitsApiClient digitsApiClient;
 
     DigitsClient() {
         this(Digits.getInstance(), new DigitsUserAgent(), TwitterCore.getInstance(),
-                Digits.getSessionManager(), null,
-                new AuthScribeService(Digits.getInstance().getScribeClient()));
+                Digits.getSessionManager(), null, new DigitsEventCollector(
+                        Digits.getInstance().getScribeClient()));
     }
 
     DigitsClient(Digits digits, DigitsUserAgent userAgent, TwitterCore twitterCore,
         SessionManager<DigitsSession> sessionManager, DigitsAuthRequestQueue authRequestQueue,
-                 DigitsScribeService scribeService) {
+                 DigitsEventCollector digitsEventCollector) {
         if (twitterCore == null) {
             throw new IllegalArgumentException("twitter must not be null");
         }
@@ -88,7 +88,7 @@ public class DigitsClient {
         } else {
             this.authRequestQueue = authRequestQueue;
         }
-        this.scribeService = scribeService;
+        this.digitsEventCollector = digitsEventCollector;
     }
 
 
@@ -101,14 +101,14 @@ public class DigitsClient {
     }
 
     protected void startSignUp(DigitsAuthConfig digitsAuthConfig) {
-        scribeService.impression();
+        digitsEventCollector.authImpression();
         final DigitsSession session = sessionManager.getActiveSession();
         final boolean isCustomPhoneUI = (digitsAuthConfig.confirmationCodeCallback != null);
         final boolean isAuthorizedPartner = isAuthorizedPartner(digitsAuthConfig);
 
         if (session != null && !session.isLoggedOutUser()) {
             digitsAuthConfig.authCallback.success(session, null);
-            scribeService.success();
+            digitsEventCollector.authSuccess();
         } else if (isCustomPhoneUI && isAuthorizedPartner) {
             sendConfirmationCode(digitsAuthConfig);
         } else if (isCustomPhoneUI) {
@@ -203,7 +203,8 @@ public class DigitsClient {
 
             @Override
             public void success(final Intent intent) {
-                scribeService.success();
+                //TODO: araghav
+                //Fix Scribing logic for custom UI
                 digitsAuthConfig.confirmationCodeCallback.success(intent);
             }
 

@@ -63,7 +63,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     ErrorCodes errors;
     SessionManager<DigitsSession> sessionManager;
     Activity context;
-    DigitsScribeService scribeService;
+    DigitsEventCollector digitsEventCollector;
     CountDownTimer countDownTimer;
     TextView timerTextView;
 
@@ -82,7 +82,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         resultReceiver = mock(ResultReceiver.class);
         sessionManager = mock(SessionManager.class);
         errors = mock(ErrorCodes.class);
-        scribeService = mock(DigitsScribeService.class);
+        digitsEventCollector = mock(DigitsEventCollector.class);
         countDownTimer = mock(CountDownTimer.class);
         timerTextView = mock(TextView.class);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
@@ -91,10 +91,10 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
 
     public void testHandleError() throws Exception {
         controller.handleError(context, EXCEPTION);
-        verify(scribeService).error(EXCEPTION);
+        verifyControllerError(EXCEPTION, 1);
         verify(phoneEditText).setError(ERROR_MESSAGE);
         verify(sendButton).showError();
-        verifyNoInteractions(scribeService);
+        verifyNoInteractions(digitsEventCollector);
         verifyZeroInteractions(context);
     }
 
@@ -105,9 +105,8 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         controller.handleError(context, EXCEPTION);
         controller.handleError(context, EXCEPTION);
         controller.handleError(context, EXCEPTION);
-
-        verify(scribeService, times(5)).error(EXCEPTION);
-        verify(scribeService).failure();
+        verifyControllerError(EXCEPTION, 5);
+        verifyControllerFailure(1);
         verify(phoneEditText, atMost(4)).setError(ERROR_MESSAGE);
         verify(sendButton, atMost(4)).showError();
         verify(context).startActivity(intentCaptor.capture());
@@ -128,7 +127,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     }
 
     void verifyUnrecoverableException() {
-        verify(scribeService).failure();
+        verifyControllerFailure(1);
         verifyNoInteractions(sendButton, phoneEditText);
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();
@@ -196,4 +195,9 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     public void testValidateInput_empty() throws Exception {
         assertFalse(controller.validateInput(EMPTY_CODE));
     }
+
+    public abstract void verifyControllerFailure(int times);
+
+    public abstract void verifyControllerError(DigitsException e, int times);
+
 }

@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -36,12 +37,12 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
     DigitsController controller;
     SmsBroadcastReceiver receiver;
     Activity activity;
-    DigitsScribeService scribeService;
+    DigitsEventCollector digitsEventCollector;
     AuthConfig config;
     TosFormatHelper tosFormatHelper;
 
-    public ConfirmationCodeActivityDelegate(DigitsScribeService scribeService) {
-        this.scribeService = scribeService;
+    public ConfirmationCodeActivityDelegate(DigitsEventCollector digitsEventCollector) {
+        this.digitsEventCollector = digitsEventCollector;
     }
 
     @Override
@@ -73,8 +74,8 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
-        setupResendButton(activity, controller, scribeService, resendButton);
-        setupCallMeButton(activity, controller, scribeService, callMeButton, config);
+        setupResendButton(activity, controller, digitsEventCollector, resendButton);
+        setupCallMeButton(activity, controller, digitsEventCollector, callMeButton, config);
         setupCountDownTimer(controller, timerText, config);
         setUpEditPhoneNumberLink(activity, editPhoneNumberLink,
                 bundle.getString(DigitsClient.EXTRA_PHONE));
@@ -88,7 +89,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
         return new ConfirmationCodeController(
                 bundle.<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
                 stateButton, resendButton, callMeButton, editText,
-                bundle.getString(DigitsClient.EXTRA_PHONE), scribeService,
+                bundle.getString(DigitsClient.EXTRA_PHONE), digitsEventCollector,
                 bundle.getBoolean(DigitsClient.EXTRA_EMAIL), timerText);
     }
 
@@ -109,7 +110,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void onResume() {
-        scribeService.impression();
+        digitsEventCollector.signupScreenImpression();
         controller.onResume();
     }
 
@@ -119,6 +120,37 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
             activity.unregisterReceiver(receiver);
         }
         controller.cancelTimer();
+    }
+
+    void setupResendButton(final Activity activity, final DigitsController controller,
+                           final DigitsEventCollector digitsEventCollector,
+                           final InvertedStateButton resendButton){
+        resendButton.setEnabled(false);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                digitsEventCollector.resendClickOnSignupScreen();
+                controller.clearError();
+                controller.resendCode(activity, resendButton, Verification.sms);
+            }
+        });
+    }
+
+    void setupCallMeButton(final Activity activity, final DigitsController controller,
+                           final DigitsEventCollector digitsEventCollector,
+                           final InvertedStateButton callMeButton,
+                           final AuthConfig config){
+        callMeButton.setVisibility(config.isVoiceEnabled ? View.VISIBLE : View.GONE);
+        callMeButton.setEnabled(false);
+
+        callMeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                digitsEventCollector.callMeClickOnSignupScreen();
+                controller.clearError();
+                controller.resendCode(activity, callMeButton, Verification.voicecall);
+            }
+        });
     }
 
     protected void setUpSmsIntercept(Activity activity, EditText editText) {

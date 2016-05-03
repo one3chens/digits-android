@@ -42,7 +42,7 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
         MockitoAnnotations.initMocks(this);
         controller = new DummyEmailRequestController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, new ActivityClassManagerImp(), digitsClient,
-                PHONE_WITH_COUNTRY_CODE, scribeService, errors);
+                PHONE_WITH_COUNTRY_CODE, digitsEventCollector, errors);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
     private void mainRequest() {
         controller.executeRequest(context);
 
-        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
+        verify(digitsEventCollector).submitClickOnEmailScreen();
         verify(sendButton).showProgress();
         verify(phoneEditText, times(2)).getText();
         verify(sessionManager).getActiveSession();
@@ -76,7 +76,7 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
         final DigitsCallback callback = executeRequest();
         callback.success(result);
 
-        verify(scribeService).success();
+        verify(digitsEventCollector).submitEmailSuccess();
         verify(sessionManager).setActiveSession(DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
@@ -115,6 +115,16 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
 
     public void testValidateInput_empty() throws Exception {
         assertFalse(controller.validateInput(EMPTY_CODE));
+    }
+
+    @Override
+    public void verifyControllerFailure(int times) {
+        verify(digitsEventCollector, times(times)).submitEmailFailure();
+    }
+
+    @Override
+    public void verifyControllerError(DigitsException e, int times) {
+        verify(digitsEventCollector, times(times)).submitEmailException(EXCEPTION);
     }
 
     public void testValidateInput_invalidEmail() throws Exception {

@@ -33,10 +33,10 @@ public class DummyConfirmationCodeController extends ConfirmationCodeController 
                                     SessionManager<DigitsSession> sessionManager,
                                     DigitsClient client, ErrorCodes errors,
                                     ActivityClassManager activityClassManager,
-                                    DigitsScribeService scribeService, boolean isEmailCollection,
-                                    TextView timerText) {
+                                    DigitsEventCollector digitsEventCollector,
+                                    boolean isEmailCollection, TextView timerText) {
         super(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText, phoneNumber,
-                sessionManager, client, errors, activityClassManager, scribeService,
+                sessionManager, client, errors, activityClassManager, digitsEventCollector,
                 isEmailCollection, timerText);
     }
 

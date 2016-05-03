@@ -35,6 +35,7 @@ import retrofit.client.Response;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +47,7 @@ public class ConfirmationCodeControllerTests extends
         super.setUp();
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton,
                 resendButton, callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                digitsClient, errors, new ActivityClassManagerImp(), scribeService, false,
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, false,
                 timerTextView);
     }
 
@@ -56,7 +57,7 @@ public class ConfirmationCodeControllerTests extends
                 new ArrayList<Header>(), null);
         final DigitsUser user = new DigitsUser(USER_ID, "");
         callback.success(user, response);
-        verify(scribeService).success();
+        verify(digitsEventCollector).signupSuccess();
         verify(sessionManager).setActiveSession(any(DigitsSession.class));
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
@@ -76,7 +77,7 @@ public class ConfirmationCodeControllerTests extends
     public void testExecuteRequest_successAndMailRequestEnabled() throws Exception {
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true,
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
                 timerTextView);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
@@ -86,7 +87,7 @@ public class ConfirmationCodeControllerTests extends
         final DigitsCallback callback = executeRequest();
         callback.success(user, response);
 
-        verify(scribeService).success();
+        verify(digitsEventCollector).signupSuccess();
         verify(sessionManager).setActiveSession(any(DigitsSession.class));
         verify(sendButton).showFinish();
         verify(context).startActivityForResult(intentCaptor.capture(),
@@ -100,7 +101,7 @@ public class ConfirmationCodeControllerTests extends
     public void testExecuteRequest_failure() throws Exception {
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true,
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
                 timerTextView);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
@@ -121,7 +122,7 @@ public class ConfirmationCodeControllerTests extends
         final DummyConfirmationCodeController dcc =
                 new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                digitsClient, errors, new ActivityClassManagerImp(), scribeService, true,
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
                         timerTextView);
         controller = dcc;
 
@@ -157,12 +158,11 @@ public class ConfirmationCodeControllerTests extends
         verify(timer).start();
     }
 
-
     DigitsCallback executeRequest() {
         when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
                 (CODE));
         controller.executeRequest(context);
-        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
+        verify(digitsEventCollector).submitClickOnSignupScreen();
         verify(sendButton).showProgress();
         final ArgumentCaptor<DigitsCallback> argumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
@@ -172,4 +172,13 @@ public class ConfirmationCodeControllerTests extends
         return argumentCaptor.getValue();
     }
 
+    @Override
+    public void verifyControllerFailure(int times) {
+        verify(digitsEventCollector, times(times)).signupFailure();
+    }
+
+    @Override
+    public void verifyControllerError(DigitsException e, int times) {
+        verify(digitsEventCollector, times(times)).signupException(EXCEPTION);
+    }
 }

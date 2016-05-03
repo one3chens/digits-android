@@ -22,9 +22,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import org.mockito.ArgumentCaptor;
-
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -44,36 +41,6 @@ public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
     @Override
     public MockDigitsActivityDelegateImpl getDelegate() {
         return new MockDigitsActivityDelegateImpl();
-    }
-
-    public void testSetupResendButton() throws Exception {
-        delegate.setupResendButton(activity, controller, scribeService, resendButton);
-        verify(resendButton).setEnabled(false);
-        verify(resendButton).setOnClickListener(captorClick.capture());
-        testResendCaptor(resendButton, captorClick, DigitsScribeConstants.Element.RESEND,
-                Verification.sms);
-    }
-
-    public void testSetupCallMeButton_voiceEnabled() throws Exception {
-        final AuthConfig config = new AuthConfig();
-        config.isVoiceEnabled = Boolean.TRUE;
-
-        delegate.setupCallMeButton(activity, controller, scribeService, callMeButton, config);
-
-        verify(callMeButton).setOnClickListener(captorClick.capture());
-        testResendCaptor(callMeButton, captorClick, DigitsScribeConstants.Element.CALL,
-                Verification.voicecall);
-        verify(callMeButton).setEnabled(false);
-        verify(callMeButton).setVisibility(View.VISIBLE);
-    }
-
-    public void testSetupCallMeButton_voiceDisabled() throws Exception {
-        final AuthConfig config = new AuthConfig();
-        config.isVoiceEnabled = Boolean.FALSE;
-
-        delegate.setupCallMeButton(activity, controller, scribeService, callMeButton, config);
-        verify(callMeButton).setEnabled(false);
-        verify(callMeButton).setVisibility(View.GONE);
     }
 
     public void testSetupTimerText_voiceEnabled() throws Exception {
@@ -114,17 +81,6 @@ public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
 
         verify(activity).finish();
         verifyResultCode(activity, DigitsActivity.RESULT_CHANGE_PHONE_NUMBER);
-    }
-
-    private void testResendCaptor(InvertedStateButton timedStateButton,
-                                  ArgumentCaptor<View.OnClickListener> captorClick,
-                                  DigitsScribeConstants.Element element,
-                                  Verification verificationType){
-        final View.OnClickListener listener = captorClick.getValue();
-        listener.onClick(null);
-        verify(scribeService).click(element);
-        verify(controller, atLeast(0)).clearError();
-        verify(controller).resendCode(activity, timedStateButton, verificationType);
     }
 
     class MockDigitsActivityDelegateImpl extends DigitsActivityDelegateImpl {

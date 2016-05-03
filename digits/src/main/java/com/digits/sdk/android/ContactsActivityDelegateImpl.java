@@ -23,25 +23,24 @@ import android.widget.Button;
 import android.widget.TextView;
 
 class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
-    private final DigitsScribeService scribeService;
+    private final DigitsEventCollector digitsEventCollector;
     final Activity activity;
     final ContactsController controller;
 
     public ContactsActivityDelegateImpl(Activity activity) {
-        this(activity, new ContactsControllerImpl(),
-                new DigitsScribeServiceBaseImpl(Digits.getInstance().getScribeClient(),
-                DigitsScribeConstants.Component.CONTACTS));
+        this(activity, new ContactsControllerImpl(), new DigitsEventCollector(
+                Digits.getInstance().getScribeClient()));
     }
 
     public ContactsActivityDelegateImpl(Activity activity, ContactsController controller,
-                                        DigitsScribeService scribeService) {
+                                        DigitsEventCollector digitsEventCollector) {
         this.activity = activity;
         this.controller = controller;
-        this.scribeService = scribeService;
+        this.digitsEventCollector = digitsEventCollector;
     }
 
     public void init() {
-        scribeService.impression();
+        digitsEventCollector.contactScreenImpression();
         setContentView();
         setUpViews();
     }
@@ -76,7 +75,7 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scribeService.click(DigitsScribeConstants.Element.CANCEL);
+                digitsEventCollector.cancelClickOnContactScreen();
                 activity.finish();
             }
         });
@@ -86,7 +85,7 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scribeService.click(DigitsScribeConstants.Element.SUBMIT);
+                digitsEventCollector.submitClickOnContactScreen();
                 controller.startUploadService(activity);
                 activity.finish();
             }

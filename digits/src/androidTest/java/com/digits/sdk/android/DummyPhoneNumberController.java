@@ -32,10 +32,11 @@ public class DummyPhoneNumberController extends PhoneNumberController {
                                DigitsClient client, ErrorCodes errors,
                                ActivityClassManager activityClassManager,
                                SessionManager<DigitsSession> sessionManager,
-                               TosView tosView, DigitsScribeService scribeService,
+                               TosView tosView, DigitsEventCollector digitsEventCollector,
                                boolean emailCollection) {
         super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner, client, errors,
-                activityClassManager, sessionManager, tosView, scribeService, emailCollection);
+                activityClassManager, sessionManager, tosView, digitsEventCollector,
+                emailCollection);
         this.loginOrSignupComposer = mock(DummyLoginOrSignupComposer.class);
     }
 

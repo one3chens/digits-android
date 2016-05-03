@@ -32,7 +32,7 @@ public class EmailRequestActivityDelegateTests extends
         DigitsActivityDelegateTests<EmailRequestActivityDelegate> {
     @Override
     public EmailRequestActivityDelegate getDelegate() {
-        return spy(new DummyEmailRequestActivityDelegate(scribeService));
+        return spy(new DummyEmailRequestActivityDelegate(digitsEventCollector));
     }
 
     public void testIsValid() {
@@ -85,7 +85,7 @@ public class EmailRequestActivityDelegateTests extends
         delegate.controller = controller;
         delegate.onResume();
         verify(controller).onResume();
-        verify(scribeService).impression();
+        verify(digitsEventCollector).emailScreenImpression();
     }
 
     public void testSetUpEditPhoneNumberButton() {
@@ -94,13 +94,13 @@ public class EmailRequestActivityDelegateTests extends
     }
 
     public void testSetupResendButton(){
-        delegate.setupResendButton(activity, controller, scribeService, resendButton);
+        delegate.setupResendButton(resendButton);
         verify(resendButton).setVisibility(View.GONE);
     }
 
     public void testSetupCallMeButton(){
         final AuthConfig config = new AuthConfig();
-        delegate.setupCallMeButton(activity, controller, scribeService, callMeButton, config);
+        delegate.setupCallMeButton(callMeButton);
         verify(callMeButton).setVisibility(View.GONE);
     }
 
@@ -112,8 +112,8 @@ public class EmailRequestActivityDelegateTests extends
 
     public class DummyEmailRequestActivityDelegate extends EmailRequestActivityDelegate {
 
-        DummyEmailRequestActivityDelegate(DigitsScribeService scribeService) {
-            super(scribeService);
+        DummyEmailRequestActivityDelegate(DigitsEventCollector digitsEventCollector) {
+            super(digitsEventCollector);
         }
     }
 }

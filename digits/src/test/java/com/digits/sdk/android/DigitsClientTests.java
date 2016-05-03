@@ -83,7 +83,7 @@ public class DigitsClientTests {
     private DigitsApiClient digitsApiClient;
     private DigitsScribeClient scribeClient;
     private DigitsAuthRequestQueue authRequestQueue;
-    private DigitsScribeService scribeService;
+    private DigitsEventCollector digitsEventCollector;
     private Fabric fabric;
     private Activity activity;
     private LoginResultReceiver loginResultReceiver;
@@ -102,11 +102,11 @@ public class DigitsClientTests {
         controller = mock(DigitsController.class);
         callback = mock(AuthCallback.class);
         scribeClient = mock(DigitsScribeClient.class);
-        scribeService = mock(DigitsScribeService.class);
+        digitsEventCollector = mock(DigitsEventCollector.class);
         fabric = mock(Fabric.class);
         activity = mock(Activity.class);
         loginResultReceiver = new LoginResultReceiver(new WeakAuthCallback(callback,
-                mock(DigitsScribeService.class)), sessionManager);
+                mock(DigitsEventCollector.class)), sessionManager);
         authRequestQueue = createAuthRequestQueue();
         userSession = DigitsSession.create(TestConstants.DIGITS_USER, TestConstants.PHONE);
         guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
@@ -127,8 +127,7 @@ public class DigitsClientTests {
         when(controller.getErrors()).thenReturn(mock(ErrorCodes.class));
 
         digitsClient = new DigitsClient(digits, digitsUserAgent, twitterCore, sessionManager,
-            authRequestQueue,
-                scribeService) {
+            authRequestQueue, digitsEventCollector) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
                 return loginResultReceiver;
@@ -140,7 +139,7 @@ public class DigitsClientTests {
     public void testConstructor_nullTwitter() throws Exception {
         try {
             new DigitsClient(digits, digitsUserAgent, null, sessionManager, authRequestQueue,
-                scribeService);
+                digitsEventCollector);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("twitter must not be null", e.getMessage());
@@ -151,7 +150,7 @@ public class DigitsClientTests {
     public void testConstructor_nullDigits() throws Exception {
         try {
             new DigitsClient(null, digitsUserAgent, twitterCore, sessionManager, authRequestQueue,
-                scribeService);
+                digitsEventCollector);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("digits must not be null", e.getMessage());
@@ -162,7 +161,7 @@ public class DigitsClientTests {
     public void testConstructor_nullDigitsUserAgent() throws Exception {
         try {
             new DigitsClient(digits, null, twitterCore, sessionManager, authRequestQueue,
-                scribeService);
+                digitsEventCollector);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("userAgent must not be null", e.getMessage());
@@ -173,7 +172,7 @@ public class DigitsClientTests {
     public void testConstructor_nullSessionManager() throws Exception {
         try {
             new DigitsClient(digits, digitsUserAgent, twitterCore, null, authRequestQueue,
-                scribeService);
+                digitsEventCollector);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("sessionManager must not be null", e.getMessage());
@@ -253,8 +252,8 @@ public class DigitsClientTests {
                 .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(configWithCallback);
-        verify(scribeService).impression();
-        verify(scribeService).success();
+        verify(digitsEventCollector).authImpression();
+        verify(digitsEventCollector).authSuccess();
         verify(callback).success(userSession, null);
     }
 
@@ -266,8 +265,8 @@ public class DigitsClientTests {
                 .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(configWithPhone);
-        verify(scribeService).impression();
-        verify(scribeService).success();
+        verify(digitsEventCollector).authImpression();
+        verify(digitsEventCollector).authSuccess();
         verify(callback).success(userSession, null);
     }
 
@@ -321,7 +320,6 @@ public class DigitsClientTests {
         final Intent intent  = mock(Intent.class);
 
         loginOrSignupComposer.success(intent);
-        verify(scribeService).success();
         verify(confirmationCodeCallback).success(intent);
     }
 
@@ -419,8 +417,8 @@ public class DigitsClientTests {
         final Bundle expectedBundle = createBundle(loginResultReceiver, "", false);
 
         digitsClient.startSignUp(configWithCallback);
-        verify(scribeService).impression();
-        verifyNoMoreInteractions(scribeService);
+        verify(digitsEventCollector).authImpression();
+        verifyNoMoreInteractions(digitsEventCollector);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
         //verify start activity is called, passing an ArgumentCaptor to get the intent and check
         // if it's correctly build
@@ -441,8 +439,8 @@ public class DigitsClientTests {
         final Bundle expectedBundle = createBundle(loginResultReceiver, phone, emailCollection);
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(scribeService).impression();
-        verifyNoMoreInteractions(scribeService);
+        verify(digitsEventCollector).authImpression();
+        verifyNoMoreInteractions(digitsEventCollector);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
         //verify start activity is called, passing an ArgumentCaptor to get the intent and check
         // if it's correctly build
@@ -469,7 +467,7 @@ public class DigitsClientTests {
         final MockDigitsClient digitsClient = new MockDigitsClient(digits, digitsUserAgent,
                 twitterCore, sessionManager,
                 authRequestQueue,
-                scribeService) {
+                digitsEventCollector) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
                 return loginResultReceiver;
@@ -477,8 +475,8 @@ public class DigitsClientTests {
         };
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(scribeService).impression();
-        verifyNoMoreInteractions(scribeService);
+        verify(digitsEventCollector).authImpression();
+        verifyNoMoreInteractions(digitsEventCollector);
         verifyNoMoreInteractions(digitsClient.loginOrSignupComposer);
     }
 
@@ -498,7 +496,7 @@ public class DigitsClientTests {
         final MockDigitsClient digitsClient = new MockDigitsClient(digits, digitsUserAgent,
                 twitterCore, sessionManager,
                 authRequestQueue,
-                scribeService) {
+                digitsEventCollector) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
                 return loginResultReceiver;
@@ -506,8 +504,8 @@ public class DigitsClientTests {
         };
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(scribeService).impression();
-        verifyNoMoreInteractions(scribeService);
+        verify(digitsEventCollector).authImpression();
+        verifyNoMoreInteractions(digitsEventCollector);
         verify(digitsClient.loginOrSignupComposer).start();
     }
 
@@ -546,10 +544,10 @@ public class DigitsClientTests {
                                 TwitterCore twitterCore,
                                 SessionManager<DigitsSession> sessionManager,
                                 DigitsAuthRequestQueue authRequestQueue,
-                                DigitsScribeService scribeService) {
+                                DigitsEventCollector digitsEventCollector) {
             super(digits, digitsUserAgent, twitterCore, sessionManager,
                     authRequestQueue,
-                    scribeService);
+                    digitsEventCollector);
             this.loginOrSignupComposer = mock(DummyLoginOrSignupComposer.class);
         }
 

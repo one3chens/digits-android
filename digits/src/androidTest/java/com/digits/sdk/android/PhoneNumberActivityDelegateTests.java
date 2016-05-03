@@ -41,7 +41,7 @@ public class PhoneNumberActivityDelegateTests extends
 
     @Override
     public PhoneNumberActivityDelegate getDelegate() {
-        return spy(new DummyPhoneNumberActivityDelegate(scribeService));
+        return spy(new DummyPhoneNumberActivityDelegate(digitsEventCollector));
     }
 
     public void testIsValid() {
@@ -70,7 +70,7 @@ public class PhoneNumberActivityDelegateTests extends
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
         verify(controller).clearError();
-        verify(scribeService).click(DigitsScribeConstants.Element.COUNTRY_CODE);
+        verify(digitsEventCollector).countryCodeClickOnPhoneScreen();
     }
 
     public void testOnResume() {
@@ -78,7 +78,7 @@ public class PhoneNumberActivityDelegateTests extends
         delegate.controller = controller;
         delegate.onResume();
         verify(controller).onResume();
-        verify(scribeService).impression();
+        verify(digitsEventCollector).phoneScreenImpression();
     }
 
     @Override
@@ -107,8 +107,8 @@ public class PhoneNumberActivityDelegateTests extends
 
     public class DummyPhoneNumberActivityDelegate extends PhoneNumberActivityDelegate {
 
-        public DummyPhoneNumberActivityDelegate(DigitsScribeService scribeService) {
-            super(scribeService);
+        public DummyPhoneNumberActivityDelegate(DigitsEventCollector digitsEventCollector) {
+            super(digitsEventCollector);
         }
     }
 
@@ -116,10 +116,10 @@ public class PhoneNumberActivityDelegateTests extends
 
         DummyPhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
                                    EditText phoneEditText, CountryListSpinner countryCodeSpinner,
-                                   TosView tosView, DigitsScribeService scribeService,
+                                   TosView tosView, DigitsEventCollector digitsEventCollector,
                                    boolean emailCollection) {
             super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
-                    tosView, scribeService, emailCollection);
+                    tosView, digitsEventCollector, emailCollection);
         }
     }
 }

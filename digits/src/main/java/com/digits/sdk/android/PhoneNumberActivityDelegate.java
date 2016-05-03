@@ -29,7 +29,7 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 
 class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
         PhoneNumberTask.Listener, TosView {
-    private final DigitsScribeService scribeService;
+    private final DigitsEventCollector digitsEventCollector;
     private Activity activity;
 
     CountryListSpinner countryCodeSpinner;
@@ -39,8 +39,8 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     PhoneNumberController controller;
     TosFormatHelper tosFormatHelper;
 
-    public PhoneNumberActivityDelegate(DigitsScribeService scribeService) {
-        this.scribeService = scribeService;
+    public PhoneNumberActivityDelegate(DigitsEventCollector digitsEventCollector) {
+        this.digitsEventCollector = digitsEventCollector;
     }
 
     @Override
@@ -92,7 +92,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     PhoneNumberController initController(Bundle bundle) {
         return new PhoneNumberController(bundle
                 .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER), sendButton,
-                phoneEditText, countryCodeSpinner, this, scribeService, bundle.getBoolean
+                phoneEditText, countryCodeSpinner, this, digitsEventCollector, bundle.getBoolean
                 (DigitsClient.EXTRA_EMAIL));
     }
 
@@ -106,7 +106,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
         countryCodeSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scribeService.click(DigitsScribeConstants.Element.COUNTRY_CODE);
+                digitsEventCollector.countryCodeClickOnPhoneScreen();
                 controller.clearError();
             }
         });
@@ -114,7 +114,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
     @Override
     public void onResume() {
-        scribeService.impression();
+        digitsEventCollector.phoneScreenImpression();
         controller.onResume();
     }
 

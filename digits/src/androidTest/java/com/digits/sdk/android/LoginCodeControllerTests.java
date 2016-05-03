@@ -33,6 +33,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,8 +51,8 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         MockitoAnnotations.initMocks(this);
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
-                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(), scribeService,
-                false, timerTextView);
+                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
+                digitsEventCollector, false, timerTextView);
     }
 
     public void testExecuteRequest_success() throws Exception {
@@ -60,7 +61,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<DigitsSessionResponse> result = new Result(response, null);
 
         callback.success(result);
-        verify(scribeService).success();
+        verify(digitsEventCollector).loginCodeSuccess();
         verify(sessionManager).setActiveSession(DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
@@ -86,7 +87,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                scribeService, true, timerTextView);
+                digitsEventCollector, true, timerTextView);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -94,7 +95,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
                 .getValue();
         emailRequestCallback.success(resultEmailRequest);
-        verify(scribeService).success();
+        verify(digitsEventCollector).loginCodeSuccess();
         final DigitsSession session = DigitsSession.create(
                 TestConstants.getVerifyAccountResponse());
         verifyEmailRequest(session);
@@ -105,8 +106,8 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<DigitsSessionResponse> result = new Result(response, null);
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
-                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(), scribeService,
-                true, timerTextView);
+                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
+                digitsEventCollector, true, timerTextView);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -115,7 +116,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
                 .getValue();
         emailRequestCallback.failure(TestConstants.ANY_EXCEPTION);
-        verify(scribeService).error(any(DigitsException.class));
+        verify(digitsEventCollector).loginException(any(DigitsException.class));
         verify(phoneEditText).setError(null);
         verify(callMeButton).showError();
         verify(resendButton).showError();
@@ -132,7 +133,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                scribeService, true, timerTextView);
+                digitsEventCollector, true, timerTextView);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -159,7 +160,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final DummyLoginCodeController dlc = new DummyLoginCodeController(resultReceiver,
                 sendButton, resendButton, callMeButton, phoneEditText, sessionManager, digitsClient,
                 REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                scribeService, true, timerTextView);
+                digitsEventCollector, true, timerTextView);
         final CountDownTimer timer = dlc.getCountDownTimer();
 
         controller = dlc;
@@ -204,7 +205,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                scribeService, true, timerTextView);
+                digitsEventCollector, true, timerTextView);
 
         controller.resendCode(context, resendButton, Verification.sms);
         verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
@@ -245,7 +246,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<DigitsSessionResponse> response =
                 new Result<>(new DigitsSessionResponse(), null);
         callback.success(response);
-        verify(scribeService).success();
+        verify(digitsEventCollector).loginCodeSuccess();
         verify(context).startActivityForResult(intentArgumentCaptor.capture(), eq(DigitsActivity
                 .REQUEST_CODE));
         final Intent intent = intentArgumentCaptor.getValue();
@@ -261,7 +262,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final ArgumentCaptor<DigitsCallback> callbackArgumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
         controller.executeRequest(context);
-        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
+        verify(digitsEventCollector).submitClickOnLoginScreen();
         verify(sendButton).showProgress();
         verify(digitsClient).loginDevice(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
                 callbackArgumentCaptor.capture());
@@ -276,4 +277,13 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         assertFalse(controller.validateInput(EMPTY_CODE));
     }
 
+    @Override
+    public void verifyControllerFailure(int times) {
+        verify(digitsEventCollector, times(times)).loginFailure();
+    }
+
+    @Override
+    public void verifyControllerError(DigitsException e, int times) {
+        verify(digitsEventCollector, times(times)).loginException(EXCEPTION);
+    }
 }

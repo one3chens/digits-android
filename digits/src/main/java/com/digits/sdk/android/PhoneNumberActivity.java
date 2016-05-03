@@ -25,7 +25,7 @@ package com.digits.sdk.android;
 public class PhoneNumberActivity extends DigitsActivity {
     @Override
     DigitsActivityDelegate getActivityDelegate() {
-        return new PhoneNumberActivityDelegate(new DigitsScribeServiceBaseImpl(
-                Digits.getInstance().getScribeClient(), DigitsScribeConstants.Component.AUTH));
+        return new PhoneNumberActivityDelegate(new DigitsEventCollector(
+                Digits.getInstance().getScribeClient()));
     }
 }

@@ -44,7 +44,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     final EditText editText;
     final StateButton sendButton;
     final SessionManager<DigitsSession> sessionManager;
-    final DigitsScribeService scribeService;
+    final DigitsEventCollector digitsEventCollector;
     int errorCount;
     CountDownTimer countDownTimer;
 
@@ -52,7 +52,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
                          DigitsClient client, ErrorCodes errors,
                          ActivityClassManager activityClassManager,
                          SessionManager<DigitsSession> sessionManager,
-                         DigitsScribeService scribeService) {
+                         DigitsEventCollector digitsEventCollector) {
         this.resultReceiver = resultReceiver;
         this.digitsClient = client;
         this.activityClassManager = activityClassManager;
@@ -61,15 +61,19 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         this.errors = errors;
         this.sessionManager = sessionManager;
         this.errorCount = 0;
-        this.scribeService = scribeService;
+        this.digitsEventCollector = digitsEventCollector;
     }
+
+    abstract void scribeControllerFailure();
+
+    abstract void scribeControllerException(DigitsException exception);
 
     @Override
     public void handleError(Context context, DigitsException exception) {
         errorCount++;
-        scribeService.error(exception);
+        scribeControllerException(exception);
         if (isUnrecoverable(exception)) {
-            scribeService.failure();
+            scribeControllerFailure();
             startFallback(context, resultReceiver, exception);
         } else {
             editText.setError(exception.getLocalizedMessage());

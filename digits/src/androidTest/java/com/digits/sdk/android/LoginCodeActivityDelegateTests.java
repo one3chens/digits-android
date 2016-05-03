@@ -22,10 +22,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.SpannedString;
+import android.view.View;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -36,7 +38,7 @@ public class LoginCodeActivityDelegateTests extends
         DigitsActivityDelegateTests<LoginCodeActivityDelegate> {
     @Override
     public LoginCodeActivityDelegate getDelegate() {
-        return spy(new DummyLoginCodeActivityDelegate(scribeService));
+        return spy(new DummyLoginCodeActivityDelegate(digitsEventCollector));
     }
 
     public void testIsValid() {
@@ -123,7 +125,45 @@ public class LoginCodeActivityDelegateTests extends
         delegate.controller = controller;
         delegate.onResume();
         verify(controller).onResume();
-        verify(scribeService).impression();
+        verify(digitsEventCollector).loginScreenImpression();
+    }
+
+    public void testSetupResendButton() throws Exception {
+        delegate.setupResendButton(activity, controller, digitsEventCollector, resendButton);
+        verify(resendButton).setEnabled(false);
+        verify(resendButton).setOnClickListener(captorClick.capture());
+        final View.OnClickListener listener = captorClick.getValue();
+        listener.onClick(null);
+        verify(digitsEventCollector).resendClickOnLoginScreen();
+        verify(controller, atLeast(0)).clearError();
+        verify(controller).resendCode(activity, resendButton, Verification.sms);
+    }
+
+    public void testSetupCallMeButton_voiceEnabled() throws Exception {
+        final AuthConfig config = new AuthConfig();
+        config.isVoiceEnabled = Boolean.TRUE;
+
+        delegate.setupCallMeButton(activity, controller, digitsEventCollector,
+                callMeButton, config);
+
+        verify(callMeButton).setOnClickListener(captorClick.capture());
+        final View.OnClickListener listener = captorClick.getValue();
+        listener.onClick(null);
+        verify(digitsEventCollector).callMeClickOnLoginScreen();
+        verify(controller, atLeast(0)).clearError();
+        verify(controller).resendCode(activity, callMeButton, Verification.voicecall);
+        verify(callMeButton).setEnabled(false);
+        verify(callMeButton).setVisibility(View.VISIBLE);
+    }
+
+    public void testSetupCallMeButton_voiceDisabled() throws Exception {
+        final AuthConfig config = new AuthConfig();
+        config.isVoiceEnabled = Boolean.FALSE;
+
+        delegate.setupCallMeButton(activity, controller, digitsEventCollector,
+                callMeButton, config);
+        verify(callMeButton).setEnabled(false);
+        verify(callMeButton).setVisibility(View.GONE);
     }
 
     public void testSetUpSmsIntercept_permissionDenied() {
@@ -148,8 +188,8 @@ public class LoginCodeActivityDelegateTests extends
 
     public class DummyLoginCodeActivityDelegate extends LoginCodeActivityDelegate {
 
-        DummyLoginCodeActivityDelegate(DigitsScribeService scribeService) {
-            super(scribeService);
+        DummyLoginCodeActivityDelegate(DigitsEventCollector digitsEventCollector) {
+            super(digitsEventCollector);
         }
     }
 }

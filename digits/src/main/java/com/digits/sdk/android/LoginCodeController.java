@@ -43,13 +43,13 @@ class LoginCodeController extends DigitsControllerImpl {
     LoginCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                         InvertedStateButton resendButton, InvertedStateButton callMeButton,
                         EditText phoneEditText, String requestId, long userId, String phoneNumber,
-                        DigitsScribeService scribeService, Boolean emailCollection,
+                        DigitsEventCollector digitsEventCollector, Boolean emailCollection,
                         TextView timerText) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(), requestId,
                 userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
-                Digits.getInstance().getActivityClassManager(), scribeService,
+                Digits.getInstance().getActivityClassManager(), digitsEventCollector,
                 emailCollection, timerText);
     }
 
@@ -59,10 +59,10 @@ class LoginCodeController extends DigitsControllerImpl {
                         SessionManager<DigitsSession> sessionManager, DigitsClient client,
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
                         ActivityClassManager activityClassManager,
-                        DigitsScribeService scribeService, Boolean emailCollection,
+                        DigitsEventCollector digitsEventCollector, Boolean emailCollection,
                         TextView timerText) {
         super(resultReceiver, stateButton, loginEditText, client, errors, activityClassManager,
-                sessionManager, scribeService);
+                sessionManager, digitsEventCollector);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
@@ -77,7 +77,7 @@ class LoginCodeController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        scribeService.click(DigitsScribeConstants.Element.SUBMIT);
+        digitsEventCollector.submitClickOnLoginScreen();
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -85,7 +85,7 @@ class LoginCodeController extends DigitsControllerImpl {
             digitsClient.loginDevice(requestId, userId, code,
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         public void success(Result<DigitsSessionResponse> result) {
-                            scribeService.success();
+                            digitsEventCollector.loginCodeSuccess();
                             if (result.data.isEmpty()) {
                                 startPinCodeActivity(context);
                             } else if (emailCollection) {
@@ -129,6 +129,16 @@ class LoginCodeController extends DigitsControllerImpl {
                 }
             }
         );
+    }
+
+    @Override
+    public void scribeControllerFailure() {
+        digitsEventCollector.loginFailure();
+    }
+
+    @Override
+    void scribeControllerException(DigitsException exception) {
+        digitsEventCollector.loginException(exception);
     }
 
     @Override

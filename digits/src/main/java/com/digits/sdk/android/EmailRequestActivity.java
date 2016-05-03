@@ -19,7 +19,7 @@ package com.digits.sdk.android;
 public class EmailRequestActivity extends DigitsActivity {
     @Override
     DigitsActivityDelegate getActivityDelegate() {
-        return new EmailRequestActivityDelegate(new DigitsScribeServiceBaseImpl(
-                Digits.getInstance().getScribeClient(), DigitsScribeConstants.Component.EMAIL));
+        return new EmailRequestActivityDelegate(new DigitsEventCollector(
+                Digits.getInstance().getScribeClient()));
     }
 }

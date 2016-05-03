@@ -49,14 +49,14 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
     EditText editText;
     TextView textView;
     TextView timerText;
-    DigitsScribeService scribeService;
+    DigitsEventCollector digitsEventCollector;
     RelativeLayout.LayoutParams layoutParams;
     TosFormatHelper tosFormatHelper;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        scribeService = mock(DigitsScribeService.class);
+        digitsEventCollector = mock(DigitsEventCollector.class);
         delegate = getDelegate();
         activity = mock(Activity.class);
         controller = mock(DigitsController.class);
@@ -116,5 +116,4 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
         listener.onClick(null);
         verify(controller).clearError();
     }
-
 }

@@ -33,9 +33,9 @@ public class DummyPinCodeController extends PinCodeController {
                            DigitsClient digitsClient, String requestId,
                            long userId, String phoneWithCountryCode, ErrorCodes errors,
                            ActivityClassManagerImp activityClassManagerImp,
-                           DigitsScribeService scribeService, boolean emailCollection) {
+                           DigitsEventCollector digitsEventCollector, boolean emailCollection) {
         super(resultReceiver, sendButton, phoneEditText, sessionManager, digitsClient, requestId,
-                userId, phoneWithCountryCode, errors, activityClassManagerImp, scribeService,
+                userId, phoneWithCountryCode, errors, activityClassManagerImp, digitsEventCollector,
                 emailCollection);
         accountService = mock(DigitsApiClient.SdkService.class);
 

@@ -21,23 +21,24 @@ import java.lang.ref.WeakReference;
 
 class WeakAuthCallback implements AuthCallback {
     private final WeakReference<AuthCallback> callbackWeakReference;
-    private final DigitsScribeService scribeService;
+    private final DigitsEventCollector digitsEventCollector;
 
     public WeakAuthCallback(AuthCallback callback) {
-        this(callback, new AuthScribeService(Digits.getInstance().getScribeClient()));
+        this(callback, new DigitsEventCollector(
+                Digits.getInstance().getScribeClient()));
     }
 
     WeakAuthCallback(AuthCallback callback,
-                     DigitsScribeService scribeService) {
+                     DigitsEventCollector digitsEventCollector) {
         this.callbackWeakReference = new WeakReference<>(callback);
-        this.scribeService = scribeService;
+        this.digitsEventCollector = digitsEventCollector;
     }
 
     @Override
     public void success(DigitsSession session, String phoneNumber) {
         final AuthCallback callback = callbackWeakReference.get();
         if (callback != null) {
-            scribeService.success();
+            digitsEventCollector.authSuccess();
             callback.success(session, phoneNumber);
         }
     }
@@ -46,7 +47,7 @@ class WeakAuthCallback implements AuthCallback {
     public void failure(DigitsException error) {
         final AuthCallback callback = callbackWeakReference.get();
         if (callback != null) {
-            scribeService.failure();
+            digitsEventCollector.authFailure();
             callback.failure(error);
         }
     }

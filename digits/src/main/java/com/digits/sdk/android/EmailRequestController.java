@@ -35,19 +35,19 @@ public class EmailRequestController extends DigitsControllerImpl {
 
     EmailRequestController(StateButton stateButton, EditText editText,
                            ResultReceiver resultReceiver, String phoneNumber,
-                           DigitsScribeService scribeService) {
+                           DigitsEventCollector digitsEventCollector) {
         this(resultReceiver, stateButton, editText, Digits.getSessionManager(),
                 Digits.getInstance().getActivityClassManager(), new DigitsClient(), phoneNumber,
-                scribeService, new EmailErrorCodes(stateButton.getContext().getResources()));
+                digitsEventCollector, new EmailErrorCodes(stateButton.getContext().getResources()));
     }
 
     EmailRequestController(ResultReceiver resultReceiver, StateButton stateButton,
                            EditText editText, SessionManager<DigitsSession> sessionManager,
                            ActivityClassManager activityClassManager, DigitsClient client,
-                           String phoneNumber, DigitsScribeService scribeService,
+                           String phoneNumber, DigitsEventCollector digitsEventCollector,
                            ErrorCodes emailErrorCodes) {
         super(resultReceiver, stateButton, editText, client, emailErrorCodes,
-                activityClassManager, sessionManager, scribeService);
+                activityClassManager, sessionManager, digitsEventCollector);
         this.phoneNumber = phoneNumber;
     }
 
@@ -58,7 +58,7 @@ public class EmailRequestController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        scribeService.click(DigitsScribeConstants.Element.SUBMIT);
+        digitsEventCollector.submitClickOnEmailScreen();
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -70,7 +70,7 @@ public class EmailRequestController extends DigitsControllerImpl {
                 service.email(email, new DigitsCallback<DigitsSessionResponse>(context, this) {
                     @Override
                     public void success(Result<DigitsSessionResponse> result) {
-                        scribeService.success();
+                        digitsEventCollector.submitEmailSuccess();
                         loginSuccess(context, session, phoneNumber);
                     }
                 });
@@ -84,6 +84,16 @@ public class EmailRequestController extends DigitsControllerImpl {
 
     DigitsApiClient.SdkService getSdkService(DigitsSession session) {
         return new DigitsApiClient(session).getService();
+    }
+
+    @Override
+    public void scribeControllerFailure() {
+        digitsEventCollector.submitEmailFailure();
+    }
+
+    @Override
+    void scribeControllerException(DigitsException exception) {
+        digitsEventCollector.submitEmailException(exception);
     }
 
     @Override

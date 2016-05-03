@@ -42,12 +42,12 @@ class PhoneNumberController extends DigitsControllerImpl implements
     PhoneNumberController(ResultReceiver resultReceiver,
                           StateButton stateButton, EditText phoneEditText,
                           CountryListSpinner countryCodeSpinner, TosView tosView,
-                          DigitsScribeService scribeService, boolean emailCollection) {
+                          DigitsEventCollector digitsEventCollector, boolean emailCollection) {
         this(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
                 Digits.getInstance().getDigitsClient(), new PhoneNumberErrorCodes(stateButton
                         .getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), Digits.getSessionManager(),
-                tosView, scribeService, emailCollection);
+                tosView, digitsEventCollector, emailCollection);
     }
 
     /**
@@ -58,9 +58,9 @@ class PhoneNumberController extends DigitsControllerImpl implements
                           DigitsClient client, ErrorCodes errors,
                           ActivityClassManager activityClassManager,
                           SessionManager<DigitsSession> sessionManager, TosView tosView,
-                          DigitsScribeService scribeService, boolean emailCollection) {
+                          DigitsEventCollector digitsEventCollector, boolean emailCollection) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
-                sessionManager, scribeService);
+                sessionManager, digitsEventCollector);
         this.countryCodeSpinner = countryCodeSpinner;
         this.tosView = tosView;
         voiceEnabled = false;
@@ -94,7 +94,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
                 editText.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        scribeService.success();
+                        digitsEventCollector.submitPhoneSuccess();
                         startActivityForResult((Activity) context, intent);
                     }
                 }, POST_DELAY_MS);
@@ -128,9 +128,9 @@ class PhoneNumberController extends DigitsControllerImpl implements
 
     private void scribeRequest() {
         if (isRetry()) {
-            scribeService.click(DigitsScribeConstants.Element.RETRY);
+            digitsEventCollector.retryClickOnPhoneScreen();
         } else {
-            scribeService.click(DigitsScribeConstants.Element.SUBMIT);
+            digitsEventCollector.submitClickOnPhoneScreen();
         }
     }
 
@@ -165,6 +165,16 @@ class PhoneNumberController extends DigitsControllerImpl implements
                     R.string.dgts__calling);
             tosView.setText(R.string.dgts__terms_text_call_me);
         }
+    }
+
+    @Override
+    public void scribeControllerFailure() {
+        digitsEventCollector.submitPhoneFailure();
+    }
+
+    @Override
+    void scribeControllerException(DigitsException exception) {
+        digitsEventCollector.submitPhoneException(exception);
     }
 
     @Override

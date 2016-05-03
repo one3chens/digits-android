@@ -28,6 +28,7 @@ import java.util.Locale;
 
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +47,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         tosView = mock(TosView.class);
         controller = new PhoneNumberController(resultReceiver,
                 sendButton, phoneEditText, countrySpinner, digitsClient, errors,
-                new ActivityClassManagerImp(), sessionManager, tosView, scribeService, false);
+                new ActivityClassManagerImp(), sessionManager, tosView, digitsEventCollector,
+                false);
 
         runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
         intent  = mock(Intent.class);
@@ -63,12 +65,12 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final DummyPhoneNumberController dummyPhoneNumberController =
                 new DummyPhoneNumberController(resultReceiver,
                         sendButton, phoneEditText, countrySpinner, digitsClient, errors,
-                        new ActivityClassManagerImp(), sessionManager, tosView, scribeService,
-                        false);
+                        new ActivityClassManagerImp(), sessionManager, tosView,
+                        digitsEventCollector, false);
 
         when(errors.getDefaultMessage()).thenReturn(ERROR_MESSAGE);
         dummyPhoneNumberController.executeRequest(context);
-        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
+        verify(digitsEventCollector).submitClickOnPhoneScreen();
         verify(sendButton).showProgress();
         verify(dummyPhoneNumberController.loginOrSignupComposer).start();
     }
@@ -84,7 +86,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
         final Runnable runnable = runnableCaptor.getValue();
         runnable.run();
-        verify(scribeService).success();
+        verify(digitsEventCollector).submitPhoneSuccess();
         verify(context).startActivityForResult(intent, DigitsActivity.REQUEST_CODE);
     }
 
@@ -127,6 +129,16 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
     public void testValidateInput_empty() throws Exception {
         assertFalse(controller.validateInput(EMPTY_CODE));
+    }
+
+    @Override
+    public void verifyControllerFailure(int times) {
+        verify(digitsEventCollector, times(times)).submitPhoneFailure();
+    }
+
+    @Override
+    public void verifyControllerError(DigitsException e, int times) {
+        verify(digitsEventCollector, times(times)).submitPhoneException(EXCEPTION);
     }
 
     public void testSetPhoneNumber_validPhoneNumber() throws Exception {
@@ -253,7 +265,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     public void testRetryScribing() throws Exception {
         controller.errorCount = 1;
         controller.executeRequest(context);
-        verify(scribeService).click(DigitsScribeConstants.Element.RETRY);
+        verify(digitsEventCollector).retryClickOnPhoneScreen();
     }
 
     private AuthConfig createAuthConfig(boolean tosUpdate, boolean isVoiceEnabled,

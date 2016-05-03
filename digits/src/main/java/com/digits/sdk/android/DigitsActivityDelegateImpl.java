@@ -46,37 +46,6 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
 
     }
 
-    void setupResendButton(final Activity activity, final DigitsController controller,
-                           final DigitsScribeService scribeService,
-                           final InvertedStateButton resendButton){
-        resendButton.setEnabled(false);
-        resendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scribeService.click(DigitsScribeConstants.Element.RESEND);
-                controller.clearError();
-                controller.resendCode(activity, resendButton, Verification.sms);
-            }
-        });
-    }
-
-    void setupCallMeButton(final Activity activity, final DigitsController controller,
-                           final DigitsScribeService scribeService,
-                           final InvertedStateButton callMeButton,
-                           final AuthConfig config){
-        callMeButton.setVisibility(config.isVoiceEnabled ? View.VISIBLE : View.GONE);
-        callMeButton.setEnabled(false);
-
-        callMeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scribeService.click(DigitsScribeConstants.Element.CALL);
-                controller.clearError();
-                controller.resendCode(activity, callMeButton, Verification.voicecall);
-            }
-        });
-    }
-
     void setupCountDownTimer(final DigitsController controller,
                              final TextView timerText,
                              final AuthConfig config){

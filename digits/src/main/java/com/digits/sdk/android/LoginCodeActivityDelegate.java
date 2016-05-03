@@ -21,13 +21,14 @@ import android.app.Activity;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import io.fabric.sdk.android.services.common.CommonUtils;
 
 class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
-    private final DigitsScribeService scribeService;
+    private final DigitsEventCollector digitsEventCollector;
     EditText editText;
     LinkTextView editPhoneNumberLinkTextView;
     StateButton stateButton;
@@ -40,8 +41,8 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     AuthConfig config;
     TosFormatHelper tosFormatHelper;
 
-    LoginCodeActivityDelegate(DigitsScribeService scribeService) {
-        this.scribeService = scribeService;
+    LoginCodeActivityDelegate(DigitsEventCollector digitsEventCollector) {
+        this.digitsEventCollector = digitsEventCollector;
     }
 
     @Override
@@ -63,8 +64,8 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
-        setupResendButton(activity, controller, scribeService, resendButton);
-        setupCallMeButton(activity, controller, scribeService, callMeButton, config);
+        setupResendButton(activity, controller, digitsEventCollector, resendButton);
+        setupCallMeButton(activity, controller, digitsEventCollector, callMeButton, config);
         setupCountDownTimer(controller, timerText, config);
         setUpEditPhoneNumberLink(activity, editPhoneNumberLinkTextView,
                 bundle.getString(DigitsClient.EXTRA_PHONE));
@@ -80,7 +81,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 stateButton, resendButton, callMeButton, editText,
                 bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
                 bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
-                .EXTRA_PHONE), scribeService, bundle.getBoolean(DigitsClient.EXTRA_EMAIL),
+                .EXTRA_PHONE), digitsEventCollector, bundle.getBoolean(DigitsClient.EXTRA_EMAIL),
                 timerText);
     }
 
@@ -117,7 +118,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void onResume() {
-        scribeService.impression();
+        digitsEventCollector.loginScreenImpression();
         controller.onResume();
     }
 
@@ -127,6 +128,37 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
             activity.unregisterReceiver(receiver);
         }
         controller.cancelTimer();
+    }
+
+    void setupResendButton(final Activity activity, final DigitsController controller,
+                           final DigitsEventCollector digitsEventCollector,
+                           final InvertedStateButton resendButton){
+        resendButton.setEnabled(false);
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                digitsEventCollector.resendClickOnLoginScreen();
+                controller.clearError();
+                controller.resendCode(activity, resendButton, Verification.sms);
+            }
+        });
+    }
+
+    void setupCallMeButton(final Activity activity, final DigitsController controller,
+                           final DigitsEventCollector digitsEventCollector,
+                           final InvertedStateButton callMeButton,
+                           final AuthConfig config){
+        callMeButton.setVisibility(config.isVoiceEnabled ? View.VISIBLE : View.GONE);
+        callMeButton.setEnabled(false);
+
+        callMeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                digitsEventCollector.callMeClickOnLoginScreen();
+                controller.clearError();
+                controller.resendCode(activity, callMeButton, Verification.voicecall);
+            }
+        });
     }
 
     protected void setUpSmsIntercept(Activity activity, EditText editText) {

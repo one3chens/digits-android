@@ -18,6 +18,7 @@
 package com.digits.sdk.android;
 
 import com.digits.sdk.android.DigitsScribeConstants.Component;
+import com.digits.sdk.android.DigitsScribeConstants.Element;
 import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
 
@@ -37,7 +38,7 @@ public class DigitsScribeClient {
     public void impression(Component component) {
         final EventNamespace ns = DIGITS_EVENT_BUILDER
                 .setComponent(component.getComponent())
-                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setElement(Element.EMPTY.getElement())
                 .setAction(DigitsScribeConstants.Action.IMPRESSION.getAction())
                 .builder();
         safeScribe(ns);
@@ -46,13 +47,13 @@ public class DigitsScribeClient {
     public void failure(Component component) {
         final EventNamespace ns = DIGITS_EVENT_BUILDER
                 .setComponent(component.getComponent())
-                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setElement(Element.EMPTY.getElement())
                 .setAction(DigitsScribeConstants.Action.FAILURE.getAction())
                 .builder();
         safeScribe(ns);
     }
 
-    public void click(Component component, DigitsScribeConstants.Element element) {
+    public void click(Component component, Element element) {
         final EventNamespace ns = DIGITS_EVENT_BUILDER
                 .setComponent(component.getComponent())
                 .setElement(element.getElement())
@@ -64,7 +65,7 @@ public class DigitsScribeClient {
     public void success(Component component) {
         final EventNamespace ns = DIGITS_EVENT_BUILDER
                 .setComponent(component.getComponent())
-                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setElement(Element.EMPTY.getElement())
                 .setAction(DigitsScribeConstants.Action.SUCCESS.getAction())
                 .builder();
         safeScribe(ns);
@@ -73,7 +74,7 @@ public class DigitsScribeClient {
     public void loginSuccess() {
         final EventNamespace ns = DIGITS_EVENT_BUILDER
                 .setComponent(Component.EMPTY.getComponent())
-                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setElement(Element.EMPTY.getElement())
                 .setAction(LOGGED_IN_ACTION)
                 .builder();
         safeScribe(ns);
@@ -82,7 +83,7 @@ public class DigitsScribeClient {
     public void error(Component component, DigitsException exception) {
         final EventNamespace ns = DIGITS_EVENT_BUILDER
                 .setComponent(component.getComponent())
-                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setElement(Element.EMPTY.getElement())
                 .setAction(DigitsScribeConstants.Action.ERROR.getAction())
                 .builder();
         safeScribe(ns);

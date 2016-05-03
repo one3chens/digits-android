@@ -35,12 +35,13 @@ class PinCodeController extends DigitsControllerImpl {
 
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                       EditText phoneEditText, String requestId, long userId,
-                      String phoneNumber, DigitsScribeService scribeService,
+                      String phoneNumber, DigitsEventCollector digitsEventCollector,
                       Boolean isEmailCollection) {
         this(resultReceiver, stateButton, phoneEditText, Digits.getSessionManager(),
                 Digits.getInstance().getDigitsClient(), requestId, userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
-                Digits.getInstance().getActivityClassManager(), scribeService, isEmailCollection);
+                Digits.getInstance().getActivityClassManager(), digitsEventCollector,
+                isEmailCollection);
     }
 
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
@@ -48,13 +49,23 @@ class PinCodeController extends DigitsControllerImpl {
                       DigitsClient digitsClient, String requestId, long userId,
                       String phoneNumber, ErrorCodes errors,
                       ActivityClassManager activityClassManager,
-                      DigitsScribeService scribeService, Boolean isEmailCollection) {
+                      DigitsEventCollector digitsEventCollector, Boolean isEmailCollection) {
         super(resultReceiver, stateButton, phoneEditText, digitsClient, errors,
-                activityClassManager, sessionManager, scribeService);
+                activityClassManager, sessionManager, digitsEventCollector);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
         this.isEmailCollection = isEmailCollection;
+    }
+
+    @Override
+    public void scribeControllerFailure() {
+        digitsEventCollector.twoFactorPinVerificationFailure();
+    }
+
+    @Override
+    void scribeControllerException(DigitsException exception) {
+        digitsEventCollector.twoFactorPinVerificationException(exception);
     }
 
     @Override
@@ -64,7 +75,7 @@ class PinCodeController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        scribeService.click(DigitsScribeConstants.Element.SUBMIT);
+        digitsEventCollector.submitClickOnPinScreen();
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -73,7 +84,7 @@ class PinCodeController extends DigitsControllerImpl {
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         @Override
                         public void success(Result<DigitsSessionResponse> result) {
-                            scribeService.success();
+                            digitsEventCollector.twoFactorPinVerificationSuccess();
                             final DigitsSession session = DigitsSession.create(result.data,
                                     phoneNumber);
                             if (isEmailCollection) {

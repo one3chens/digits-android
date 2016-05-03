@@ -29,22 +29,22 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 class FailureActivityDelegateImpl implements FailureActivityDelegate {
     final Activity activity;
     final FailureController controller;
-    final DigitsScribeService scribeService;
+    final DigitsEventCollector digitsEventCollector;
 
     public FailureActivityDelegateImpl(Activity activity) {
-        this(activity, new FailureControllerImpl(), new DigitsScribeServiceBaseImpl(
-                Digits.getInstance().getScribeClient(), DigitsScribeConstants.Component.FAILURE));
+        this(activity, new FailureControllerImpl(), new DigitsEventCollector(
+                Digits.getInstance().getScribeClient()));
     }
 
     public FailureActivityDelegateImpl(Activity activity, FailureController controller,
-                                       DigitsScribeService scribeService) {
+                                       DigitsEventCollector digitsEventCollector) {
         this.activity = activity;
         this.controller = controller;
-        this.scribeService = scribeService;
+        this.digitsEventCollector = digitsEventCollector;
     }
 
     public void init() {
-        scribeService.impression();
+        digitsEventCollector.failureScreenImpression();
         final Bundle bundle = activity.getIntent().getExtras();
         if (isBundleValid(bundle)) {
             setContentView();
@@ -75,7 +75,7 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scribeService.click(DigitsScribeConstants.Element.DISMISS);
+                digitsEventCollector.dismissClickOnFailureScreen();
                 CommonUtils.finishAffinity(activity, DigitsActivity.RESULT_FINISH_DIGITS);
                 controller.sendFailure(getBundleResultReceiver(), getBundleException());
             }
@@ -86,7 +86,7 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scribeService.click(DigitsScribeConstants.Element.RETRY);
+                digitsEventCollector.retryClickOnFailureScreen();
                 controller.tryAnotherNumber(activity, getBundleResultReceiver());
                 activity.finish();
             }

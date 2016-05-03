@@ -20,7 +20,7 @@ package com.digits.sdk.android;
 public class EmailRequestActionBarActivity extends DigitsActionBarActivity {
     @Override
     DigitsActivityDelegate getActivityDelegate() {
-        return new EmailRequestActivityDelegate(new DigitsScribeServiceBaseImpl(
-                Digits.getInstance().getScribeClient(), DigitsScribeConstants.Component.EMAIL));
+        return new EmailRequestActivityDelegate(new DigitsEventCollector(
+                Digits.getInstance().getScribeClient()));
     }
 }

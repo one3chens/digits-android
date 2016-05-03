@@ -35,12 +35,12 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     TextView timerText;
     DigitsController controller;
     Activity activity;
-    DigitsScribeService scribeService;
+    DigitsEventCollector digitsEventCollector;
     TextView titleText;
     TosFormatHelper tosFormatHelper;
 
-    EmailRequestActivityDelegate(DigitsScribeService scribeService) {
-        this.scribeService = scribeService;
+    EmailRequestActivityDelegate(DigitsEventCollector digitsEventCollector) {
+        this.digitsEventCollector = digitsEventCollector;
     }
 
     @Override
@@ -76,8 +76,8 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
-        setupResendButton(activity, controller, scribeService, resendButton);
-        setupCallMeButton(activity, controller, scribeService, callMeButton, config);
+        setupResendButton(resendButton);
+        setupCallMeButton(callMeButton);
         setupCountDownTimer(controller, timerText, config);
         setUpEditPhoneNumberLink(activity, editPhoneNumberLink,
                 bundle.getString(DigitsClient.EXTRA_PHONE));
@@ -93,18 +93,11 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         editPhoneLink.setVisibility(View.GONE);
     }
 
-    @Override
-    void setupResendButton(final Activity activity, final DigitsController controller,
-                           final DigitsScribeService scribeService,
-                           final InvertedStateButton resendButton){
+    void setupResendButton(final InvertedStateButton resendButton){
         resendButton.setVisibility(View.GONE);
     }
 
-    @Override
-    void setupCallMeButton(final Activity activity, final DigitsController controller,
-                           final DigitsScribeService scribeService,
-                           final InvertedStateButton callMeButton,
-                           final AuthConfig config){
+    void setupCallMeButton(final InvertedStateButton callMeButton){
         callMeButton.setVisibility(View.GONE);
     }
 
@@ -140,12 +133,12 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     private DigitsController initController(Bundle bundle) {
         return new EmailRequestController(stateButton, editText,
                 bundle.<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
-                bundle.getString(DigitsClient.EXTRA_PHONE), scribeService);
+                bundle.getString(DigitsClient.EXTRA_PHONE), digitsEventCollector);
     }
 
     @Override
     public void onResume() {
-        scribeService.impression();
+        digitsEventCollector.emailScreenImpression();
         controller.onResume();
     }
 }
