@@ -161,7 +161,7 @@ public class DigitsClient {
     }
 
     protected void authDevice(final String phoneNumber, final Verification verificationType,
-            final Callback<AuthResponse> callback) {
+        final Callback<AuthResponse> callback) {
         authRequestQueue.addClientRequest(new CallbackWrapper<AuthResponse>(callback) {
 
             @Override
@@ -251,10 +251,6 @@ public class DigitsClient {
             }
 
         });
-    }
-
-    protected DigitsUserAgent getUserAgent(){
-        return userAgent;
     }
 
     static abstract class CallbackWrapper<T> extends Callback<DigitsApiClient> {

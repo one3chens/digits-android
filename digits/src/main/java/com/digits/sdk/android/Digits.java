@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 
 import io.fabric.sdk.android.Fabric;
 import io.fabric.sdk.android.Kit;
+import io.fabric.sdk.android.services.common.IdManager;
 import io.fabric.sdk.android.services.concurrency.DependsOn;
 import io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
 
@@ -49,17 +50,23 @@ public class Digits extends Kit<Void> {
     static final String PREF_KEY_SESSION = "session";
     static final String SESSION_PREF_FILE_NAME = "session_store";
 
-    private static final String KIT_SCRIBE_NAME = "Digits";
-
+    private final DigitsScribeClient digitsScribeClient;
     private volatile DigitsClient digitsClient;
     private volatile ContactsClient contactsClient;
     private SessionManager<DigitsSession> sessionManager;
     private SessionMonitor<DigitsSession> userSessionMonitor;
     private ActivityClassManager activityClassManager;
-    private DigitsScribeClient scribeClient;
+    private DefaultScribeClient twitterScribeClient;
     private DigitsSessionVerifier digitsSessionVerifier;
 
     private int themeResId;
+
+    public Digits() {
+        super();
+        //create api client wrappers only.
+        //all expensive api clients are created in the background
+        digitsScribeClient = new DigitsScribeClient();
+    }
 
     public static Digits getInstance() {
         return Fabric.getKit(Digits.class);
@@ -179,11 +186,6 @@ public class Digits extends Kit<Void> {
         digitsSessionVerifier.removeSessionListener(sessionListener);
     }
 
-    public Digits() {
-        super();
-        scribeClient = new DigitsScribeClientImpl(null);
-    }
-
     @Override
     public String getVersion() {
         return BuildConfig.VERSION_NAME + "." + BuildConfig.BUILD_NUMBER;
@@ -205,7 +207,8 @@ public class Digits extends Kit<Void> {
     protected Void doInBackground() {
         // Trigger restoration of session
         sessionManager.getActiveSession();
-        scribeClient = setUpScribing();
+        createTwitterScribeClient(sessionManager, getIdManager());
+        digitsScribeClient.setTwitterScribeClient(twitterScribeClient);
         createDigitsClient();
         createContactsClient();
         userSessionMonitor = new SessionMonitor<>(getSessionManager(), getExecutorService(),
@@ -243,7 +246,7 @@ public class Digits extends Kit<Void> {
     }
 
     protected DigitsScribeClient getScribeClient() {
-        return scribeClient;
+        return digitsScribeClient;
     }
 
     private synchronized void createDigitsClient() {
@@ -269,16 +272,15 @@ public class Digits extends Kit<Void> {
         return getFabric().getExecutorService();
     }
 
-    private DigitsScribeClient setUpScribing() {
-        final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>();
-        sessionManagers.add(sessionManager);
-        if (digitsClient != null && digitsClient.getUserAgent() != null){
-            return new DigitsScribeClientImpl(
-                    new DefaultScribeClient(this, digitsClient.getUserAgent().toString(),
-                    sessionManagers, getIdManager()));
-        } else {
-            return new DigitsScribeClientImpl(new DefaultScribeClient(this, KIT_SCRIBE_NAME,
-                    sessionManagers, getIdManager()));
+    private synchronized void createTwitterScribeClient(SessionManager sessionManager,
+                                                        IdManager idManager) {
+        if (twitterScribeClient == null) {
+            final DigitsUserAgent userAgent = new DigitsUserAgent();
+            final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>();
+            sessionManagers.add(sessionManager);
+
+            twitterScribeClient = new DefaultScribeClient(this, userAgent.toString(),
+                    sessionManagers, idManager);
         }
     }
 

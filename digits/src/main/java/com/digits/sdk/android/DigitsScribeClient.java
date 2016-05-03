@@ -17,8 +17,87 @@
 
 package com.digits.sdk.android;
 
+import com.digits.sdk.android.DigitsScribeConstants.Component;
+import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
 
-public interface DigitsScribeClient {
-    void scribe(EventNamespace ns);
+public class DigitsScribeClient {
+    static final String SCRIBE_CLIENT = "tfw";
+    static final String SCRIBE_PAGE = "android";
+    static final String SCRIBE_SECTION = "digits";
+    static final String LOGGED_IN_ACTION = "logged_in";
+
+    static final EventNamespace.Builder DIGITS_EVENT_BUILDER = new EventNamespace.Builder()
+            .setClient(SCRIBE_CLIENT)
+            .setPage(SCRIBE_PAGE)
+            .setSection(SCRIBE_SECTION);
+
+    private DefaultScribeClient twitterScribeClient;
+
+    public void impression(Component component) {
+        final EventNamespace ns = DIGITS_EVENT_BUILDER
+                .setComponent(component.getComponent())
+                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setAction(DigitsScribeConstants.Action.IMPRESSION.getAction())
+                .builder();
+        safeScribe(ns);
+    }
+
+    public void failure(Component component) {
+        final EventNamespace ns = DIGITS_EVENT_BUILDER
+                .setComponent(component.getComponent())
+                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setAction(DigitsScribeConstants.Action.FAILURE.getAction())
+                .builder();
+        safeScribe(ns);
+    }
+
+    public void click(Component component, DigitsScribeConstants.Element element) {
+        final EventNamespace ns = DIGITS_EVENT_BUILDER
+                .setComponent(component.getComponent())
+                .setElement(element.getElement())
+                .setAction(DigitsScribeConstants.Action.CLICK.getAction())
+                .builder();
+        safeScribe(ns);
+    }
+
+    public void success(Component component) {
+        final EventNamespace ns = DIGITS_EVENT_BUILDER
+                .setComponent(component.getComponent())
+                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setAction(DigitsScribeConstants.Action.SUCCESS.getAction())
+                .builder();
+        safeScribe(ns);
+    }
+
+    public void loginSuccess() {
+        final EventNamespace ns = DIGITS_EVENT_BUILDER
+                .setComponent(Component.EMPTY.getComponent())
+                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setAction(LOGGED_IN_ACTION)
+                .builder();
+        safeScribe(ns);
+    }
+
+    public void error(Component component, DigitsException exception) {
+        final EventNamespace ns = DIGITS_EVENT_BUILDER
+                .setComponent(component.getComponent())
+                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
+                .setAction(DigitsScribeConstants.Action.ERROR.getAction())
+                .builder();
+        safeScribe(ns);
+    }
+
+    public void setTwitterScribeClient(DefaultScribeClient twitterScribeClient){
+        if (twitterScribeClient == null) {
+            throw new IllegalArgumentException("twitter scribe client must not be null");
+        }
+        this.twitterScribeClient = twitterScribeClient;
+    }
+
+    private void safeScribe(EventNamespace ns){
+        if (twitterScribeClient != null) {
+            twitterScribeClient.scribe(ns);
+        }
+    }
 }

@@ -16,11 +16,9 @@
  */
 package com.digits.sdk.android;
 
-import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
 import com.digits.sdk.android.DigitsScribeConstants.Component;
 
 class AuthScribeService extends DigitsScribeServiceBaseImpl {
-    static final String LOGGED_IN_ACTION = "logged_in";
     private final DigitsScribeClient scribeClient;
 
     AuthScribeService(DigitsScribeClient digitsScribeClient) {
@@ -30,11 +28,6 @@ class AuthScribeService extends DigitsScribeServiceBaseImpl {
 
     @Override
     public void success() {
-        final EventNamespace ns = DIGITS_EVENT_BUILDER
-                .setComponent(Component.EMPTY.getComponent())
-                .setElement(DigitsScribeConstants.Element.EMPTY.getElement())
-                .setAction(LOGGED_IN_ACTION)
-                .builder();
-        this.scribeClient.scribe(ns);
+        this.scribeClient.loginSuccess();
     }
 }

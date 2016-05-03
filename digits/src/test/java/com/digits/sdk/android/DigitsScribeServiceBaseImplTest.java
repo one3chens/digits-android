@@ -17,7 +17,6 @@
 
 package com.digits.sdk.android;
 
-import com.digits.sdk.android.DigitsScribeConstants.Action;
 import com.digits.sdk.android.DigitsScribeConstants.Component;
 import com.digits.sdk.android.DigitsScribeConstants.Element;
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
@@ -32,117 +31,61 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class DigitsScribeServiceBaseImplTest {
-    private TestScribeService service;
     @Mock
     private DigitsScribeClient client;
     @Captor
     private ArgumentCaptor<EventNamespace> eventNamespaceArgumentCaptor;
+    private Component component = Component.AUTH;
+    private DigitsScribeService service;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        service = new TestScribeService(client);
+        service = new DigitsScribeServiceBaseImpl(client, component);
     }
 
     @Test
     public void testImpression() throws Exception {
         service.impression();
-        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
-        final EventNamespace actualEventNamespace = eventNamespaceArgumentCaptor.getValue();
-        final EventNamespace expectedEventNamespace = createImpression();
-        assertEquals(expectedEventNamespace, actualEventNamespace);
+        verify(client).impression(component);
     }
 
     @Test
     public void testSuccess() throws Exception {
         service.success();
-        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
-        final EventNamespace actualEventNamespace = eventNamespaceArgumentCaptor.getValue();
-        final EventNamespace expectedEventNamespace = createSuccess();
-        assertEquals(expectedEventNamespace, actualEventNamespace);
+        verify(client).success(component);
     }
 
     @Test
     public void testClick() throws Exception {
         service.click(Element.SUBMIT);
-        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
-        final EventNamespace actualEventNamespace = eventNamespaceArgumentCaptor.getValue();
-        final EventNamespace expectedEventNamespace = createClick();
-        assertEquals(expectedEventNamespace, actualEventNamespace);
+        verify(client).click(component, Element.SUBMIT);
     }
 
     @Test
     public void testFailure() throws Exception {
         service.failure();
-        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
-        final EventNamespace actualEventNamespace = eventNamespaceArgumentCaptor.getValue();
-        final EventNamespace expectedEventNamespace = createFailure();
-        assertEquals(expectedEventNamespace, actualEventNamespace);
+        verify(client).failure(component);
     }
 
     @Test
     public void testError() throws Exception {
         service.error(TestConstants.ANY_EXCEPTION);
-        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
-        final EventNamespace actualEventNamespace = eventNamespaceArgumentCaptor.getValue();
-        final EventNamespace expectedEventNamespace = createException();
-        assertEquals(expectedEventNamespace, actualEventNamespace);
+        verify(client).error(component, TestConstants.ANY_EXCEPTION);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructor_withNullScribeClient() throws Exception {
-        new TestScribeService(null);
+        new DigitsScribeServiceBaseImpl(null, Component.AUTH);
     }
 
-    private EventNamespace createException() {
-        return DigitsScribeServiceBaseImpl.DIGITS_EVENT_BUILDER
-                .setComponent(Component.EMPTY.getComponent())
-                .setElement(Element.EMPTY.getElement())
-                .setAction(Action.ERROR.getAction())
-                .builder();
-    }
-
-    private EventNamespace createImpression() {
-        return DigitsScribeServiceBaseImpl.DIGITS_EVENT_BUILDER
-                .setComponent(Component.EMPTY.getComponent())
-                .setElement(Element.EMPTY.getElement())
-                .setAction(Action.IMPRESSION.getAction())
-                .builder();
-    }
-
-    private EventNamespace createSuccess() {
-        return DigitsScribeServiceBaseImpl.DIGITS_EVENT_BUILDER
-                .setComponent(Component.EMPTY.getComponent())
-                .setElement(Element.EMPTY.getElement())
-                .setAction(Action.SUCCESS.getAction())
-                .builder();
-    }
-
-    private EventNamespace createFailure() {
-        return DigitsScribeServiceBaseImpl.DIGITS_EVENT_BUILDER
-                .setComponent(Component.EMPTY.getComponent())
-                .setElement(Element.EMPTY.getElement())
-                .setAction(Action.FAILURE.getAction())
-                .builder();
-    }
-
-    private EventNamespace createClick() {
-        return DigitsScribeServiceBaseImpl.DIGITS_EVENT_BUILDER
-                .setComponent(Component.EMPTY.getComponent())
-                .setElement(Element.SUBMIT.getElement())
-                .setAction(Action.CLICK.getAction())
-                .builder();
-    }
-
-    class TestScribeService extends DigitsScribeServiceBaseImpl {
-        TestScribeService(DigitsScribeClient scribeClient) {
-            super(scribeClient, Component.EMPTY);
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_withNullComponent() throws Exception {
+        new DigitsScribeServiceBaseImpl(client, null);
     }
 }
