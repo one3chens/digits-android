@@ -51,6 +51,7 @@ public class Digits extends Kit<Void> {
     static final String SESSION_PREF_FILE_NAME = "session_store";
 
     private final DigitsScribeClient digitsScribeClient;
+    private final DigitsEventCollector digitsEventCollector;
     private volatile DigitsClient digitsClient;
     private volatile ContactsClient contactsClient;
     private SessionManager<DigitsSession> sessionManager;
@@ -66,6 +67,7 @@ public class Digits extends Kit<Void> {
         //create api client wrappers only.
         //all expensive api clients are created in the background
         digitsScribeClient = new DigitsScribeClient();
+        digitsEventCollector = new DigitsEventCollector(digitsScribeClient);
     }
 
     public static Digits getInstance() {
@@ -245,8 +247,8 @@ public class Digits extends Kit<Void> {
         return digitsClient;
     }
 
-    protected DigitsScribeClient getScribeClient() {
-        return digitsScribeClient;
+    protected DigitsEventCollector getDigitsEventCollector() {
+        return digitsEventCollector;
     }
 
     private synchronized void createDigitsClient() {

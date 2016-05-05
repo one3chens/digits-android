@@ -66,6 +66,6 @@ public class DigitsTest extends DigitsAndroidTestCase {
 
     public void testDigits_constructor() throws Exception {
         final Digits digits = new Digits();
-        assertNotNull(digits.getScribeClient());
+        assertNotNull(digits.getDigitsEventCollector());
     }
 }

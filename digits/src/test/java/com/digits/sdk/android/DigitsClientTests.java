@@ -81,7 +81,6 @@ public class DigitsClientTests {
     private DigitsSession guestSession;
     private DigitsSession userSession;
     private DigitsApiClient digitsApiClient;
-    private DigitsScribeClient scribeClient;
     private DigitsAuthRequestQueue authRequestQueue;
     private DigitsEventCollector digitsEventCollector;
     private Fabric fabric;
@@ -101,7 +100,6 @@ public class DigitsClientTests {
         context = mock(MockContext.class);
         controller = mock(DigitsController.class);
         callback = mock(AuthCallback.class);
-        scribeClient = mock(DigitsScribeClient.class);
         digitsEventCollector = mock(DigitsEventCollector.class);
         fabric = mock(Fabric.class);
         activity = mock(Activity.class);
@@ -117,7 +115,7 @@ public class DigitsClientTests {
         when(twitterCore.getSSLSocketFactory()).thenReturn(mock(SSLSocketFactory.class));
         when(digits.getExecutorService()).thenReturn(mock(ExecutorService.class));
         when(digits.getActivityClassManager()).thenReturn(new ActivityClassManagerImp());
-        when(digits.getScribeClient()).thenReturn(scribeClient);
+        when(digits.getDigitsEventCollector()).thenReturn(digitsEventCollector);
         when(digits.getFabric()).thenReturn(fabric);
         when(digits.getVersion()).thenReturn(ANY_VERSION);
         when(fabric.getCurrentActivity()).thenReturn(activity);

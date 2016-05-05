@@ -24,8 +24,7 @@ class WeakAuthCallback implements AuthCallback {
     private final DigitsEventCollector digitsEventCollector;
 
     public WeakAuthCallback(AuthCallback callback) {
-        this(callback, new DigitsEventCollector(
-                Digits.getInstance().getScribeClient()));
+        this(callback, Digits.getInstance().getDigitsEventCollector());
     }
 
     WeakAuthCallback(AuthCallback callback,

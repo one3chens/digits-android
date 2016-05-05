@@ -56,8 +56,7 @@ public class DigitsClient {
 
     DigitsClient() {
         this(Digits.getInstance(), new DigitsUserAgent(), TwitterCore.getInstance(),
-                Digits.getSessionManager(), null, new DigitsEventCollector(
-                        Digits.getInstance().getScribeClient()));
+                Digits.getSessionManager(), null, Digits.getInstance().getDigitsEventCollector());
     }
 
     DigitsClient(Digits digits, DigitsUserAgent userAgent, TwitterCore twitterCore,

@@ -32,8 +32,7 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
     final DigitsEventCollector digitsEventCollector;
 
     public FailureActivityDelegateImpl(Activity activity) {
-        this(activity, new FailureControllerImpl(), new DigitsEventCollector(
-                Digits.getInstance().getScribeClient()));
+        this(activity, new FailureControllerImpl(), Digits.getInstance().getDigitsEventCollector());
     }
 
     public FailureActivityDelegateImpl(Activity activity, FailureController controller,
