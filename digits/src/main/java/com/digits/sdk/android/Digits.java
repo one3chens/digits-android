@@ -153,6 +153,7 @@ public class Digits extends Kit<Void> {
     @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(DigitsAuthConfig digitsAuthConfig) {
         getInstance().setTheme(digitsAuthConfig.themeResId);
+        getInstance().setExternalLogger(digitsAuthConfig.digitsEventLogger);
         getInstance().getDigitsClient().startSignUp(digitsAuthConfig);
     }
 
@@ -304,5 +305,9 @@ public class Digits extends Kit<Void> {
     @SuppressWarnings("UnusedDeclaration")
     public TwitterAuthConfig getAuthConfig() {
         return TwitterCore.getInstance().getAuthConfig();
+    }
+
+    private void setExternalLogger(DigitsEventLogger externalEventLogger) {
+        digitsEventCollector.setLoggerResultReceiver(externalEventLogger);
     }
 }

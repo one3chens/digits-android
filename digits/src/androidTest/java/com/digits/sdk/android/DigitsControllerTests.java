@@ -35,7 +35,6 @@ import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -82,7 +81,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         resultReceiver = mock(ResultReceiver.class);
         sessionManager = mock(SessionManager.class);
         errors = mock(ErrorCodes.class);
-        digitsEventCollector = mock(DigitsEventCollector.class);
+        digitsEventCollector = mock(DummyDigitsEventCollector.class);
         countDownTimer = mock(CountDownTimer.class);
         timerTextView = mock(TextView.class);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());

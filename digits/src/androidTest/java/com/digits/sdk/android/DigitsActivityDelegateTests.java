@@ -56,7 +56,7 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        digitsEventCollector = mock(DigitsEventCollector.class);
+        digitsEventCollector = mock(DummyDigitsEventCollector.class);
         delegate = getDelegate();
         activity = mock(Activity.class);
         controller = mock(DigitsController.class);

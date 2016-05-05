@@ -25,9 +25,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsAuthConfig;
+import com.digits.sdk.android.DigitsEventLogger;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
 import com.digits.sdk.android.SessionListener;
@@ -46,7 +48,7 @@ public class DigitsMainActivity extends Activity {
     private Button verifyCredentialsButton;
     private Button customPhoneLoginButton;
     private SessionListener sessionListener;
-
+    private Answers answers;
     public static final int CUSTOM_LOGIN_REQUEST = 1;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,9 @@ public class DigitsMainActivity extends Activity {
         final TextView userIdView = (TextView) findViewById(R.id.user_id);
         final TextView tokenView = (TextView) findViewById(R.id.token);
         final TextView secretView = (TextView) findViewById(R.id.secret);
+
+        this.answers = Answers.getInstance();
+
         clearSessionButton = (Button) findViewById(R.id.clear_session_button);
         clearSessionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +91,11 @@ public class DigitsMainActivity extends Activity {
             }
         };
 
+
         digitsAuthButton = (Button) findViewById(R.id.signup_button);
+
+        final DigitsEventLogger digitsEventLogger = new AnswersLogger(answers);
+
         digitsAuthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +104,8 @@ public class DigitsMainActivity extends Activity {
                         .withAuthCallBack(callback)
                         .withPhoneNumber("")
                         .withEmailCollection()
-                        .withThemeResId(R.style.LightTheme);
+                        .withThemeResId(R.style.LightTheme)
+                        .withEventLogger(digitsEventLogger);
 
                 Digits.authenticate(digitsAuthConfigBuilder.build());
             }

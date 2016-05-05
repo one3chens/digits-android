@@ -14,15 +14,17 @@
  * limitations under the License.
  *
  */
+
 package com.digits.sdk.android;
 
 import com.digits.sdk.android.DigitsScribeConstants.Component;
 import com.digits.sdk.android.DigitsScribeConstants.Element;
 
-public class DigitsEventCollector {
+class DigitsEventCollector {
     private final DigitsScribeClient digitsScribeClient;
+    private DigitsEventLogger externalEventLogger;
 
-    public DigitsEventCollector(DigitsScribeClient digitsScribeClient){
+    DigitsEventCollector(DigitsScribeClient digitsScribeClient){
         if (digitsScribeClient == null) {
             throw new IllegalArgumentException("digits scribe client must not be null");
         }
@@ -30,13 +32,19 @@ public class DigitsEventCollector {
         this.digitsScribeClient = digitsScribeClient;
     }
 
+    void setLoggerResultReceiver(DigitsEventLogger externalEventLogger){
+        this.externalEventLogger = externalEventLogger;
+    }
+
     //Auth/External API events
     public void authImpression() {
         digitsScribeClient.impression(Component.EMPTY);
+        if (externalEventLogger != null) externalEventLogger.phoneNumberImpression();
     }
 
     public void authSuccess() {
         digitsScribeClient.loginSuccess();
+        if (externalEventLogger != null) externalEventLogger.loginSuccess();
     }
 
     public void authFailure() {
@@ -53,6 +61,7 @@ public class DigitsEventCollector {
 
     public void submitClickOnPhoneScreen() {
         digitsScribeClient.click(Component.AUTH, Element.SUBMIT);
+        if (externalEventLogger != null) externalEventLogger.phoneNumberSubmit();
     }
 
     public void retryClickOnPhoneScreen() {
@@ -61,6 +70,7 @@ public class DigitsEventCollector {
 
     public void submitPhoneSuccess() {
         digitsScribeClient.success(Component.AUTH);
+        if (externalEventLogger != null) externalEventLogger.phoneNumberSuccess();
     }
 
     public void submitPhoneFailure() {
@@ -119,6 +129,7 @@ public class DigitsEventCollector {
 
     public void signupSuccess() {
         digitsScribeClient.success(Component.SIGNUP);
+        if (externalEventLogger != null) externalEventLogger.loginSuccess();
     }
 
     public void signupFailure() {

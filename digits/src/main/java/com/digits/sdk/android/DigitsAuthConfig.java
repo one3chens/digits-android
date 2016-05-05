@@ -27,16 +27,19 @@ public class DigitsAuthConfig {
     protected final String partnerKey;
     protected final AuthCallback authCallback;
     protected final ConfirmationCodeCallback confirmationCodeCallback;
+    protected final DigitsEventLogger digitsEventLogger;
 
     protected DigitsAuthConfig(boolean isEmailRequired, String phoneNumber,
                      AuthCallback authCallback, int themeResId,
-                     ConfirmationCodeCallback confirmationCodeCallback, String partnerKey){
+                     ConfirmationCodeCallback confirmationCodeCallback, String partnerKey,
+                     DigitsEventLogger digitsEventLogger){
         this.isEmailRequired = isEmailRequired;
         this.themeResId = themeResId;
         this.phoneNumber = phoneNumber;
         this.authCallback = authCallback;
         this.confirmationCodeCallback = confirmationCodeCallback;
         this.partnerKey = partnerKey;
+        this.digitsEventLogger = digitsEventLogger;
     }
 
     /**
@@ -61,6 +64,7 @@ public class DigitsAuthConfig {
         AuthCallback authCallback;
         int themeResId;
         ConfirmationCodeCallback confirmationCodeCallback;
+        DigitsEventLogger digitsEventLogger;
 
         /**
          * Construct {@link DigitsAuthConfig.Builder}
@@ -75,6 +79,9 @@ public class DigitsAuthConfig {
             this.phoneNumber = that.phoneNumber;
             this.authCallback = that.authCallback;
             this.themeResId = that.themeResId;
+            this.partnerKey = that.partnerKey;
+            this.confirmationCodeCallback = that.confirmationCodeCallback;
+            this.digitsEventLogger = that.digitsEventLogger;
         }
 
         /**
@@ -137,6 +144,18 @@ public class DigitsAuthConfig {
             return this;
         }
 
+        /**
+         * Set digitsEventLogger to receive synchronous callbacks on Digits events.
+         * @param digitsEventLogger {@link DigitsEventLogger} to receive synchronous notifications from Digits when user complete various stages of
+         *                         login. Apps may create their own logger by implementing {@link DigitsEventLogger} or can use the default loggers
+         *                         provided in our online documentation.
+         */
+        public Builder withEventLogger(
+                DigitsEventLogger digitsEventLogger){
+            this.digitsEventLogger = digitsEventLogger;
+            return this;
+        }
+
 
         public Builder withPartnerKey(String partnerKey) {
             this.partnerKey = partnerKey;
@@ -160,7 +179,7 @@ public class DigitsAuthConfig {
 
             return new DigitsAuthConfig(isEmailRequired,
                     phoneNumber == null ? "": phoneNumber, authCallback, themeResId,
-                    confirmationCodeCallback, partnerKey);
+                    confirmationCodeCallback, partnerKey, digitsEventLogger);
         }
     }
 }

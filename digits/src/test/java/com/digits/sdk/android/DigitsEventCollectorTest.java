@@ -38,13 +38,14 @@ public class DigitsEventCollectorTest {
     @Captor
     private ArgumentCaptor<EventNamespace> eventNamespaceArgumentCaptor;
     private final DigitsScribeClient digitsScribeClient = mock(DigitsScribeClient.class);
-    private final DigitsEventCollector digitsEventCollector =
+    private DigitsEventCollector digitsEventCollector =
             new DigitsEventCollector(digitsScribeClient);
     private final DigitsException exception = new DigitsException("exception");
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        digitsEventCollector = new DigitsEventCollector(digitsScribeClient);
     }
 
     @Test
@@ -292,5 +293,44 @@ public class DigitsEventCollectorTest {
     public void testDismissClickOnFailureScreen() {
         digitsEventCollector.dismissClickOnFailureScreen();
         verify(digitsScribeClient).click(Component.FAILURE, DigitsScribeConstants.Element.DISMISS);
+    }
+
+    //External Logger event delegators
+    //We test methods that delegate to the external event logger separately
+    //The tests above implicitly test for the case where the external event logger is not set.
+    @Test
+    public void testAuthImpression_withExternalLogger() {
+        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
+        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
+        digitsEventCollector.authImpression();
+        verify(digitsScribeClient).impression(Component.EMPTY);
+        verify(digitsEventLogger).phoneNumberImpression();
+    }
+
+    @Test
+    public void testAuthSuccess_withExternalLogger() {
+        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
+        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
+        digitsEventCollector.authSuccess();
+        verify(digitsScribeClient).loginSuccess();
+        verify(digitsEventLogger).loginSuccess();
+    }
+
+    @Test
+    public void testSubmitClickOnPhoneScreen_withExternalLogger(){
+        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
+        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
+        digitsEventCollector.submitClickOnPhoneScreen();
+        verify(digitsScribeClient).click(Component.AUTH, DigitsScribeConstants.Element.SUBMIT);
+        verify(digitsEventLogger).phoneNumberSubmit();
+    }
+
+    @Test
+    public void testSubmitPhoneSuccess_withExternalLogger() {
+        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
+        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
+        digitsEventCollector.submitPhoneSuccess();
+        verify(digitsScribeClient).success(Component.AUTH);
+        verify(digitsEventLogger).phoneNumberSuccess();
     }
 }

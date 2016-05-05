@@ -21,6 +21,7 @@ import android.app.Application;
 import android.os.StrictMode;
 import android.util.Log;
 
+import com.crashlytics.android.answers.Answers;
 import io.fabric.sdk.android.DefaultLogger;
 import io.fabric.sdk.android.Fabric;
 
@@ -52,7 +53,7 @@ public class SampleApplication extends Application {
                 BuildConfig.CONSUMER_SECRET);
 
         final Fabric fabric = new Fabric.Builder(this)
-                .kits(new Digits(), new TwitterCore(authConfig))
+                .kits(new Digits(), new Answers(), new TwitterCore(authConfig))
                 .logger(new DefaultLogger(Log.DEBUG))
                 .debuggable(true)
                 .build();
