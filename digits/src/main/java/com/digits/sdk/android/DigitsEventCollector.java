@@ -37,9 +37,9 @@ class DigitsEventCollector {
     }
 
     //Auth/External API events
-    public void authImpression() {
+    public void authImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.EMPTY);
-        if (externalEventLogger != null) externalEventLogger.loginBegin();
+        if (externalEventLogger != null) externalEventLogger.loginBegin(details);
     }
 
     public void authSuccess() {
@@ -52,26 +52,27 @@ class DigitsEventCollector {
     }
 
     //Phone screen events
-    public void phoneScreenImpression() {
+    public void phoneScreenImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.AUTH);
-        if (externalEventLogger != null) externalEventLogger.phoneNumberImpression();
+        if (externalEventLogger != null)
+            externalEventLogger.phoneNumberImpression(details);
     }
     public void countryCodeClickOnPhoneScreen() {
         digitsScribeClient.click(Component.AUTH, Element.COUNTRY_CODE);
     }
 
-    public void submitClickOnPhoneScreen() {
+    public void submitClickOnPhoneScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.AUTH, Element.SUBMIT);
-        if (externalEventLogger != null) externalEventLogger.phoneNumberSubmit();
+        if (externalEventLogger != null) externalEventLogger.phoneNumberSubmit(details);
     }
 
     public void retryClickOnPhoneScreen() {
         digitsScribeClient.click(Component.AUTH, Element.RETRY);
     }
 
-    public void submitPhoneSuccess() {
+    public void submitPhoneSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.AUTH);
-        if (externalEventLogger != null) externalEventLogger.phoneNumberSuccess();
+        if (externalEventLogger != null) externalEventLogger.phoneNumberSuccess(details);
     }
 
     public void submitPhoneFailure() {
@@ -99,8 +100,10 @@ class DigitsEventCollector {
         digitsScribeClient.click(Component.LOGIN, Element.CALL);
     }
 
-    public void loginCodeSuccess() {
+    public void loginCodeSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.LOGIN);
+        if (externalEventLogger != null) externalEventLogger.loginSuccess();
+
     }
 
     public void loginFailure() {
@@ -128,7 +131,7 @@ class DigitsEventCollector {
         digitsScribeClient.click(Component.SIGNUP, Element.CALL);
     }
 
-    public void signupSuccess() {
+    public void signupSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.SIGNUP);
         if (externalEventLogger != null) externalEventLogger.loginSuccess();
     }

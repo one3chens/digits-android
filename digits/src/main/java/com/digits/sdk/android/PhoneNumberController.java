@@ -42,12 +42,13 @@ class PhoneNumberController extends DigitsControllerImpl implements
     PhoneNumberController(ResultReceiver resultReceiver,
                           StateButton stateButton, EditText phoneEditText,
                           CountryListSpinner countryCodeSpinner, TosView tosView,
-                          DigitsEventCollector digitsEventCollector, boolean emailCollection) {
+                          DigitsEventCollector digitsEventCollector, boolean emailCollection,
+                          DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         this(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
                 Digits.getInstance().getDigitsClient(), new PhoneNumberErrorCodes(stateButton
                         .getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), Digits.getSessionManager(),
-                tosView, digitsEventCollector, emailCollection);
+                tosView, digitsEventCollector, emailCollection, digitsEventDetailsBuilder);
     }
 
     /**
@@ -58,9 +59,10 @@ class PhoneNumberController extends DigitsControllerImpl implements
                           DigitsClient client, ErrorCodes errors,
                           ActivityClassManager activityClassManager,
                           SessionManager<DigitsSession> sessionManager, TosView tosView,
-                          DigitsEventCollector digitsEventCollector, boolean emailCollection) {
+                          DigitsEventCollector digitsEventCollector, boolean emailCollection,
+                          DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
-                sessionManager, digitsEventCollector);
+                sessionManager, digitsEventCollector, digitsEventDetailsBuilder);
         this.countryCodeSpinner = countryCodeSpinner;
         this.tosView = tosView;
         voiceEnabled = false;
@@ -83,18 +85,27 @@ class PhoneNumberController extends DigitsControllerImpl implements
     }
 
     LoginOrSignupComposer createCompositeCallback(final Context context, final String phoneNumber) {
+        final DigitsEventDetailsBuilder dm = this.digitsEventDetailsBuilder
+                .withCountry(countryCodeSpinner.getText().toString())
+                .withCurrentTime(System.currentTimeMillis());
+
         return new LoginOrSignupComposer(context, digitsClient, phoneNumber,
                 getVerificationType(), this.emailCollection, resultReceiver,
-                activityClassManager) {
+                activityClassManager, dm) {
 
             @Override
             public void success(final Intent intent) {
+                final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
+                        this.digitsEventDetailsBuilder
+                        .withCountry(countryCodeSpinner.getText().toString())
+                        .withCurrentTime(System.currentTimeMillis());
+
                 sendButton.showFinish();
 
                 editText.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        digitsEventCollector.submitPhoneSuccess();
+                        digitsEventCollector.submitPhoneSuccess(digitsEventDetailsBuilder.build());
                         startActivityForResult((Activity) context, intent);
                     }
                 }, POST_DELAY_MS);
@@ -127,10 +138,15 @@ class PhoneNumberController extends DigitsControllerImpl implements
     }
 
     private void scribeRequest() {
+        final DigitsEventDetails digitsEventDetails = this.digitsEventDetailsBuilder
+                .withCountry(countryCodeSpinner.getText().toString())
+                .withCurrentTime(System.currentTimeMillis())
+                .build();
+
         if (isRetry()) {
             digitsEventCollector.retryClickOnPhoneScreen();
         } else {
-            digitsEventCollector.submitClickOnPhoneScreen();
+            digitsEventCollector.submitClickOnPhoneScreen(digitsEventDetails);
         }
     }
 

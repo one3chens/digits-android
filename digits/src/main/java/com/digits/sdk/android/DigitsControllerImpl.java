@@ -45,9 +45,30 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     final StateButton sendButton;
     final SessionManager<DigitsSession> sessionManager;
     final DigitsEventCollector digitsEventCollector;
+    final DigitsEventDetailsBuilder digitsEventDetailsBuilder;
     int errorCount;
     CountDownTimer countDownTimer;
 
+    DigitsControllerImpl(ResultReceiver resultReceiver, StateButton stateButton, EditText editText,
+                         DigitsClient client, ErrorCodes errors,
+                         ActivityClassManager activityClassManager,
+                         SessionManager<DigitsSession> sessionManager,
+                         DigitsEventCollector digitsEventCollector,
+                         DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
+        this.resultReceiver = resultReceiver;
+        this.digitsClient = client;
+        this.activityClassManager = activityClassManager;
+        this.sendButton = stateButton;
+        this.editText = editText;
+        this.errors = errors;
+        this.sessionManager = sessionManager;
+        this.errorCount = 0;
+        this.digitsEventCollector = digitsEventCollector;
+        this.digitsEventDetailsBuilder = digitsEventDetailsBuilder;
+    }
+
+    //TODO:araghav
+    //This controller to be phased out after refactor
     DigitsControllerImpl(ResultReceiver resultReceiver, StateButton stateButton, EditText editText,
                          DigitsClient client, ErrorCodes errors,
                          ActivityClassManager activityClassManager,
@@ -62,6 +83,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         this.sessionManager = sessionManager;
         this.errorCount = 0;
         this.digitsEventCollector = digitsEventCollector;
+        this.digitsEventDetailsBuilder = null;
     }
 
     abstract void scribeControllerFailure();

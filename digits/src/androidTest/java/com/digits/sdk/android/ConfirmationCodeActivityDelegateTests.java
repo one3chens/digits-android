@@ -42,23 +42,80 @@ public class ConfirmationCodeActivityDelegateTests extends
     }
 
     public void testIsValid() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang")
+                        .withCountry("US");
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertTrue(delegate.isValid(bundle));
     }
 
     public void testIsValid_missingResultReceiver() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang")
+                        .withCountry("US");
         final Bundle bundle = new Bundle();
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
 
     public void testIsValid_missingPhoneNumber() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang")
+                        .withCountry("US");
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+
+        assertFalse(delegate.isValid(bundle));
+    }
+
+    public void testIsValid_missingAuthStartTime() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withLanguage("lang")
+                        .withCountry("US");
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+
+        assertFalse(delegate.isValid(bundle));
+    }
+
+    public void testIsValid_missingLanguage() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withCountry("US");
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+
+        assertFalse(delegate.isValid(bundle));
+    }
+
+    public void testIsValid_missingCountry() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang");
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }

@@ -24,16 +24,23 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.twitter.sdk.android.core.SessionManager;
 
 public class DigitsActivityTests<T extends Activity> extends ActivityInstrumentationTestCase2<T> {
+    DigitsEventDetailsBuilder digitsEventDetailsBuilder;
 
     public DigitsActivityTests(Class<T> activityClass) {
         super(activityClass);
     }
 
     public Bundle getBundle() {
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withAuthStartTime(1L)
+                .withLanguage("lang")
+                .withCountry("US");
+
         final SessionManager<DigitsSession> sessionManager = Digits.getSessionManager();
         final LoginResultReceiver resultReceiver = new LoginResultReceiver(null, sessionManager);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
 
         return bundle;
     }

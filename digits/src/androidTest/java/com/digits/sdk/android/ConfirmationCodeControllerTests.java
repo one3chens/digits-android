@@ -45,10 +45,12 @@ public class ConfirmationCodeControllerTests extends
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder().withAuthStartTime(1L)
+                .withLanguage("lang").withCountry("US");
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton,
                 resendButton, callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
                 digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, false,
-                timerTextView);
+                timerTextView, digitsEventDetailsBuilder);
     }
 
     public void testExecuteRequest_successAndMailRequestDisabled() throws Exception {
@@ -57,7 +59,9 @@ public class ConfirmationCodeControllerTests extends
                 new ArrayList<Header>(), null);
         final DigitsUser user = new DigitsUser(USER_ID, "");
         callback.success(user, response);
-        verify(digitsEventCollector).signupSuccess();
+        verify(digitsEventCollector).signupSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sessionManager).setActiveSession(any(DigitsSession.class));
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
@@ -78,7 +82,7 @@ public class ConfirmationCodeControllerTests extends
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
                 digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
-                timerTextView);
+                timerTextView, digitsEventDetailsBuilder);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
                 new ArrayList<Header>(), null);
@@ -87,7 +91,9 @@ public class ConfirmationCodeControllerTests extends
         final DigitsCallback callback = executeRequest();
         callback.success(user, response);
 
-        verify(digitsEventCollector).signupSuccess();
+        verify(digitsEventCollector).signupSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sessionManager).setActiveSession(any(DigitsSession.class));
         verify(sendButton).showFinish();
         verify(context).startActivityForResult(intentCaptor.capture(),
@@ -102,7 +108,7 @@ public class ConfirmationCodeControllerTests extends
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
                 digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
-                timerTextView);
+                timerTextView, digitsEventDetailsBuilder);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
                 new ArrayList<Header>(), null);
@@ -123,7 +129,7 @@ public class ConfirmationCodeControllerTests extends
                 new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
                 digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
-                        timerTextView);
+                        timerTextView, digitsEventDetailsBuilder);
         controller = dcc;
 
         final CountDownTimer timer = dcc.getCountDownTimer();

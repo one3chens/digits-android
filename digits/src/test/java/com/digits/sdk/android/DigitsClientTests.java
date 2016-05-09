@@ -47,6 +47,7 @@ import javax.net.ssl.SSLSocketFactory;
 import io.fabric.sdk.android.Fabric;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
@@ -86,6 +87,7 @@ public class DigitsClientTests {
     private Fabric fabric;
     private Activity activity;
     private LoginResultReceiver loginResultReceiver;
+    private ArgumentCaptor<DigitsEventDetails> digitsEventDetailsArgumentCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -108,6 +110,7 @@ public class DigitsClientTests {
         authRequestQueue = createAuthRequestQueue();
         userSession = DigitsSession.create(TestConstants.DIGITS_USER, TestConstants.PHONE);
         guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
+        digitsEventDetailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
 
         when(digitsApiClient.getService()).thenReturn(service);
         when(twitterCore.getContext()).thenReturn(context);
@@ -250,7 +253,10 @@ public class DigitsClientTests {
                 .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(configWithCallback);
-        verify(digitsEventCollector).authImpression();
+        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(digitsEventCollector).authSuccess();
         verify(callback).success(userSession, null);
     }
@@ -263,7 +269,10 @@ public class DigitsClientTests {
                 .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(configWithPhone);
-        verify(digitsEventCollector).authImpression();
+        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(digitsEventCollector).authSuccess();
         verify(callback).success(userSession, null);
     }
@@ -415,7 +424,10 @@ public class DigitsClientTests {
         final Bundle expectedBundle = createBundle(loginResultReceiver, "", false);
 
         digitsClient.startSignUp(configWithCallback);
-        verify(digitsEventCollector).authImpression();
+        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verifyNoMoreInteractions(digitsEventCollector);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
         //verify start activity is called, passing an ArgumentCaptor to get the intent and check
@@ -423,7 +435,12 @@ public class DigitsClientTests {
         verify(context).startActivity(argument.capture());
         capturedIntent = argument.getValue();
         assertEquals(expectedFlags, capturedIntent.getFlags());
-        assertEquals(expectedBundle, capturedIntent.getExtras());
+        assertBundleEquals(expectedBundle, capturedIntent.getExtras());
+        final DigitsEventDetails actualDigitsEventDetails =
+                ((DigitsEventDetailsBuilder) capturedIntent
+                        .getParcelableExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER)).build();
+        assertNotNull(actualDigitsEventDetails.elapsedTimeInMillis);
+        assertNotNull(actualDigitsEventDetails.language);
     }
 
     private void verifySignUpWithProvidedPhone(Context context, AuthCallback callback, String phone,
@@ -437,7 +454,10 @@ public class DigitsClientTests {
         final Bundle expectedBundle = createBundle(loginResultReceiver, phone, emailCollection);
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(digitsEventCollector).authImpression();
+        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verifyNoMoreInteractions(digitsEventCollector);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
         //verify start activity is called, passing an ArgumentCaptor to get the intent and check
@@ -445,7 +465,12 @@ public class DigitsClientTests {
         verify(context).startActivity(argument.capture());
         capturedIntent = argument.getValue();
         assertEquals(expectedFlags, capturedIntent.getFlags());
-        assertEquals(expectedBundle, capturedIntent.getExtras());
+        assertBundleEquals(expectedBundle, capturedIntent.getExtras());
+        final DigitsEventDetails actualDigitsEventDetails =
+                ((DigitsEventDetailsBuilder) capturedIntent
+                        .getParcelableExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER)).build();
+        assertNotNull(actualDigitsEventDetails.elapsedTimeInMillis);
+        assertNotNull(actualDigitsEventDetails.language);
     }
 
     private void verifySignUpWithCustomPhoneUIAndBadPartnerKey(Context context,
@@ -473,7 +498,10 @@ public class DigitsClientTests {
         };
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(digitsEventCollector).authImpression();
+        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verifyNoMoreInteractions(digitsEventCollector);
         verifyNoMoreInteractions(digitsClient.loginOrSignupComposer);
     }
@@ -502,7 +530,10 @@ public class DigitsClientTests {
         };
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(digitsEventCollector).authImpression();
+        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verifyNoMoreInteractions(digitsEventCollector);
         verify(digitsClient.loginOrSignupComposer).start();
     }
@@ -535,6 +566,15 @@ public class DigitsClientTests {
         return bundle;
     }
 
+    private void assertBundleEquals(Bundle expectedBundle, Bundle actualBundle){
+        assertEquals(expectedBundle.get(DigitsClient.EXTRA_RESULT_RECEIVER),
+                actualBundle.get(DigitsClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(expectedBundle.get(DigitsClient.EXTRA_PHONE),
+                actualBundle.get(DigitsClient.EXTRA_PHONE));
+        assertEquals(expectedBundle.get(DigitsClient.EXTRA_EMAIL),
+                actualBundle.get(DigitsClient.EXTRA_EMAIL));
+    }
+
     class MockDigitsClient extends DigitsClient{
         LoginOrSignupComposer loginOrSignupComposer;
 
@@ -558,9 +598,10 @@ public class DigitsClientTests {
             DummyLoginOrSignupComposer(Context context, DigitsClient digitsClient,
                                        String phoneNumber, Verification verificationType,
                                        boolean emailCollection, ResultReceiver resultReceiver,
-                                       ActivityClassManager activityClassManager) {
+                                       ActivityClassManager activityClassManager,
+                                       DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
                 super(context, digitsClient, phoneNumber, verificationType, emailCollection,
-                        resultReceiver, activityClassManager);
+                        resultReceiver, activityClassManager, digitsEventDetailsBuilder);
             }
         }
     }

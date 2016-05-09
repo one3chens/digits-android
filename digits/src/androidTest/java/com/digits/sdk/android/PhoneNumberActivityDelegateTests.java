@@ -23,6 +23,8 @@ import android.text.SpannedString;
 import android.view.View;
 import android.widget.EditText;
 
+import org.mockito.ArgumentCaptor;
+
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -32,10 +34,12 @@ import static org.mockito.Mockito.verify;
 public class PhoneNumberActivityDelegateTests extends
         DigitsActivityDelegateTests<PhoneNumberActivityDelegate> {
     CountryListSpinner spinner;
+    private ArgumentCaptor<DigitsEventDetails> digitsEventDetailsArgumentCaptor;
 
     @Override
     public void setUp() throws Exception {
         spinner = mock(CountryListSpinner.class);
+        digitsEventDetailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
         super.setUp();
     }
 
@@ -46,13 +50,47 @@ public class PhoneNumberActivityDelegateTests extends
 
     public void testIsValid() {
         final Bundle bundle = new Bundle();
+        final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                .withAuthStartTime(1L)
+                .withLanguage("lang");
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
 
         assertTrue(delegate.isValid(bundle));
     }
 
     public void testIsValid_missingResultReceiver() {
         final Bundle bundle = new Bundle();
+        final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang");
+
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        assertFalse(delegate.isValid(bundle));
+    }
+
+    public void testIsValid_missingDigitsMetricsAuthStartTime() {
+        final Bundle bundle = new Bundle();
+        final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L);
+
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+
+        assertFalse(delegate.isValid(bundle));
+    }
+
+    public void testIsValid_missingDigitsMetricsLanguage() {
+        final Bundle bundle = new Bundle();
+        final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withLanguage("lang");
+
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -76,9 +114,17 @@ public class PhoneNumberActivityDelegateTests extends
     public void testOnResume() {
         final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
         delegate.controller = controller;
+        delegate.eventDetailsBuilder = new DigitsEventDetailsBuilder()
+                        .withLanguage("lang")
+                        .withAuthStartTime(1L);
+
         delegate.onResume();
         verify(controller).onResume();
-        verify(digitsEventCollector).phoneScreenImpression();
+        verify(digitsEventCollector)
+                .phoneScreenImpression(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
     }
 
     @Override
@@ -117,9 +163,10 @@ public class PhoneNumberActivityDelegateTests extends
         DummyPhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
                                    EditText phoneEditText, CountryListSpinner countryCodeSpinner,
                                    TosView tosView, DigitsEventCollector digitsEventCollector,
-                                   boolean emailCollection) {
+                                   boolean emailCollection,
+                                   DigitsEventDetailsBuilder eventDetailsBuilder) {
             super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
-                    tosView, digitsEventCollector, emailCollection);
+                    tosView, digitsEventCollector, emailCollection, eventDetailsBuilder);
         }
     }
 }

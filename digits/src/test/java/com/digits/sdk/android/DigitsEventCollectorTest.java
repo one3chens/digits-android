@@ -41,6 +41,10 @@ public class DigitsEventCollectorTest {
     private DigitsEventCollector digitsEventCollector =
             new DigitsEventCollector(digitsScribeClient);
     private final DigitsException exception = new DigitsException("exception");
+    private final DigitsEventDetails details = new DigitsEventDetailsBuilder()
+            .withAuthStartTime(System.currentTimeMillis())
+            .withCurrentTime(System.currentTimeMillis())
+            .build();
 
     @Before
     public void setUp() throws Exception {
@@ -50,7 +54,7 @@ public class DigitsEventCollectorTest {
 
     @Test
     public void testAuthImpression() {
-        digitsEventCollector.authImpression();
+        digitsEventCollector.authImpression(details);
         verify(digitsScribeClient).impression(Component.EMPTY);
     }
 
@@ -69,7 +73,7 @@ public class DigitsEventCollectorTest {
     //Phone screen events
     @Test
     public void testPhoneScreenImpression() {
-        digitsEventCollector.phoneScreenImpression();
+        digitsEventCollector.phoneScreenImpression(details);
         verify(digitsScribeClient).impression(Component.AUTH);
     }
 
@@ -82,7 +86,7 @@ public class DigitsEventCollectorTest {
 
     @Test
     public void testSubmitClickOnPhoneScreen() {
-        digitsEventCollector.submitClickOnPhoneScreen();
+        digitsEventCollector.submitClickOnPhoneScreen(details);
         verify(digitsScribeClient).click(Component.AUTH, DigitsScribeConstants.Element.SUBMIT);
     }
 
@@ -94,7 +98,7 @@ public class DigitsEventCollectorTest {
 
     @Test
     public void testSubmitPhoneSuccess() {
-        digitsEventCollector.submitPhoneSuccess();
+        digitsEventCollector.submitPhoneSuccess(details);
         verify(digitsScribeClient).success(Component.AUTH);
     }
 
@@ -137,7 +141,7 @@ public class DigitsEventCollectorTest {
 
     @Test
     public void testLoginCodeSuccess() {
-        digitsEventCollector.loginCodeSuccess();
+        digitsEventCollector.loginCodeSuccess(details);
         verify(digitsScribeClient).success(Component.LOGIN);
     }
 
@@ -180,7 +184,7 @@ public class DigitsEventCollectorTest {
 
     @Test
     public void testSignupSuccess() {
-        digitsEventCollector.signupSuccess();
+        digitsEventCollector.signupSuccess(details);
         verify(digitsScribeClient).success(Component.SIGNUP);
     }
 
@@ -302,9 +306,9 @@ public class DigitsEventCollectorTest {
     public void testAuthImpression_withExternalLogger() {
         final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
         digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
-        digitsEventCollector.authImpression();
+        digitsEventCollector.authImpression(details);
         verify(digitsScribeClient).impression(Component.EMPTY);
-        verify(digitsEventLogger).loginBegin();
+        verify(digitsEventLogger).loginBegin(details);
     }
 
     @Test
@@ -320,26 +324,26 @@ public class DigitsEventCollectorTest {
     public void testPhoneScreenImpression_withExternalLogger() {
         final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
         digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
-        digitsEventCollector.phoneScreenImpression();
+        digitsEventCollector.phoneScreenImpression(details);
         verify(digitsScribeClient).impression(Component.AUTH);
-        verify(digitsEventLogger).phoneNumberImpression();
+        verify(digitsEventLogger).phoneNumberImpression(details);
     }
 
     @Test
     public void testSubmitClickOnPhoneScreen_withExternalLogger(){
         final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
         digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
-        digitsEventCollector.submitClickOnPhoneScreen();
+        digitsEventCollector.submitClickOnPhoneScreen(details);
         verify(digitsScribeClient).click(Component.AUTH, DigitsScribeConstants.Element.SUBMIT);
-        verify(digitsEventLogger).phoneNumberSubmit();
+        verify(digitsEventLogger).phoneNumberSubmit(details);
     }
 
     @Test
     public void testSubmitPhoneSuccess_withExternalLogger() {
         final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
         digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
-        digitsEventCollector.submitPhoneSuccess();
+        digitsEventCollector.submitPhoneSuccess(details);
         verify(digitsScribeClient).success(Component.AUTH);
-        verify(digitsEventLogger).phoneNumberSuccess();
+        verify(digitsEventLogger).phoneNumberSuccess(details);
     }
 }

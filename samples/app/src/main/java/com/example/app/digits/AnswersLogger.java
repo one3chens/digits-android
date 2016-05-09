@@ -20,6 +20,9 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 
 import com.digits.sdk.android.DigitsEventLogger;
+import com.digits.sdk.android.DigitsEventDetails;
+
+import java.util.Locale;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -38,35 +41,65 @@ public class AnswersLogger extends DigitsEventLogger {
     }
 
     @Override
-    public void loginBegin() {
+    public void loginBegin(DigitsEventDetails digitsEventDetails) {
         answers.logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "loginBegin"));
+                .putCustomAttribute("Action", "loginBegin")
+                .putCustomAttribute("Language", digitsEventDetails.language)
+                .putCustomAttribute("ElapsedTime", digitsEventDetails.elapsedTimeInMillis / 1000));
 
-        Fabric.getLogger().d(TAG, "loginBegin");
+        Fabric.getLogger().d(TAG, "loginBegin event received");
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
+                digitsEventDetails.elapsedTimeInMillis / 1000));
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
+                digitsEventDetails.language));
     }
 
     @Override
-    public void phoneNumberImpression() {
+    public void phoneNumberImpression(DigitsEventDetails digitsEventDetails) {
         answers.logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "phoneNumberImpression"));
+                .putCustomAttribute("Action", "phoneNumberImpression")
+                .putCustomAttribute("Language", digitsEventDetails.language)
+                .putCustomAttribute("ElapsedTime", digitsEventDetails.elapsedTimeInMillis / 1000));
 
-        Fabric.getLogger().d(TAG, "phoneNumberImpression");
+        Fabric.getLogger().d(TAG, "phoneNumberImpression event received");
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
+                digitsEventDetails.elapsedTimeInMillis / 1000));
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
+                digitsEventDetails.language));
     }
 
     @Override
-    public void phoneNumberSubmit() {
+    public void phoneNumberSubmit(DigitsEventDetails digitsEventDetails) {
         answers.logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "phoneNumberSubmit"));
+                .putCustomAttribute("Action", "phoneNumberSubmit")
+                .putCustomAttribute("Language", digitsEventDetails.language)
+                .putCustomAttribute("Country", digitsEventDetails.country)
+                .putCustomAttribute("ElapsedTime", digitsEventDetails.elapsedTimeInMillis / 1000));
 
-        Fabric.getLogger().d(TAG, "phoneNumberSubmit");
+        Fabric.getLogger().d(TAG, "phoneNumberSubmit event received");
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
+                digitsEventDetails.elapsedTimeInMillis / 1000));
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
+                digitsEventDetails.language));
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "country = %s",
+                digitsEventDetails.country));
     }
 
     @Override
-    public void phoneNumberSuccess() {
+    public void phoneNumberSuccess(DigitsEventDetails digitsEventDetails) {
         answers.logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "phoneNumberSuccess"));
+                .putCustomAttribute("Action", "phoneNumberSuccess event received")
+                .putCustomAttribute("Language", digitsEventDetails.language)
+                .putCustomAttribute("Country", digitsEventDetails.country)
+                .putCustomAttribute("ElapsedTime", digitsEventDetails.elapsedTimeInMillis / 1000));
 
-        Fabric.getLogger().d(TAG, "phoneNumberSuccess");
+        Fabric.getLogger().d(TAG, "phoneNumberSuccess event received");
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
+                digitsEventDetails.elapsedTimeInMillis / 1000));
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
+                digitsEventDetails.language));
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "country = %s",
+                digitsEventDetails.country));
     }
 
    @Override
@@ -74,6 +107,6 @@ public class AnswersLogger extends DigitsEventLogger {
         answers.logCustom(new CustomEvent("Login-Digits")
                 .putCustomAttribute("Action", "loginSuccess"));
 
-        Fabric.getLogger().d(TAG, "loginSuccess");
+       Fabric.getLogger().d(TAG, "loginSuccess");
     }
 }

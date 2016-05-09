@@ -38,12 +38,13 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                                InvertedStateButton resendButton, InvertedStateButton callMeButton,
                                EditText phoneEditText, String phoneNumber,
                                DigitsEventCollector digitsEventCollector, boolean isEmailCollection,
-                               TextView timerText) {
+                               TextView timerText,
+                               DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText, phoneNumber,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(),
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), digitsEventCollector,
-                isEmailCollection, timerText);
+                isEmailCollection, timerText, digitsEventDetailsBuilder);
     }
 
     /**
@@ -55,9 +56,10 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                                SessionManager<DigitsSession> sessionManager, DigitsClient client,
                                ErrorCodes errors, ActivityClassManager activityClassManager,
                                DigitsEventCollector digitsEventCollector, boolean isEmailCollection,
-                               TextView timerText) {
+                               TextView timerText,
+                               DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
-                sessionManager, digitsEventCollector);
+                sessionManager, digitsEventCollector, digitsEventDetailsBuilder);
         this.phoneNumber = phoneNumber;
         this.isEmailCollection = isEmailCollection;
         this.resendButton = resendButton;
@@ -79,7 +81,11 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                     new DigitsCallback<DigitsUser>(context, this) {
                         @Override
                         public void success(Result<DigitsUser> result) {
-                            digitsEventCollector.signupSuccess();
+                            final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
+                                    ConfirmationCodeController.this.digitsEventDetailsBuilder
+                                            .withCurrentTime(System.currentTimeMillis());
+
+                            digitsEventCollector.signupSuccess(digitsEventDetailsBuilder.build());
                             final DigitsSession session =
                                     DigitsSession.create(result, phoneNumber);
                             if (isEmailCollection) {

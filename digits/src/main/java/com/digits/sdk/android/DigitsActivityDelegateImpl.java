@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
+    DigitsEventDetailsBuilder eventDetailsBuilder;
 
     @Override
     public void onDestroy() {

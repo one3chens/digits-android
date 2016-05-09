@@ -50,12 +50,22 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
     @Override
     public boolean isValid(Bundle bundle) {
-        return BundleManager.assertContains(bundle, DigitsClient.EXTRA_RESULT_RECEIVER);
+        final boolean isValidBundle = BundleManager.assertContains(bundle,
+                DigitsClient.EXTRA_RESULT_RECEIVER, DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+        if (isValidBundle) {
+            final DigitsEventDetailsBuilder eventDetailsBuilder =
+                    bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+
+            return eventDetailsBuilder.authStartTime != null
+                    && eventDetailsBuilder.language != null;
+        }
+        return false;
     }
 
     @Override
     public void init(Activity activity, Bundle bundle) {
         this.activity = activity;
+        eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
         countryCodeSpinner = (CountryListSpinner) activity.findViewById(R.id.dgts__countryCode);
         sendButton = (StateButton) activity.findViewById(R.id.dgts__sendCodeButton);
         phoneEditText = (EditText) activity.findViewById(R.id.dgts__phoneNumberEditText);
@@ -93,7 +103,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
         return new PhoneNumberController(bundle
                 .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER), sendButton,
                 phoneEditText, countryCodeSpinner, this, digitsEventCollector, bundle.getBoolean
-                (DigitsClient.EXTRA_EMAIL));
+                (DigitsClient.EXTRA_EMAIL), eventDetailsBuilder);
     }
 
     @Override
@@ -114,7 +124,9 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
     @Override
     public void onResume() {
-        digitsEventCollector.phoneScreenImpression();
+        final DigitsEventDetailsBuilder deb = eventDetailsBuilder
+                .withCurrentTime(System.currentTimeMillis());
+        digitsEventCollector.phoneScreenImpression(deb.build());
         controller.onResume();
     }
 

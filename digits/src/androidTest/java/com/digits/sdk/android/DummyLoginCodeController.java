@@ -35,10 +35,12 @@ public class DummyLoginCodeController extends LoginCodeController {
                                     long userId, String phoneWithCountryCode, ErrorCodes errors,
                                     ActivityClassManagerImp activityClassManagerImp,
                                     DigitsEventCollector digitsEventCollector,
-                                    boolean emailCollection, TextView timerTextView) {
+                                    boolean emailCollection, TextView timerTextView,
+                                    DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         super(resultReceiver, sendButton, resendButton, callMeButton, phoneEditText,
                 sessionManager, digitsClient, requestId, userId, phoneWithCountryCode, errors,
-                activityClassManagerImp, digitsEventCollector, emailCollection, timerTextView);
+                activityClassManagerImp, digitsEventCollector, emailCollection, timerTextView,
+                digitsEventDetailsBuilder);
         accountService = mock(DigitsApiClient.SdkService.class);
     }
 

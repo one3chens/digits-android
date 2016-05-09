@@ -48,6 +48,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     @Override
     public void init(final Activity activity, Bundle bundle) {
         this.activity = activity;
+        eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         resendButton =  (InvertedStateButton) activity
@@ -82,7 +83,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
                 bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
                 .EXTRA_PHONE), digitsEventCollector, bundle.getBoolean(DigitsClient.EXTRA_EMAIL),
-                timerText);
+                timerText, eventDetailsBuilder);
     }
 
     @Override
@@ -111,9 +112,22 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public boolean isValid(Bundle bundle) {
-        return BundleManager.assertContains(bundle, DigitsClient.EXTRA_RESULT_RECEIVER,
-                DigitsClient.EXTRA_PHONE, DigitsClient.EXTRA_REQUEST_ID,
-                DigitsClient.EXTRA_USER_ID);
+
+        final boolean isValidBundle = BundleManager.assertContains(bundle,
+                DigitsClient.EXTRA_RESULT_RECEIVER, DigitsClient.EXTRA_PHONE,
+                DigitsClient.EXTRA_REQUEST_ID, DigitsClient.EXTRA_USER_ID,
+                DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+
+        if (isValidBundle) {
+            final DigitsEventDetailsBuilder eventDetailsBuilder =
+                    bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+
+            return eventDetailsBuilder.authStartTime != null
+                    && eventDetailsBuilder.language != null
+                    && eventDetailsBuilder.country != null;
+
+        }
+        return false;
     }
 
     @Override

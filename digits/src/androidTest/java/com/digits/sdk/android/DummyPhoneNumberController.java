@@ -33,10 +33,10 @@ public class DummyPhoneNumberController extends PhoneNumberController {
                                ActivityClassManager activityClassManager,
                                SessionManager<DigitsSession> sessionManager,
                                TosView tosView, DigitsEventCollector digitsEventCollector,
-                               boolean emailCollection) {
+                               boolean emailCollection, DigitsEventDetailsBuilder builder) {
         super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner, client, errors,
                 activityClassManager, sessionManager, tosView, digitsEventCollector,
-                emailCollection);
+                emailCollection, builder);
         this.loginOrSignupComposer = mock(DummyLoginOrSignupComposer.class);
     }
 
@@ -50,9 +50,10 @@ public class DummyPhoneNumberController extends PhoneNumberController {
         DummyLoginOrSignupComposer(Context context, DigitsClient digitsClient, String phoneNumber,
                                    Verification verificationType, boolean emailCollection,
                                    ResultReceiver resultReceiver,
-                                   ActivityClassManager activityClassManager) {
+                                   ActivityClassManager activityClassManager,
+                                   DigitsEventDetailsBuilder metricsBuilder) {
             super(context, digitsClient, phoneNumber, verificationType, emailCollection,
-                    resultReceiver, activityClassManager);
+                    resultReceiver, activityClassManager, metricsBuilder);
         }
     }
 }

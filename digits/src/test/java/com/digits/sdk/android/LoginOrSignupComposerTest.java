@@ -67,6 +67,7 @@ public class LoginOrSignupComposerTest {
     TwitterException userIsNotSdkUserException;
     TwitterException registrationRateExceededException;
     Resources resources;
+    DigitsEventDetailsBuilder digitsEventDetailsBuilder;
 
     static final Integer COUNTRY_CODE = 123;
     static final String PHONE = "123456789";
@@ -99,6 +100,8 @@ public class LoginOrSignupComposerTest {
         deviceRegistrationResponse = new DeviceRegistrationResponse();
         deviceRegistrationResponse.authConfig = authConfig;
         deviceRegistrationResponse.normalizedPhoneNumber = PHONE_WITH_COUNTRY_CODE;
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withAuthStartTime(System.currentTimeMillis());
 
         when(activityClassManager.getLoginCodeActivity()).thenReturn(loginCodeActivity);
         when(activityClassManager.getConfirmationActivity()).thenReturn(confirmationCodeActivity);
@@ -126,7 +129,7 @@ public class LoginOrSignupComposerTest {
     public void testLoginSuccess() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
                 digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager){
+                activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertExpectedLoginIntent(intent);
@@ -151,7 +154,7 @@ public class LoginOrSignupComposerTest {
     public void testSignupSuccess() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
                 digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager){
+                activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertExpectedSignupIntent(intent);
@@ -183,7 +186,7 @@ public class LoginOrSignupComposerTest {
         authResponse.authConfig = null;
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
                 digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager){
+                activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertEquals(true, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL, false));
@@ -213,7 +216,7 @@ public class LoginOrSignupComposerTest {
 
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
                 digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager){
+                activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertEquals(PHONE_WITH_COUNTRY_CODE,
@@ -240,7 +243,7 @@ public class LoginOrSignupComposerTest {
     public void testLoginFailure() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
                 digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager){
+                activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertTrue(false);
@@ -267,7 +270,7 @@ public class LoginOrSignupComposerTest {
     public void testSignupFailure() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
                 digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager){
+                activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertTrue(false);
@@ -304,9 +307,12 @@ public class LoginOrSignupComposerTest {
                 intent.getParcelableExtra(DigitsClient.EXTRA_RESULT_RECEIVER));
         assertEquals(PHONE_WITH_COUNTRY_CODE,
                 intent.getStringExtra(DigitsClient.EXTRA_PHONE));
+        assertEquals(digitsEventDetailsBuilder,
+                intent.getParcelableExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER));
         assertEquals(authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
         assertEquals(true, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL, false));
         assertEquals(loginCodeActivity.getName(), intent.getComponent().getClassName());
+
     }
 
     private void assertExpectedSignupIntent(Intent intent){

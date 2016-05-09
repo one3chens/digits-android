@@ -44,6 +44,7 @@ public class DigitsClient {
     public static final String EXTRA_FALLBACK_REASON = "fallback_reason";
     public static final String EXTRA_AUTH_CONFIG = "auth_config";
     public static final String EXTRA_EMAIL = "email_enabled";
+    public static final String EXTRA_EVENT_DETAILS_BUILDER = "digits_event_details_builder";
     public static final String CLIENT_IDENTIFIER = "digits_sdk";
 
     private final Digits digits;
@@ -100,10 +101,15 @@ public class DigitsClient {
     }
 
     protected void startSignUp(DigitsAuthConfig digitsAuthConfig) {
-        digitsEventCollector.authImpression();
         final DigitsSession session = sessionManager.getActiveSession();
         final boolean isCustomPhoneUI = (digitsAuthConfig.confirmationCodeCallback != null);
         final boolean isAuthorizedPartner = isAuthorizedPartner(digitsAuthConfig);
+        final DigitsEventDetailsBuilder digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withAuthStartTime(System.currentTimeMillis())
+                .withLanguage(Locale.getDefault().getLanguage())
+                .withCurrentTime(System.currentTimeMillis());
+
+        digitsEventCollector.authImpression(digitsEventDetailsBuilder.build());
 
         if (session != null && !session.isLoggedOutUser()) {
             digitsAuthConfig.authCallback.success(session, null);
@@ -113,7 +119,8 @@ public class DigitsClient {
         } else if (isCustomPhoneUI) {
             throw new IllegalArgumentException("Invalid partner key");
         } else {
-            startPhoneNumberActivity(createBundleForAuthFlow(digitsAuthConfig));
+            startPhoneNumberActivity(createBundleForAuthFlow(digitsAuthConfig,
+                    digitsEventDetailsBuilder));
         }
     }
 
@@ -129,14 +136,15 @@ public class DigitsClient {
         return Base64.encodeToString(toEncode.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP);
     }
 
-    private Bundle createBundleForAuthFlow(DigitsAuthConfig digitsAuthConfig) {
+    private Bundle createBundleForAuthFlow(DigitsAuthConfig digitsAuthConfig,
+                                           DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         final Bundle bundle = new Bundle();
 
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER,
                 createResultReceiver(digitsAuthConfig.authCallback));
         bundle.putString(DigitsClient.EXTRA_PHONE, digitsAuthConfig.phoneNumber);
         bundle.putBoolean(DigitsClient.EXTRA_EMAIL, digitsAuthConfig.isEmailRequired);
-
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
         return bundle;
     }
 
@@ -195,10 +203,15 @@ public class DigitsClient {
         final Context context = digits.getContext();
         final ActivityClassManager activityClassManager =
                 Digits.getInstance().getActivityClassManager();
+        //TODO: araghav country selection broken for custom UI
+        final DigitsEventDetailsBuilder digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withAuthStartTime(System.currentTimeMillis())
+                .withLanguage(Locale.getDefault().getLanguage());
 
         return new LoginOrSignupComposer(context, this, digitsAuthConfig.phoneNumber,
                 Verification.sms, digitsAuthConfig.isEmailRequired,
-                createResultReceiver(digitsAuthConfig.authCallback), activityClassManager) {
+                createResultReceiver(digitsAuthConfig.authCallback), activityClassManager,
+                digitsEventDetailsBuilder) {
 
             @Override
             public void success(final Intent intent) {

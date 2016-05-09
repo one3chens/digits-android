@@ -52,13 +52,24 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public boolean isValid(Bundle bundle) {
-        return BundleManager.assertContains(bundle, DigitsClient.EXTRA_RESULT_RECEIVER,
-                DigitsClient.EXTRA_PHONE);
+        final boolean isValidBundle = BundleManager.assertContains(bundle,
+                DigitsClient.EXTRA_RESULT_RECEIVER, DigitsClient.EXTRA_PHONE);
+
+        if (isValidBundle){
+            final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
+                    bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+
+            return (digitsEventDetailsBuilder.authStartTime != null)
+                    && (digitsEventDetailsBuilder.language != null)
+                    && (digitsEventDetailsBuilder.country != null);
+        }
+        return false;
     }
 
     @Override
     public void init(Activity activity, Bundle bundle) {
         this.activity = activity;
+        eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         resendButton =  (InvertedStateButton) activity
@@ -90,7 +101,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 bundle.<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
                 stateButton, resendButton, callMeButton, editText,
                 bundle.getString(DigitsClient.EXTRA_PHONE), digitsEventCollector,
-                bundle.getBoolean(DigitsClient.EXTRA_EMAIL), timerText);
+                bundle.getBoolean(DigitsClient.EXTRA_EMAIL), timerText, eventDetailsBuilder);
     }
 
     @Override

@@ -49,10 +49,12 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
     public void setUp() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder().withAuthStartTime(1L)
+                .withLanguage("lang").withCountry("US");
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                digitsEventCollector, false, timerTextView);
+                digitsEventCollector, false, timerTextView, digitsEventDetailsBuilder);
     }
 
     public void testExecuteRequest_success() throws Exception {
@@ -61,7 +63,9 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<DigitsSessionResponse> result = new Result(response, null);
 
         callback.success(result);
-        verify(digitsEventCollector).loginCodeSuccess();
+        verify(digitsEventCollector).loginCodeSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sessionManager).setActiveSession(DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
@@ -87,7 +91,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                digitsEventCollector, true, timerTextView);
+                digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -95,7 +99,9 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
                 .getValue();
         emailRequestCallback.success(resultEmailRequest);
-        verify(digitsEventCollector).loginCodeSuccess();
+        verify(digitsEventCollector).loginCodeSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         final DigitsSession session = DigitsSession.create(
                 TestConstants.getVerifyAccountResponse());
         verifyEmailRequest(session);
@@ -107,7 +113,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                digitsEventCollector, true, timerTextView);
+                digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -133,7 +139,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                digitsEventCollector, true, timerTextView);
+                digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -160,7 +166,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final DummyLoginCodeController dlc = new DummyLoginCodeController(resultReceiver,
                 sendButton, resendButton, callMeButton, phoneEditText, sessionManager, digitsClient,
                 REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                digitsEventCollector, true, timerTextView);
+                digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
         final CountDownTimer timer = dlc.getCountDownTimer();
 
         controller = dlc;
@@ -205,7 +211,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
-                digitsEventCollector, true, timerTextView);
+                digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
         controller.resendCode(context, resendButton, Verification.sms);
         verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
@@ -246,7 +252,9 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<DigitsSessionResponse> response =
                 new Result<>(new DigitsSessionResponse(), null);
         callback.success(response);
-        verify(digitsEventCollector).loginCodeSuccess();
+        verify(digitsEventCollector).loginCodeSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(context).startActivityForResult(intentArgumentCaptor.capture(), eq(DigitsActivity
                 .REQUEST_CODE));
         final Intent intent = intentArgumentCaptor.getValue();

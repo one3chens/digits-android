@@ -44,13 +44,13 @@ class LoginCodeController extends DigitsControllerImpl {
                         InvertedStateButton resendButton, InvertedStateButton callMeButton,
                         EditText phoneEditText, String requestId, long userId, String phoneNumber,
                         DigitsEventCollector digitsEventCollector, Boolean emailCollection,
-                        TextView timerText) {
+                        TextView timerText, DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(), requestId,
                 userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), digitsEventCollector,
-                emailCollection, timerText);
+                emailCollection, timerText, digitsEventDetailsBuilder);
     }
 
     LoginCodeController(ResultReceiver resultReceiver,
@@ -60,9 +60,9 @@ class LoginCodeController extends DigitsControllerImpl {
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
                         ActivityClassManager activityClassManager,
                         DigitsEventCollector digitsEventCollector, Boolean emailCollection,
-                        TextView timerText) {
+                        TextView timerText, DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         super(resultReceiver, stateButton, loginEditText, client, errors, activityClassManager,
-                sessionManager, digitsEventCollector);
+                sessionManager, digitsEventCollector, digitsEventDetailsBuilder);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
@@ -85,7 +85,11 @@ class LoginCodeController extends DigitsControllerImpl {
             digitsClient.loginDevice(requestId, userId, code,
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         public void success(Result<DigitsSessionResponse> result) {
-                            digitsEventCollector.loginCodeSuccess();
+                            final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
+                                LoginCodeController.this.digitsEventDetailsBuilder
+                                        .withCurrentTime(System.currentTimeMillis());
+                            digitsEventCollector
+                                    .loginCodeSuccess(digitsEventDetailsBuilder.build());
                             if (result.data.isEmpty()) {
                                 startPinCodeActivity(context);
                             } else if (emailCollection) {

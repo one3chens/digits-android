@@ -48,10 +48,12 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         verification = Verification.sms;
         countrySpinner = mock(CountryListSpinner.class);
         tosView = mock(TosView.class);
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder().withAuthStartTime(1L)
+                .withLanguage("lang");
         controller = new PhoneNumberController(resultReceiver,
                 sendButton, phoneEditText, countrySpinner, digitsClient, errors,
                 new ActivityClassManagerImp(), sessionManager, tosView, digitsEventCollector,
-                false);
+                false, digitsEventDetailsBuilder);
 
         runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
         intent  = mock(Intent.class);
@@ -60,6 +62,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         assertFalse(controller.emailCollection);
         assertFalse(controller.resendState);
         when(countrySpinner.getTag()).thenReturn(COUNTRY_CODE);
+        when(countrySpinner.getText()).thenReturn(COUNTRY);
     }
 
     public void testExecuteRequest_phoneNotEmpty() throws Exception {
@@ -69,11 +72,15 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
                 new DummyPhoneNumberController(resultReceiver,
                         sendButton, phoneEditText, countrySpinner, digitsClient, errors,
                         new ActivityClassManagerImp(), sessionManager, tosView,
-                        digitsEventCollector, false);
+                        digitsEventCollector, false, digitsEventDetailsBuilder);
 
         when(errors.getDefaultMessage()).thenReturn(ERROR_MESSAGE);
         dummyPhoneNumberController.executeRequest(context);
-        verify(digitsEventCollector).submitClickOnPhoneScreen();
+        verify(digitsEventCollector)
+                .submitClickOnPhoneScreen(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sendButton).showProgress();
         verify(dummyPhoneNumberController.loginOrSignupComposer).start();
     }
@@ -89,7 +96,10 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
         final Runnable runnable = runnableCaptor.getValue();
         runnable.run();
-        verify(digitsEventCollector).submitPhoneSuccess();
+        verify(digitsEventCollector).submitPhoneSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(context).startActivityForResult(intent, DigitsActivity.REQUEST_CODE);
     }
 

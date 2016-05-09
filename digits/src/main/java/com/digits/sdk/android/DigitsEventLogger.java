@@ -24,9 +24,9 @@ package com.digits.sdk.android;
  * their login/signup funnel.
  */
 public abstract class DigitsEventLogger {
-    public void loginBegin(){};
-    public void phoneNumberImpression(){};
-    public void phoneNumberSubmit() {};
-    public void phoneNumberSuccess() {};
+    public void loginBegin(DigitsEventDetails digitsEventDetails){};
+    public void phoneNumberImpression(DigitsEventDetails digitsEventDetails){};
+    public void phoneNumberSubmit(DigitsEventDetails digitsEventDetails) {};
+    public void phoneNumberSuccess(DigitsEventDetails digitsEventDetails) {};
     public void loginSuccess() {};
 }

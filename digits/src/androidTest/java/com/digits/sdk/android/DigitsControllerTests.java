@@ -42,6 +42,7 @@ import static org.mockito.Mockito.when;
 public abstract class DigitsControllerTests<T extends DigitsControllerImpl> extends
         DigitsAndroidTestCase {
     static final Integer COUNTRY_CODE = 123;
+    static final String COUNTRY = "US";
     static final String PHONE = "123456789";
     static final String PHONE_WITH_COUNTRY_CODE = "+" + COUNTRY_CODE + "123456789";
     static final String CODE = "123456";
@@ -65,6 +66,8 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     DigitsEventCollector digitsEventCollector;
     CountDownTimer countDownTimer;
     TextView timerTextView;
+    DigitsEventDetailsBuilder digitsEventDetailsBuilder;
+    ArgumentCaptor<DigitsEventDetails> digitsEventDetailsArgumentCaptor;
 
     @Override
     public void setUp() throws Exception {
@@ -84,6 +87,8 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         digitsEventCollector = mock(DummyDigitsEventCollector.class);
         countDownTimer = mock(CountDownTimer.class);
         timerTextView = mock(TextView.class);
+        digitsEventDetailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
+
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(context.getResources()).thenReturn(getContext().getResources());
     }
