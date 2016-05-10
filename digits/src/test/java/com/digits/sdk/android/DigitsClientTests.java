@@ -25,7 +25,6 @@ import android.os.ResultReceiver;
 import android.test.mock.MockContext;
 
 import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -48,7 +47,6 @@ import io.fabric.sdk.android.Fabric;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
@@ -77,6 +75,8 @@ public class DigitsClientTests {
     private TwitterAuthConfig twitterAuthConfig;
     private SessionManager<DigitsSession> sessionManager;
     private DigitsApiClient.SdkService service;
+    private DigitsApiClientManager apiClientManager;
+    private ExecutorService executorService;
     private DigitsController controller;
     private AuthCallback callback;
     private DigitsSession guestSession;
@@ -92,13 +92,14 @@ public class DigitsClientTests {
     @Before
     public void setUp() throws Exception {
         digits = mock(Digits.class);
-        digitsUserAgent = mock(DigitsUserAgent.class);
+        digitsUserAgent = new DigitsUserAgent("digitsVersion", "androidVersion", "appName");
         sessionManager = mock(SessionManager.class);
         twitterCore = mock(TwitterCore.class);
         twitterAuthConfig = new TwitterAuthConfig(TestConstants.CONSUMER_KEY,
                 TestConstants.CONSUMER_SECRET);
         digitsApiClient = mock(DigitsApiClient.class);
         service = mock(DigitsApiClient.SdkService.class);
+        executorService = mock(ExecutorService.class);
         context = mock(MockContext.class);
         controller = mock(DigitsController.class);
         callback = mock(AuthCallback.class);
@@ -107,14 +108,14 @@ public class DigitsClientTests {
         activity = mock(Activity.class);
         loginResultReceiver = new LoginResultReceiver(new WeakAuthCallback(callback,
                 mock(DigitsEventCollector.class)), sessionManager);
-        authRequestQueue = createAuthRequestQueue();
+        authRequestQueue = createRequestQueue();
         userSession = DigitsSession.create(TestConstants.DIGITS_USER, TestConstants.PHONE);
         guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
         digitsEventDetailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
 
         when(digitsApiClient.getService()).thenReturn(service);
-        when(twitterCore.getContext()).thenReturn(context);
-        when(twitterCore.getAuthConfig()).thenReturn(twitterAuthConfig);
+        when(digits.getContext()).thenReturn(context);
+        when(digits.getAuthConfig()).thenReturn(twitterAuthConfig);
         when(twitterCore.getSSLSocketFactory()).thenReturn(mock(SSLSocketFactory.class));
         when(digits.getExecutorService()).thenReturn(mock(ExecutorService.class));
         when(digits.getActivityClassManager()).thenReturn(new ActivityClassManagerImp());
@@ -126,9 +127,12 @@ public class DigitsClientTests {
         when(activity.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(activity.isFinishing()).thenReturn(false);
         when(controller.getErrors()).thenReturn(mock(ErrorCodes.class));
+        apiClientManager = mock(DigitsApiClientManager.class);
+        when(apiClientManager.getService()).thenReturn(service);
+        when(apiClientManager.getApiClient()).thenReturn(digitsApiClient);
 
-        digitsClient = new DigitsClient(digits, digitsUserAgent, twitterCore, sessionManager,
-            authRequestQueue, digitsEventCollector) {
+        digitsClient = new DigitsClient(digits, sessionManager, apiClientManager,
+                authRequestQueue, digitsEventCollector) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
                 return loginResultReceiver;
@@ -136,49 +140,6 @@ public class DigitsClientTests {
         };
     }
 
-    @Test
-    public void testConstructor_nullTwitter() throws Exception {
-        try {
-            new DigitsClient(digits, digitsUserAgent, null, sessionManager, authRequestQueue,
-                digitsEventCollector);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("twitter must not be null", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testConstructor_nullDigits() throws Exception {
-        try {
-            new DigitsClient(null, digitsUserAgent, twitterCore, sessionManager, authRequestQueue,
-                digitsEventCollector);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("digits must not be null", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testConstructor_nullDigitsUserAgent() throws Exception {
-        try {
-            new DigitsClient(digits, null, twitterCore, sessionManager, authRequestQueue,
-                digitsEventCollector);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("userAgent must not be null", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testConstructor_nullSessionManager() throws Exception {
-        try {
-            new DigitsClient(digits, digitsUserAgent, twitterCore, null, authRequestQueue,
-                digitsEventCollector);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("sessionManager must not be null", e.getMessage());
-        }
-    }
 
     @Test
     public void testStartSignUp_withActivityContext() throws Exception {
@@ -347,17 +308,6 @@ public class DigitsClientTests {
         verify(confirmationCodeCallback).failure(TestConstants.ANY_EXCEPTION);
     }
 
-    @Test
-    public void testGetApiClient_withSameSession() {
-        final DigitsApiClient initial = digitsClient.getApiClient(guestSession);
-        assertEquals(initial, digitsClient.getApiClient(guestSession));
-    }
-
-    @Test
-    public void testGetApiClient_withDifferentSession() {
-        final DigitsApiClient initial = digitsClient.getApiClient(guestSession);
-        assertNotSame(initial, digitsClient.getApiClient(mock(Session.class)));
-    }
 
     @Test
     public void testAuthDevice_withSmsVerification() throws Exception {
@@ -487,8 +437,8 @@ public class DigitsClientTests {
                 .withPartnerKey("bad_key")
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
-        final MockDigitsClient digitsClient = new MockDigitsClient(digits, digitsUserAgent,
-                twitterCore, sessionManager,
+        final MockDigitsClient digitsClient = new MockDigitsClient(digits, sessionManager,
+                apiClientManager,
                 authRequestQueue,
                 digitsEventCollector) {
             @Override
@@ -519,10 +469,9 @@ public class DigitsClientTests {
                 .withPartnerKey(TestConstants.PARTNER_KEY)
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
-        final MockDigitsClient digitsClient = new MockDigitsClient(digits, digitsUserAgent,
-                twitterCore, sessionManager,
-                authRequestQueue,
-                digitsEventCollector) {
+        final MockDigitsClient digitsClient = new MockDigitsClient(digits, sessionManager,
+                apiClientManager,
+                authRequestQueue, digitsEventCollector) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
                 return loginResultReceiver;
@@ -540,7 +489,7 @@ public class DigitsClientTests {
 
 
 
-    private DigitsAuthRequestQueue createAuthRequestQueue() {
+    private DigitsAuthRequestQueue createRequestQueue() {
         final DigitsAuthRequestQueue authRequestQueue = mock(DigitsAuthRequestQueue.class);
         when(authRequestQueue.addClientRequest(any(Callback.class))).thenAnswer(
                 new Answer<Object>() {
@@ -578,12 +527,11 @@ public class DigitsClientTests {
     class MockDigitsClient extends DigitsClient{
         LoginOrSignupComposer loginOrSignupComposer;
 
-        public MockDigitsClient(Digits digits, DigitsUserAgent digitsUserAgent,
-                                TwitterCore twitterCore,
-                                SessionManager<DigitsSession> sessionManager,
+        public MockDigitsClient(Digits digits, SessionManager<DigitsSession> sessionManager,
+                                DigitsApiClientManager apiClientManager,
                                 DigitsAuthRequestQueue authRequestQueue,
                                 DigitsEventCollector digitsEventCollector) {
-            super(digits, digitsUserAgent, twitterCore, sessionManager,
+            super(digits, sessionManager, apiClientManager,
                     authRequestQueue,
                     digitsEventCollector);
             this.loginOrSignupComposer = mock(DummyLoginOrSignupComposer.class);

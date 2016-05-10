@@ -50,6 +50,8 @@ public class DigitsMainActivity extends Activity {
     private SessionListener sessionListener;
     private Answers answers;
     public static final int CUSTOM_LOGIN_REQUEST = 1;
+    public static final int CONTACT_UPLOAD_REQUEST = 2;
+    public static final int FIND_FRIENDS_REQUEST = 3;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,12 +149,20 @@ public class DigitsMainActivity extends Activity {
             }
         });
 
-
-        Button findFriendsButton = (Button) findViewById(R.id.find_your_friends_button);
+        Button findFriendsButton = (Button) findViewById(R.id.upload_your_friends_button);
         findFriendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Digits.getInstance().getContactsClient().startContactsUpload();
+            }
+        });
+
+        Button contactLookupButton = (Button) findViewById(R.id.contact_lookup);
+        contactLookupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DigitsMainActivity.this, FoundFriendsActivity.class);
+                startActivityForResult(intent, FIND_FRIENDS_REQUEST);
             }
         });
 

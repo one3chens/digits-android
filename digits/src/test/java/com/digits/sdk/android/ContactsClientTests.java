@@ -21,10 +21,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.test.mock.MockContext;
 
-import com.twitter.sdk.android.core.TwitterCore;
-
-import com.digits.sdk.android.ContactsClient.ContactsService;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,68 +36,45 @@ import static org.mockito.Mockito.*;
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class ContactsClientTests {
-    private TwitterCore twitterCore;
     private MockContext context;
     private ContactsClient contactsClient;
-    private ContactsService contactsService;
+    private DigitsApiClientManager apiClientManager;
+    private DigitsApiClient.SdkService sdkService;
     private ComponentName activityComponent;
     private ComponentName serviceComponent;
     private ContactsCallback callback;
+    final Digits digits = mock(Digits.class);
+    final DigitsUserAgent userAgent = new DigitsUserAgent("digitsVersion", "androidVersion",
+            "appName");
     private ContactsPreferenceManager prefManager;
     private ActivityClassManagerFactory activityClassManagerFactory;
+
     ArgumentCaptor<Intent> intentArgumentCaptor;
 
     @Before
     public void setUp() throws Exception {
-
-        twitterCore = mock(TwitterCore.class);
         activityClassManagerFactory = new ActivityClassManagerFactory();
         context = mock(MockContext.class);
         callback = mock(ContactsCallback.class);
-        contactsService = mock(ContactsService.class);
         prefManager = mock(ContactsPreferenceManager.class);
-        final Digits digits = mock(Digits.class);
-        contactsClient = new ContactsClient(twitterCore, prefManager, activityClassManagerFactory,
-                contactsService);
-        intentArgumentCaptor = ArgumentCaptor.forClass(Intent.class);
 
-        when(twitterCore.getContext()).thenReturn(context);
+        intentArgumentCaptor = ArgumentCaptor.forClass(Intent.class);
+        when(digits.getContext()).thenReturn(context);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(digits.getActivityClassManager()).thenReturn(new ActivityClassManagerImp());
 
+        sdkService = mock(DigitsApiClient.SdkService.class);
+        apiClientManager = mock(DigitsApiClientManager.class);
+        when(apiClientManager.getService()).thenReturn(sdkService);
+
+        contactsClient = new ContactsClient(digits, apiClientManager, prefManager,
+                activityClassManagerFactory);
+
         activityComponent = new ComponentName(context, ContactsActivity.class.getName());
         serviceComponent = new ComponentName(context, ContactsUploadService.class.getName());
+
     }
 
-    @Test
-    public void testConstructor_nullTwitter() throws Exception {
-        try {
-            new ContactsClient(null, prefManager, activityClassManagerFactory, null);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("twitter must not be null", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testConstructor_nullPreferenceManager() throws Exception {
-        try {
-            new ContactsClient(twitterCore, null, activityClassManagerFactory, null);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("preference manager must not be null", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testConstructor_nullActivityClassManagerFactory() throws Exception {
-        try {
-            new ContactsClient(twitterCore, prefManager, null, null);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("activityClassManagerFactory must not be null", e.getMessage());
-        }
-    }
 
     @Test
     public void testStartContactsUpload_noParams() {
@@ -168,7 +141,7 @@ public class ContactsClientTests {
     public void testDeleteAllContacts() {
         contactsClient.deleteAllUploadedContacts(callback);
 
-        verify(contactsService).deleteAll(callback);
+        verify(sdkService).deleteAll(callback);
     }
 
     @Test
@@ -178,7 +151,7 @@ public class ContactsClientTests {
 
         contactsClient.lookupContactMatches(cursor, count, callback);
 
-        verify(contactsService).usersAndUploadedBy(cursor, count, callback);
+        verify(sdkService).usersAndUploadedBy(cursor, count, callback);
     }
 
     @Test
@@ -188,7 +161,7 @@ public class ContactsClientTests {
 
         contactsClient.lookupContactMatches(cursor, count, callback);
 
-        verify(contactsService).usersAndUploadedBy(cursor, null, callback);
+        verify(sdkService).usersAndUploadedBy(cursor, null, callback);
     }
 
     @Test
@@ -198,7 +171,7 @@ public class ContactsClientTests {
 
         contactsClient.lookupContactMatches(cursor, count, callback);
 
-        verify(contactsService).usersAndUploadedBy(cursor, null, callback);
+        verify(sdkService).usersAndUploadedBy(cursor, null, callback);
     }
 
     @Test
@@ -207,7 +180,7 @@ public class ContactsClientTests {
 
         contactsClient.lookupContactMatches(cursor, null, callback);
 
-        verify(contactsService).usersAndUploadedBy(cursor, null, callback);
+        verify(sdkService).usersAndUploadedBy(cursor, null, callback);
     }
 
     @Test
@@ -216,6 +189,7 @@ public class ContactsClientTests {
 
         contactsClient.uploadContacts(vCards);
 
-        verify(contactsService).upload(vCards);
+        verify(sdkService).upload(vCards);
     }
+
 }

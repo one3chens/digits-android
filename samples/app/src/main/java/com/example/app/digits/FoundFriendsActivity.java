@@ -28,16 +28,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digits.sdk.android.Contacts;
-import com.digits.sdk.android.ContactsCallback;
 import com.digits.sdk.android.Digits;
+import com.digits.sdk.android.DigitsAuthConfig;
 import com.digits.sdk.android.DigitsUser;
+import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 
 import com.example.app.R;
 
 public class FoundFriendsActivity extends ListActivity {
-    @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.digits_activity_found_friends);
@@ -45,26 +46,33 @@ public class FoundFriendsActivity extends ListActivity {
         final FriendAdapter adapter = new FriendAdapter(this);
         getListView().setAdapter(adapter);
 
-        Digits.getInstance().getContactsClient().lookupContactMatches(null, null,
-                new ContactsCallback<Contacts>() {
+        final int MAX_BATCH_SIZE = 50;
+        Digits.getInstance().getContactsClient().lookupContactMatchesStart(new Callback<Contacts>() {
 
-                    @Override
-                    public void success(Result<Contacts> result) {
-                        if (result.data.users != null) {
-                            adapter.setNotifyOnChange(false);
-                            for (DigitsUser user : result.data.users) {
-                                adapter.add(user);
-                            }
-                            adapter.notifyDataSetChanged();
-                        }
+            @Override
+            public void success(Result<Contacts> result) {
+                if (result.data.users != null) {
+                    adapter.setNotifyOnChange(false);
+                    for (DigitsUser user : result.data.users) {
+                        adapter.add(user);
                     }
+                    if(result.data.users.size() > 0){
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+                // Make subsequent calls until all friend matches are retrieved
+                if (result.data.nextCursor != null) {
+                   Digits.getInstance().getContactsClient()
+                           .lookupContactMatches(result.data.nextCursor, MAX_BATCH_SIZE, this);
+                }
+            }
 
-                    @Override
-                    public void failure(TwitterException exception) {
-                        Toast.makeText(FoundFriendsActivity.this, exception.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void failure(TwitterException exception) {
+                Toast.makeText(FoundFriendsActivity.this, exception.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     static class FriendAdapter extends ArrayAdapter<DigitsUser> {

@@ -27,7 +27,6 @@ import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.SessionManager;
-import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 
 import java.nio.charset.Charset;
@@ -47,39 +46,24 @@ public class DigitsClient {
     public static final String EXTRA_EVENT_DETAILS_BUILDER = "digits_event_details_builder";
     public static final String CLIENT_IDENTIFIER = "digits_sdk";
 
-    private final Digits digits;
-    private final DigitsUserAgent userAgent;
-    private final SessionManager<DigitsSession> sessionManager;
-    private final TwitterCore twitterCore;
     private final DigitsAuthRequestQueue authRequestQueue;
     private final DigitsEventCollector digitsEventCollector;
-    private DigitsApiClient digitsApiClient;
+    private final DigitsApiClientManager apiClientManager;
+    private final Digits digits;
+    private final SessionManager<DigitsSession> sessionManager;
 
     DigitsClient() {
-        this(Digits.getInstance(), new DigitsUserAgent(), TwitterCore.getInstance(),
-                Digits.getSessionManager(), null, Digits.getInstance().getDigitsEventCollector());
+        this(Digits.getInstance(), Digits.getSessionManager(), new DigitsApiClientManager(),
+                null, Digits.getInstance().getDigitsEventCollector());
     }
 
-    DigitsClient(Digits digits, DigitsUserAgent userAgent, TwitterCore twitterCore,
-        SessionManager<DigitsSession> sessionManager, DigitsAuthRequestQueue authRequestQueue,
+    DigitsClient(Digits digits, SessionManager<DigitsSession> sessionManager,
+                 DigitsApiClientManager apiClientManager,
+                 DigitsAuthRequestQueue authRequestQueue,
                  DigitsEventCollector digitsEventCollector) {
-        if (twitterCore == null) {
-            throw new IllegalArgumentException("twitter must not be null");
-        }
-        if (digits == null) {
-            throw new IllegalArgumentException("digits must not be null");
-        }
-        if (userAgent == null) {
-            throw new IllegalArgumentException("userAgent must not be null");
-        }
-        if (sessionManager == null) {
-            throw new IllegalArgumentException("sessionManager must not be null");
-        }
 
-        this.twitterCore = twitterCore;
+        this.apiClientManager = apiClientManager;
         this.digits = digits;
-        this.userAgent = userAgent;
-
         this.sessionManager = sessionManager;
 
         if (authRequestQueue == null) {
@@ -91,6 +75,9 @@ public class DigitsClient {
         this.digitsEventCollector = digitsEventCollector;
     }
 
+    public DigitsApiClient getApiClient(){
+        return apiClientManager.getApiClient();
+    }
 
     protected DigitsAuthRequestQueue createAuthRequestQueue(SessionManager sessionManager) {
         final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>(1);
@@ -126,7 +113,8 @@ public class DigitsClient {
 
     private boolean isAuthorizedPartner(DigitsAuthConfig digitsAuthConfig) {
         final String partnerKey = digitsAuthConfig.partnerKey;
-        final String consumerKey = twitterCore.getAuthConfig().getConsumerKey();
+        final String consumerKey =
+                digits.getAuthConfig().getConsumerKey();
         final String expectedPartnerKey = getPartnerKeyByConsumerKey(consumerKey);
         return expectedPartnerKey.equals(partnerKey);
     }
@@ -153,14 +141,16 @@ public class DigitsClient {
     }
 
     private void startPhoneNumberActivity(Bundle bundle) {
-        final Context appContext = twitterCore.getContext();
-        final Activity currentActivity = digits.getFabric().getCurrentActivity();
+        final Context appContext = digits.getContext();
+        final Activity currentActivity =
+                digits.getFabric().getCurrentActivity();
         final Context selectedContext = (currentActivity != null && !currentActivity.isFinishing())
                         ? currentActivity : appContext;
         final int intentFlags = (currentActivity != null && !currentActivity.isFinishing())
                 ? 0 : (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        final Intent intent = new Intent(selectedContext, digits.getActivityClassManager()
+        final Intent intent =
+                new Intent(selectedContext, digits.getActivityClassManager()
                 .getPhoneNumberActivity());
         intent.putExtras(bundle);
         intent.setFlags(intentFlags);
@@ -244,14 +234,15 @@ public class DigitsClient {
         authRequestQueue.addClientRequest(
                 new CallbackWrapper<DeviceRegistrationResponse>(callback) {
 
-            @Override
-            public void success(Result<DigitsApiClient> result) {
-                result.data.getService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
-                        true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER,
-                        verificationType.name(), callback);
-            }
+                    @Override
+                    public void success(Result<DigitsApiClient> result) {
+                        result.data.getService().register(phoneNumber,
+                                THIRD_PARTY_CONFIRMATION_CODE,
+                                true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER,
+                                verificationType.name(), callback);
+                    }
 
-        });
+                });
     }
 
     protected void verifyPin(final String requestId, final long userId, final String pin,
@@ -279,16 +270,5 @@ public class DigitsClient {
                 callback.failure(exception);
             }
         }
-    }
-
-    DigitsApiClient getApiClient(Session session) {
-        if (digitsApiClient != null && digitsApiClient.getSession().equals(session)) {
-            return digitsApiClient;
-        }
-
-        digitsApiClient = new DigitsApiClient(session, twitterCore.getAuthConfig(),
-                twitterCore.getSSLSocketFactory(), digits.getExecutorService(), userAgent);
-
-        return digitsApiClient;
     }
 }

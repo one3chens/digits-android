@@ -41,7 +41,7 @@ class DigitsAuthRequestQueue extends AuthRequestQueue {
         return addRequest(new Callback<Session>() {
             @Override
             public void success(Result<Session> result) {
-                callback.success(new Result<>(digitsClient.getApiClient(result.data), null));
+                callback.success(new Result<>(digitsClient.getApiClient(), null));
             }
 
             @Override

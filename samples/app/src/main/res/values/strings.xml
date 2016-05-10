@@ -25,7 +25,8 @@
     <string name="user_id">User Id: %d</string>
     <string name="token">Token: %s</string>
     <string name="secret">Secret: %s</string>
-    <string name="find_your_friends">Find your friends</string>
+    <string name="upload_your_friends">Upload contacts</string>
+    <string name="contact_lookup">Lookup friend matches</string>
     <string name="custom_phone_login">Custom Phone Login (Beta)</string>
     <string name="beta_notice">Currently in closed beta. Contact support for more information.</string>
     <string name="send_confirmation_code">Send Confirmation Code</string>

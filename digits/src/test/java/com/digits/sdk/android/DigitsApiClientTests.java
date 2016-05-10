@@ -18,6 +18,7 @@
 package com.digits.sdk.android;
 
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,19 +37,26 @@ import static org.mockito.Mockito.mock;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class DigitsApiClientTests {
     private TwitterAuthConfig authConfig;
+    private TwitterCore twitterCore;
     private DigitsSession guestSession;
     private DigitsApiClient digitsApiClient;
+    private ActivityClassManagerFactory activityClassManagerFactory;
+    private ContactsPreferenceManager prefManager;
 
     @Before
     public void setUp() throws Exception {
         authConfig = new TwitterAuthConfig(TestConstants.CONSUMER_SECRET,
                 TestConstants.CONSUMER_KEY);
+        twitterCore = new TwitterCore(authConfig);
         guestSession = DigitsSession.create(DigitsSessionTests.getNewLoggedOutUser(),
                 TestConstants.PHONE);
-
-        digitsApiClient = new DigitsApiClient(guestSession, authConfig,
-                mock(SSLSocketFactory.class), mock(ExecutorService.class),
-                mock(DigitsUserAgent.class));
+        activityClassManagerFactory = new ActivityClassManagerFactory();
+        prefManager = mock(ContactsPreferenceManager.class);
+        digitsApiClient = new DigitsApiClient(guestSession, twitterCore,
+                mock(SSLSocketFactory.class),
+                mock(ExecutorService.class),
+                new DigitsUserAgent("digitsVersion", "androidVersion",
+                "appName"));
     }
 
     @Test

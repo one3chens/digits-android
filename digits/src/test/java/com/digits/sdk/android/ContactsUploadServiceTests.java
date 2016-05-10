@@ -62,7 +62,7 @@ public class ContactsUploadServiceTests {
     private Cursor cursor;
     private ContactsHelper helper;
     private RetryThreadPoolExecutor executor;
-    private ContactsClient contactsClient;
+    private DigitsApiClient.SdkService sdkService;
     private ContactsPreferenceManager perfManager;
     private ArrayList<String> cradList;
     private ContactsUploadService service;
@@ -73,7 +73,7 @@ public class ContactsUploadServiceTests {
     public void setUp() throws Exception {
         executor = mock(RetryThreadPoolExecutor.class);
         perfManager = mock(MockContactsPreferenceManager.class);
-        contactsClient = mock(ContactsClient.class);
+        sdkService = mock(DigitsApiClient.SdkService.class);
         logger = mock(Logger.class);
         cursor = ContactsHelperTests.createCursor();
         cradList = ContactsHelperTests.createCardList();
@@ -82,7 +82,7 @@ public class ContactsUploadServiceTests {
         when(helper.getContactsCursor()).thenReturn(cursor);
         when(helper.createContactList(cursor)).thenReturn(cradList);
 
-        service = spy(new ContactsUploadService(contactsClient, helper, perfManager, executor,
+        service = spy(new ContactsUploadService(sdkService, helper, perfManager, executor,
                 logger, Locale.JAPANESE));
     }
 
@@ -140,7 +140,7 @@ public class ContactsUploadServiceTests {
         when(retrofitError.getResponse()).thenReturn(response);
         when(retrofitError.getKind()).thenReturn(RetrofitError.Kind.HTTP);
         when(retrofitError.getStackTrace()).thenReturn(new StackTraceElement[0]);
-        when(contactsClient.uploadContacts(any(Vcards.class))).thenThrow(retrofitError);
+        when(sdkService.upload(any(Vcards.class))).thenThrow(retrofitError);
 
         service.onHandleIntent(null);
 
@@ -175,7 +175,7 @@ public class ContactsUploadServiceTests {
         when(retrofitError.getKind()).thenReturn(RetrofitError.Kind.CONVERSION);
         when(retrofitError.getStackTrace()).thenReturn(new StackTraceElement[0]);
         when(retrofitError.toString()).thenReturn(exceptionString);
-        when(contactsClient.uploadContacts(any(Vcards.class))).thenThrow(retrofitError);
+        when(sdkService.upload(any(Vcards.class))).thenThrow(retrofitError);
 
         service.onHandleIntent(null);
 

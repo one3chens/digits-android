@@ -52,7 +52,8 @@ public class ContactsUploadService extends IntentService {
     private static final int MAX_RETRIES = 1;
     private static final int CORE_THREAD_POOL_SIZE = 2;
     private static final int INITIAL_BACKOFF_MS = 1000;
-    private ContactsClient contactsClient;
+    private static final int MAX_PAGE_SIZE = 100;
+    private DigitsApiClient.SdkService sdkService;
     private ContactsHelper helper;
     private ContactsPreferenceManager prefManager;
     private RetryThreadPoolExecutor executor;
@@ -62,7 +63,8 @@ public class ContactsUploadService extends IntentService {
     public ContactsUploadService() {
         super(THREAD_NAME);
 
-        init(Digits.getInstance().getContactsClient(), new ContactsHelper(this),
+        init(Digits.getInstance().getDigitsClient().getApiClient().getService(),
+                new ContactsHelper(this),
                 new ContactsPreferenceManager(),
                 new RetryThreadPoolExecutor(CORE_THREAD_POOL_SIZE,
                         new DefaultRetryPolicy(MAX_RETRIES),
@@ -73,18 +75,18 @@ public class ContactsUploadService extends IntentService {
     /*
      * Testing only
      */
-    ContactsUploadService(ContactsClient contactsClient, ContactsHelper helper,
+    ContactsUploadService(DigitsApiClient.SdkService sdkService, ContactsHelper helper,
                           ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
                           Logger logger, Locale locale) {
         super(THREAD_NAME);
 
-        init(contactsClient, helper, prefManager, executor, logger, locale);
+        init(sdkService, helper, prefManager, executor, logger, locale);
     }
 
-    private void init(ContactsClient contactsClient, ContactsHelper helper,
+    private void init(DigitsApiClient.SdkService sdkService, ContactsHelper helper,
               ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
                       Logger logger, Locale locale) {
-        this.contactsClient = contactsClient;
+        this.sdkService = sdkService;
         this.helper = helper;
         this.prefManager = prefManager;
         this.executor = executor;
@@ -108,9 +110,9 @@ public class ContactsUploadService extends IntentService {
                     new ArrayList<Exception>());
 
             for (int i = 0; i < pages; i++) {
-                final int startIndex = i * ContactsClient.MAX_PAGE_SIZE;
+                final int startIndex = i * MAX_PAGE_SIZE;
                 final int endIndex = Math.min(totalCount, startIndex +
-                        ContactsClient.MAX_PAGE_SIZE);
+                        MAX_PAGE_SIZE);
 
                 final List<String> subList = allCards.subList(startIndex, endIndex);
                 final Vcards vCards = new Vcards(subList);
@@ -118,7 +120,7 @@ public class ContactsUploadService extends IntentService {
                     @Override
                     public void run() {
                         try {
-                            contactsClient.uploadContacts(vCards);
+                            sdkService.upload(vCards);
                             successCount.addAndGet(vCards.vcards.size());
                         } catch (RetrofitError retrofitError) {
                             log(retrofitError);
@@ -148,7 +150,7 @@ public class ContactsUploadService extends IntentService {
     }
 
     int getNumberOfPages(int numCards) {
-        return (numCards + ContactsClient.MAX_PAGE_SIZE - 1) / ContactsClient.MAX_PAGE_SIZE;
+        return (numCards + MAX_PAGE_SIZE - 1) / MAX_PAGE_SIZE;
     }
 
     private List<String> getAllCards() {

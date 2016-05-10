@@ -248,6 +248,13 @@ public class Digits extends Kit<Void> {
         return digitsClient;
     }
 
+    public ContactsClient getContactsClient() {
+        if (contactsClient == null) {
+            createContactsClient();
+        }
+        return contactsClient;
+    }
+
     protected DigitsEventCollector getDigitsEventCollector() {
         return digitsEventCollector;
     }
@@ -256,13 +263,6 @@ public class Digits extends Kit<Void> {
         if (digitsClient == null) {
             digitsClient = new DigitsClient();
         }
-    }
-
-    public ContactsClient getContactsClient() {
-        if (contactsClient == null) {
-            createContactsClient();
-        }
-        return contactsClient;
     }
 
     private synchronized void createContactsClient() {

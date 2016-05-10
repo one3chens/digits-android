@@ -20,44 +20,27 @@ package com.digits.sdk.android;
 import android.content.Context;
 import android.content.Intent;
 
-import com.twitter.sdk.android.core.AuthenticatedClient;
-import com.twitter.sdk.android.core.TwitterCore;
-
-import retrofit.RestAdapter;
+import com.twitter.sdk.android.core.Callback;
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Query;
 
 public class ContactsClient {
-    public static final int MAX_PAGE_SIZE = 100;
-    private final TwitterCore twitterCore;
     private final ContactsPreferenceManager prefManager;
-    private ContactsService contactsService;
     private ActivityClassManagerFactory activityClassManagerFactory;
+    private final DigitsApiClientManager apiClientManager;
+    private final Digits digits;
 
     ContactsClient() {
-        this(TwitterCore.getInstance(), new ContactsPreferenceManager(),
-                new ActivityClassManagerFactory(), null);
+        this(Digits.getInstance(), new DigitsApiClientManager(), new ContactsPreferenceManager(),
+                new ActivityClassManagerFactory());
     }
 
-    ContactsClient(TwitterCore twitterCore, ContactsPreferenceManager prefManager,
-            ActivityClassManagerFactory activityClassManagerFactory,
-            ContactsService contactsService) {
-        if (twitterCore == null) {
-            throw new IllegalArgumentException("twitter must not be null");
-        }
-        if (prefManager == null) {
-            throw new IllegalArgumentException("preference manager must not be null");
-        }
-        if (activityClassManagerFactory == null) {
-            throw new IllegalArgumentException("activityClassManagerFactory must not be null");
-        }
-        this.twitterCore = twitterCore;
+    ContactsClient(Digits digits, DigitsApiClientManager apiManager,
+                   ContactsPreferenceManager prefManager,
+                   ActivityClassManagerFactory activityClassManagerFactory) {
+        this.digits = digits;
+        this.apiClientManager = apiManager;
         this.prefManager = prefManager;
         this.activityClassManagerFactory = activityClassManagerFactory;
-        this.contactsService = contactsService;
     }
 
     /**
@@ -75,11 +58,11 @@ public class ContactsClient {
      * background service to upload contacts. Otherwise, do nothing.
      *
      * @param themeResId Resource id of theme
-     *
      */
     public void startContactsUpload(int themeResId) {
-        startContactsUpload(twitterCore.getContext(), themeResId);
+        startContactsUpload(digits.getContext(), themeResId);
     }
+
 
     /**
      * Returns true if user has previously granted contacts upload permission. Otherwise, returns
@@ -110,20 +93,8 @@ public class ContactsClient {
         context.startService(new Intent(context, ContactsUploadService.class));
     }
 
-    private ContactsService getContactsService() {
-        if (contactsService != null) {
-            return contactsService;
-        }
-
-        final RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(new DigitsApi().getBaseHostUrl())
-                .setClient(new AuthenticatedClient(twitterCore.getAuthConfig(),
-                        Digits.getSessionManager().getActiveSession(),
-                        twitterCore.getSSLSocketFactory()))
-                .build();
-
-        contactsService = adapter.create(ContactsService.class);
-        return contactsService;
+    protected DigitsApiClient.SdkService getDigitsApiService() {
+        return apiClientManager.getService();
     }
 
     /**
@@ -132,7 +103,17 @@ public class ContactsClient {
      * @param callback to be executed on UI thread with HTTP response.
      */
     public void deleteAllUploadedContacts(final ContactsCallback<Response> callback) {
-        getContactsService().deleteAll(callback);
+        getDigitsApiService().deleteAll(callback);
+    }
+
+    /**
+     * Retrieve all matched contacts. Handles paging, and makes callback
+     * when all matches are retrieved
+     *
+     * @param callback   to be executed on UI thread with matched users.
+     */
+    public void lookupContactMatchesStart(final Callback<Contacts> callback) {
+        lookupContactMatches(null, 100, callback);
     }
 
     /**
@@ -144,28 +125,16 @@ public class ContactsClient {
      * @param callback   to be executed on UI thread with matched users.
      */
     public void lookupContactMatches(final String nextCursor, final Integer count,
-            final ContactsCallback<Contacts> callback) {
+                                        final Callback<Contacts> callback) {
         if (count == null || count < 1 || count > 100) {
-            getContactsService().usersAndUploadedBy(nextCursor, null, callback);
+            getDigitsApiService().usersAndUploadedBy(nextCursor, null, callback);
         } else {
-            getContactsService().usersAndUploadedBy(nextCursor, count, callback);
+            getDigitsApiService().usersAndUploadedBy(nextCursor, count, callback);
         }
     }
 
     UploadResponse uploadContacts(Vcards vcards) {
-        return getContactsService().upload(vcards);
-    }
-
-    interface ContactsService {
-        @POST("/1.1/contacts/upload.json")
-        UploadResponse upload(@Body Vcards vcards);
-
-        @POST("/1.1/contacts/destroy/all.json")
-        void deleteAll(ContactsCallback<Response> cb);
-
-        @GET("/1.1/contacts/users_and_uploaded_by.json")
-        void usersAndUploadedBy(@Query("next_cursor") String nextCursor,
-                @Query("count") Integer count, ContactsCallback<Contacts> cb);
+        return getDigitsApiService().upload(vcards);
     }
 
 }
