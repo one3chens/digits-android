@@ -82,7 +82,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     }
 
     private boolean isUnrecoverable(DigitsException exception) {
-        return errorCount == MAX_ERRORS || exception instanceof UnrecoverableException;
+        return errorCount >= MAX_ERRORS || exception instanceof UnrecoverableException;
     }
 
     void startActivityForResult(Activity activity, Intent intent) {
@@ -94,9 +94,8 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         final Intent intent = new Intent(context, activityClassManager.getFailureActivity());
         intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, receiver);
         intent.putExtra(DigitsClient.EXTRA_FALLBACK_REASON, reason);
-
         context.startActivity(intent);
-        CommonUtils.finishAffinity(context, DigitsActivity.RESULT_FINISH_DIGITS);
+        finishActivity(context);
     }
 
     @Override
@@ -179,6 +178,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
+        finishActivity(context);
     }
 
     @Override
@@ -191,6 +191,13 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     public void cancelTimer() {
         if (countDownTimer != null){
             countDownTimer.cancel();
+        }
+    }
+
+    protected void finishActivity(Context context){
+        if (context instanceof Activity) {
+            final Activity activity = (Activity) context;
+            activity.finish();
         }
     }
 

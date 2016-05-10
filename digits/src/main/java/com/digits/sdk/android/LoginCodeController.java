@@ -174,6 +174,7 @@ class LoginCodeController extends DigitsControllerImpl {
         bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
+        finishActivity(context);
     }
 
     @Override

@@ -255,6 +255,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         assertTrue(BundleManager.assertContains(bundle, DigitsClient.EXTRA_REQUEST_ID,
                 DigitsClient.EXTRA_USER_ID, DigitsClient.EXTRA_PHONE,
                 DigitsClient.EXTRA_RESULT_RECEIVER, DigitsClient.EXTRA_EMAIL));
+        verify(context).finish();
     }
 
     DigitsCallback<DigitsSessionResponse> executeRequest() {

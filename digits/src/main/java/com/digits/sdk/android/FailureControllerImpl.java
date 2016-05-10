@@ -36,12 +36,7 @@ class FailureControllerImpl implements FailureController {
     }
 
     public void tryAnotherNumber(Activity activity, ResultReceiver resultReceiver) {
-        final Intent intent = new Intent(activity, classManager.getPhoneNumberActivity());
-        final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
-        intent.putExtras(bundle);
-        intent.setFlags(getFlags());
-        activity.startActivity(intent);
+        activity.finish();
     }
 
     public void sendFailure(ResultReceiver resultReceiver, Exception exception) {

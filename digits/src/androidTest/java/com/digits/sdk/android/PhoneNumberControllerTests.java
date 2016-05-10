@@ -17,7 +17,9 @@
 
 package com.digits.sdk.android;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.text.Editable;
 
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
@@ -26,6 +28,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.Locale;
 
+import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -104,6 +107,36 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
                 controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
 
         assertEquals(Verification.sms, loginOrSignupComposer.verificationType);
+    }
+
+    @Override
+    void verifyUnrecoverableException() {
+        verifyControllerFailure(1);
+        verifyNoInteractions(sendButton, phoneEditText);
+        verify(context).startActivity(intentCaptor.capture());
+        final Intent intent = intentCaptor.getValue();
+        assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
+        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
+        verify(context, times(0)).finish();
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void testShowError_fiveTimesStartFallback() throws Exception {
+        controller.handleError(context, EXCEPTION);
+        controller.handleError(context, EXCEPTION);
+        controller.handleError(context, EXCEPTION);
+        controller.handleError(context, EXCEPTION);
+        controller.handleError(context, EXCEPTION);
+        verifyControllerError(EXCEPTION, 5);
+        verifyControllerFailure(1);
+        verify(phoneEditText, atMost(4)).setError(ERROR_MESSAGE);
+        verify(sendButton, atMost(4)).showError();
+        verify(context).startActivity(intentCaptor.capture());
+        final Intent intent = intentCaptor.getValue();
+        assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
+        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
+        verify(context, times(0)).finish();
     }
 
     @Override

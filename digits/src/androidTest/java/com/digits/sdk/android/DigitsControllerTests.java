@@ -112,12 +112,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
         assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            verify(context).finishAffinity();
-        } else {
-            verify(context).finish();
-        }
+        verify(context).finish();
     }
 
     public void testHandleError_unrecoverableExceptionStartFallback() throws Exception {
@@ -132,12 +127,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
         assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            verify(context).finishAffinity();
-        } else {
-            verify(context).finish();
-        }
+        verify(context).finish();
     }
 
     public void testStartFallback() throws Exception {

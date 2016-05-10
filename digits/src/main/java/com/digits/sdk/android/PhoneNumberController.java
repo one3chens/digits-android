@@ -178,6 +178,14 @@ class PhoneNumberController extends DigitsControllerImpl implements
     }
 
     @Override
+    public void startFallback(Context context, ResultReceiver receiver, DigitsException reason) {
+        final Intent intent = new Intent(context, activityClassManager.getFailureActivity());
+        intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, receiver);
+        intent.putExtra(DigitsClient.EXTRA_FALLBACK_REASON, reason);
+        context.startActivity(intent);
+    }
+
+    @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         super.onTextChanged(s, start, before, count);
         if (Verification.voicecall.equals(getVerificationType())) {
