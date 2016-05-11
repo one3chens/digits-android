@@ -26,10 +26,10 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.internal.ShadowExtractor;
 import org.robolectric.shadows.ShadowDrawable;
 
 import static org.junit.Assert.assertEquals;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -48,7 +48,8 @@ public class LogoImageViewTest {
         if (BuildConfig.DEBUG) {
             RuntimeEnvironment.application.setTheme(R.style.DigitsDebugLightTheme);
             final LogoImageView imageView = new LogoImageView(RuntimeEnvironment.application);
-            final ShadowDrawable drawable = shadowOf(imageView.getDrawable());
+            final ShadowDrawable drawable = (ShadowDrawable) ShadowExtractor
+                    .extract(imageView.getDrawable());
             assertEquals(R.drawable.dgts__logo, drawable.getCreatedFromResId());
             assertEquals(View.VISIBLE, imageView.getVisibility());
         }

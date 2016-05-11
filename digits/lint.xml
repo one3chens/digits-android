@@ -26,4 +26,7 @@
         <ignore
             path="src/main/java/com/digits/sdk/android/LoginResultReceiver.java"/>
     </issue>
+    <issue id="PrivateResource" severity="ignore">
+        <ignore path="src/main/java/com/digits/sdk/android/ContactsActionBarActivity.java"/>
+    </issue>
 </lint>

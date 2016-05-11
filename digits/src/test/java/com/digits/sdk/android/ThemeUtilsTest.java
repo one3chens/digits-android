@@ -25,9 +25,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.internal.ShadowExtractor;
 import org.robolectric.shadows.ShadowDrawable;
-
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -68,8 +67,8 @@ public class ThemeUtilsTest extends AndroidTestCase {
     public void testGetLogoDrawable() throws Exception {
         if (BuildConfig.DEBUG) {
             RuntimeEnvironment.application.setTheme(R.style.DigitsDebugLightTheme);
-            final ShadowDrawable drawable = shadowOf(ThemeUtils.getLogoDrawable(RuntimeEnvironment
-                    .application.getTheme()));
+            final ShadowDrawable drawable = (ShadowDrawable) ShadowExtractor
+                    .extract(ThemeUtils.getLogoDrawable(RuntimeEnvironment.application.getTheme()));
             assertEquals(R.drawable.dgts__logo, drawable.getCreatedFromResId());
         }
     }

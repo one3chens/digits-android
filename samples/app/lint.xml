@@ -19,4 +19,7 @@
 <lint>
     <issue id="GoogleAppIndexingWarning" severity="ignore"/>
     <issue id="MissingPermission" severity="ignore"/>
+    <issue id="PrivateResource" severity="ignore">
+        <ignore path="src/androidTest/java/com/digits/sdk/android/PhoneNumberActionBarActivityThemeTests.java"/>
+    </issue>
 </lint>
