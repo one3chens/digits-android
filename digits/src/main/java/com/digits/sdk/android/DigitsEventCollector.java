@@ -39,7 +39,7 @@ class DigitsEventCollector {
     //Auth/External API events
     public void authImpression() {
         digitsScribeClient.impression(Component.EMPTY);
-        if (externalEventLogger != null) externalEventLogger.phoneNumberImpression();
+        if (externalEventLogger != null) externalEventLogger.loginBegin();
     }
 
     public void authSuccess() {
@@ -54,6 +54,7 @@ class DigitsEventCollector {
     //Phone screen events
     public void phoneScreenImpression() {
         digitsScribeClient.impression(Component.AUTH);
+        if (externalEventLogger != null) externalEventLogger.phoneNumberImpression();
     }
     public void countryCodeClickOnPhoneScreen() {
         digitsScribeClient.click(Component.AUTH, Element.COUNTRY_CODE);

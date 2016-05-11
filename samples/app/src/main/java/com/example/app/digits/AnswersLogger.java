@@ -38,6 +38,14 @@ public class AnswersLogger extends DigitsEventLogger {
     }
 
     @Override
+    public void loginBegin() {
+        answers.logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "loginBegin"));
+
+        Fabric.getLogger().d(TAG, "loginBegin");
+    }
+
+    @Override
     public void phoneNumberImpression() {
         answers.logCustom(new CustomEvent("Login-Digits")
                 .putCustomAttribute("Action", "phoneNumberImpression"));

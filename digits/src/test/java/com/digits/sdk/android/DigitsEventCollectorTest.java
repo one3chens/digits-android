@@ -304,7 +304,7 @@ public class DigitsEventCollectorTest {
         digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
         digitsEventCollector.authImpression();
         verify(digitsScribeClient).impression(Component.EMPTY);
-        verify(digitsEventLogger).phoneNumberImpression();
+        verify(digitsEventLogger).loginBegin();
     }
 
     @Test
@@ -314,6 +314,15 @@ public class DigitsEventCollectorTest {
         digitsEventCollector.authSuccess();
         verify(digitsScribeClient).loginSuccess();
         verify(digitsEventLogger).loginSuccess();
+    }
+
+    @Test
+    public void testPhoneScreenImpression_withExternalLogger() {
+        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
+        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
+        digitsEventCollector.phoneScreenImpression();
+        verify(digitsScribeClient).impression(Component.AUTH);
+        verify(digitsEventLogger).phoneNumberImpression();
     }
 
     @Test
