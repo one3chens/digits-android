@@ -22,9 +22,6 @@ import android.database.Cursor;
 
 import com.google.gson.Gson;
 
-import io.fabric.sdk.android.Logger;
-import io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,21 +38,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import io.fabric.sdk.android.Logger;
+import io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+import retrofit.RetrofitError;
+import retrofit.client.Header;
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-
-import retrofit.RetrofitError;
-import retrofit.client.Header;
-import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -120,7 +119,7 @@ public class ContactsUploadServiceTests {
     }
 
     @Test
-    public void testLoggingSuccess() throws Exception {
+    public void testOnHandleIntent_rateLimit() throws Exception {
         when(executor.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(true);
         doAnswer(new Answer() {
             @Override
@@ -130,13 +129,16 @@ public class ContactsUploadServiceTests {
             }
         }).when(executor).scheduleWithRetry(any(Runnable.class));
         final RetrofitError retrofitError = mock(RetrofitError.class);
-        final List<UploadError> errors = new ArrayList<>();
         final int errorCode = 88;
-        final int httpStatus = 401;
+        final int httpStatus = 429;
         final String errorMessage = "Rate limit";
-        errors.add(new UploadError(errorCode, errorMessage, 1));
-        final Response response = createResponse(httpStatus, toJson(new UploadResponse(errors)));
+        final UploadError apiError = new UploadError(errorCode, errorMessage, 0);
+        final List<UploadError> apiErrors = new ArrayList<>();
+        apiErrors.add(apiError);
+        final UploadResponse uploadResponse = new UploadResponse(apiErrors);
+        final Response response = createResponse(httpStatus, toJson(uploadResponse));
         when(retrofitError.getResponse()).thenReturn(response);
+        when(retrofitError.getKind()).thenReturn(RetrofitError.Kind.HTTP);
         when(retrofitError.getStackTrace()).thenReturn(new StackTraceElement[0]);
         when(contactsClient.uploadContacts(any(Vcards.class))).thenThrow(retrofitError);
 
@@ -145,11 +147,17 @@ public class ContactsUploadServiceTests {
         final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(logger).e(eq(Digits.TAG), captor.capture());
         assertEquals(captor.getValue(), String.format(Locale.JAPANESE,
-                ContactsUploadService.ERROR_LOG_FORMAT, httpStatus, errorCode, errorMessage));
+                ContactsUploadService.RETROFIT_ERROR_LOG_FORMAT, httpStatus, apiError.code,
+                apiError.message));
+
+        verify(service).sendBroadcast(intentCaptor.capture());
+        final ContactsUploadFailureResult result = intentCaptor.getValue()
+                .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
+        assertEquals(ContactsUploadFailureResult.Summary.RATE_LIMIT, result.summary);
     }
 
     @Test
-    public void testLoggingNullApiError() throws Exception {
+    public void testOnHandleIntent_nullApiError() throws Exception {
         when(executor.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(true);
         doAnswer(new Answer() {
             @Override
@@ -159,10 +167,14 @@ public class ContactsUploadServiceTests {
             }
         }).when(executor).scheduleWithRetry(any(Runnable.class));
         final RetrofitError retrofitError = mock(RetrofitError.class);
-        final int httpStatus = 401;
-        final Response response = createResponse(httpStatus, "{}");
+        final int status = 401;
+        final String body = "{}";
+        final Response response = createResponse(status, body);
+        final String exceptionString = "exceptional!";
         when(retrofitError.getResponse()).thenReturn(response);
+        when(retrofitError.getKind()).thenReturn(RetrofitError.Kind.CONVERSION);
         when(retrofitError.getStackTrace()).thenReturn(new StackTraceElement[0]);
+        when(retrofitError.toString()).thenReturn(exceptionString);
         when(contactsClient.uploadContacts(any(Vcards.class))).thenThrow(retrofitError);
 
         service.onHandleIntent(null);
@@ -170,7 +182,50 @@ public class ContactsUploadServiceTests {
         final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(logger).e(eq(Digits.TAG), captor.capture());
         assertEquals(captor.getValue(), String.format(Locale.JAPANESE,
-                ContactsUploadService.ERROR_LOG_FORMAT, httpStatus, 0, null));
+                ContactsUploadService.EXCEPTION_LOG_FORMAT, exceptionString));
+
+        verify(service).sendBroadcast(intentCaptor.capture());
+        final ContactsUploadFailureResult result = intentCaptor.getValue()
+                .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
+        assertEquals(ContactsUploadFailureResult.Summary.PARSING, result.summary);
+    }
+
+    @Test
+    public void testOnHandleIntent_exception() throws Exception {
+        final Exception exception = new NullPointerException("trolololo");
+        when(helper.getContactsCursor()).thenThrow(exception);
+
+        service.onHandleIntent(null);
+
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(logger).e(eq(Digits.TAG), captor.capture());
+        assertEquals(captor.getValue(), String.format(Locale.JAPANESE,
+                ContactsUploadService.EXCEPTION_LOG_FORMAT, exception.toString()));
+
+        verify(service).sendBroadcast(intentCaptor.capture());
+        assertEquals(ContactsUploadService.UPLOAD_FAILED, intentCaptor.getValue().getAction());
+        final ContactsUploadFailureResult result = intentCaptor.getValue()
+                .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
+        assertEquals(ContactsUploadFailureResult.Summary.UNEXPECTED, result.summary);
+    }
+
+    @Test
+    public void testOnHandleIntent_securityException() throws Exception {
+        final SecurityException exception = new SecurityException("Permission Denial...");
+        when(helper.getContactsCursor()).thenThrow(exception);
+
+        service.onHandleIntent(null);
+
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(logger).e(eq(Digits.TAG), captor.capture());
+        assertEquals(captor.getValue(), String.format(Locale.JAPANESE,
+                ContactsUploadService.EXCEPTION_LOG_FORMAT, exception.toString()));
+
+        verify(service).sendBroadcast(intentCaptor.capture());
+        assertEquals(ContactsUploadService.UPLOAD_FAILED, intentCaptor.getValue().getAction());
+        final ContactsUploadFailureResult result = intentCaptor.getValue()
+                .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
+        assertEquals(ContactsUploadFailureResult.Summary.PERMISSION, result.summary);
     }
 
     @Test
@@ -188,6 +243,9 @@ public class ContactsUploadServiceTests {
 
         verify(service).sendBroadcast(intentCaptor.capture());
         assertEquals(ContactsUploadService.UPLOAD_FAILED, intentCaptor.getValue().getAction());
+        final ContactsUploadFailureResult result = intentCaptor.getValue()
+                .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
+        assertEquals(ContactsUploadFailureResult.Summary.UNEXPECTED, result.summary);
 
         verify(perfManager).setContactImportPermissionGranted();
         verifyNoMoreInteractions(perfManager);
@@ -203,10 +261,13 @@ public class ContactsUploadServiceTests {
 
     @Test
     public void testSendFailureBroadcast() {
-        service.sendFailureBroadcast();
-
+        service.sendFailureBroadcast(ContactsUploadFailureResult.create(
+                Collections.<Exception>emptyList()));
         verify(service).sendBroadcast(intentCaptor.capture());
         assertEquals(ContactsUploadService.UPLOAD_FAILED, intentCaptor.getValue().getAction());
+        final ContactsUploadFailureResult result = intentCaptor.getValue()
+                .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
+        assertEquals(ContactsUploadFailureResult.Summary.UNEXPECTED, result.summary);
     }
 
     @Test
@@ -223,7 +284,8 @@ public class ContactsUploadServiceTests {
 
     // Response is final, which isn't mockable by Mockito, so this fn creates a stub.
     Response createResponse(int status, String body) throws UnsupportedEncodingException {
-        return new Response("url", status, "reason", Collections.<Header>emptyList(),
+        final List<Header> headers = new ArrayList<>();
+        return new Response("url", status, "reason", headers,
                 new TypedByteArray("application/json", body.getBytes("UTF-8")));
     }
 

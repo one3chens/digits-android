@@ -23,6 +23,7 @@ import android.database.Cursor;
 
 import com.twitter.sdk.android.core.TwitterApiException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -43,8 +44,11 @@ public class ContactsUploadService extends IntentService {
     public static final String UPLOAD_COMPLETE = "com.digits.sdk.android.UPLOAD_COMPLETE";
     public static final String UPLOAD_COMPLETE_EXTRA = "com.digits.sdk.android.UPLOAD_COMPLETE_EXTRA";
     public static final String UPLOAD_FAILED = "com.digits.sdk.android.UPLOAD_FAILED";
-    public static final String ERROR_LOG_FORMAT =
-            "contact upload error, httpStatus=%d, errorCode=%d, errorMessage=%s";
+    public static final String UPLOAD_FAILED_EXTRA = "com.digits.sdk.android.UPLOAD_FAILED_EXTRA";
+    public static final String EXCEPTION_LOG_FORMAT =
+            "contact upload error, exception=%s";
+    public static final String RETROFIT_ERROR_LOG_FORMAT =
+            "contact upload error, status=%d, errorCode=%d, errorMessage=%s";
     private static final int MAX_RETRIES = 1;
     private static final int CORE_THREAD_POOL_SIZE = 2;
     private static final int INITIAL_BACKOFF_MS = 1000;
@@ -100,6 +104,8 @@ public class ContactsUploadService extends IntentService {
             final int totalCount = allCards.size();
             final int pages = getNumberOfPages(totalCount);
             final AtomicInteger successCount = new AtomicInteger(0);
+            final List<Exception> retrofitErrors = Collections.synchronizedList(
+                    new ArrayList<Exception>());
 
             for (int i = 0; i < pages; i++) {
                 final int startIndex = i * ContactsClient.MAX_PAGE_SIZE;
@@ -116,6 +122,7 @@ public class ContactsUploadService extends IntentService {
                             successCount.addAndGet(vCards.vcards.size());
                         } catch (RetrofitError retrofitError) {
                             log(retrofitError);
+                            retrofitErrors.add(retrofitError);
                         }
                     }
                 });
@@ -126,16 +133,17 @@ public class ContactsUploadService extends IntentService {
 
             if (!success) {
                 executor.shutdownNow();
-                sendFailureBroadcast();
+                sendFailureBroadcast(ContactsUploadFailureResult.create(retrofitErrors));
             } else if (successCount.get() == 0) {
-                sendFailureBroadcast();
+                sendFailureBroadcast(ContactsUploadFailureResult.create(retrofitErrors));
             } else {
                 prefManager.setContactsReadTimestamp(System.currentTimeMillis());
                 prefManager.setContactsUploaded(successCount.get());
                 sendSuccessBroadcast(new ContactsUploadResult(successCount.get(), totalCount));
             }
         } catch (Exception ex) {
-            sendFailureBroadcast();
+            log(ex);
+            sendFailureBroadcast(ContactsUploadFailureResult.create(ex));
         }
     }
 
@@ -159,8 +167,9 @@ public class ContactsUploadService extends IntentService {
         return allCards;
     }
 
-    void sendFailureBroadcast() {
+    void sendFailureBroadcast(ContactsUploadFailureResult extra) {
         final Intent intent = new Intent(UPLOAD_FAILED);
+        intent.putExtra(UPLOAD_FAILED_EXTRA, extra);
         sendBroadcast(intent);
     }
 
@@ -170,12 +179,20 @@ public class ContactsUploadService extends IntentService {
         sendBroadcast(intent);
     }
 
-    void log(RetrofitError retrofitError) {
-        final Response response = retrofitError.getResponse();
-        final int httpStatus = response == null ? 0 : response.getStatus();
-        final TwitterApiException twitterApiException = TwitterApiException.convert(retrofitError);
-        logger.e(Digits.TAG, String.format(locale, ERROR_LOG_FORMAT,
-                httpStatus, twitterApiException.getErrorCode(),
-                twitterApiException.getErrorMessage()));
+    private void log(RetrofitError retrofitError) {
+        if (retrofitError.getKind().equals(RetrofitError.Kind.HTTP)) {
+            final Response response = retrofitError.getResponse();
+            final int status = response == null ? 0 : response.getStatus();
+            final TwitterApiException twitterApiException =
+                    TwitterApiException.convert(retrofitError);
+            logger.e(Digits.TAG, String.format(locale, RETROFIT_ERROR_LOG_FORMAT, status,
+                    twitterApiException.getErrorCode(), twitterApiException.getErrorMessage()));
+        } else {
+            log((Exception) retrofitError);
+        }
+    }
+
+    private void log(Exception e) {
+        logger.e(Digits.TAG, String.format(locale, EXCEPTION_LOG_FORMAT, e.toString()));
     }
 }

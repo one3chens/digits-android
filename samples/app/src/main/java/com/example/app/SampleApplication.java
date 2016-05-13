@@ -31,7 +31,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
 public class SampleApplication extends Application {
-    private static final String TAG = SampleApplication.class.getSimpleName();
+    public static final String TAG = SampleApplication.class.getSimpleName();
 
     @Override
     public void onCreate() {

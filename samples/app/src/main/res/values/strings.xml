@@ -32,6 +32,8 @@
     <string name="phone_number_edit_hint">Your Number</string>
     <string name="no_friends_found">No friends found</string>
     <string name="id_format">ID: %d</string>
+    <string name="contact_upload_failed">Contact upload failed</string>
+    <string name="contact_upload_failed_permission">Contacts permission missing</string>
     <string name="you_have_new_friends">You have new friends</string>
     <string name="clear_session">Clear Session</string>
     <string name="verify_credentials">Verify Credentials</string>
