@@ -20,31 +20,43 @@ package com.digits.sdk.android;
 import com.digits.sdk.android.DigitsScribeConstants.Component;
 import com.digits.sdk.android.DigitsScribeConstants.Element;
 
+import java.util.HashSet;
+import java.util.Set;
+
 class DigitsEventCollector {
     private final DigitsScribeClient digitsScribeClient;
-    private DigitsEventLogger externalEventLogger;
+    private final Set<DigitsEventLogger> eventLoggers;
 
-    DigitsEventCollector(DigitsScribeClient digitsScribeClient){
+    DigitsEventCollector(DigitsScribeClient digitsScribeClient, DigitsEventLogger... loggers){
         if (digitsScribeClient == null) {
             throw new IllegalArgumentException("digits scribe client must not be null");
         }
 
         this.digitsScribeClient = digitsScribeClient;
+        eventLoggers = new HashSet<>();
+
+        for (DigitsEventLogger logger: loggers) {
+            eventLoggers.add(logger);
+        }
     }
 
-    void setLoggerResultReceiver(DigitsEventLogger externalEventLogger){
-        this.externalEventLogger = externalEventLogger;
+    void addDigitsEventLogger(DigitsEventLogger eventLogger){
+        this.eventLoggers.add(eventLogger);
     }
 
     //Auth/External API events
     public void authImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.EMPTY);
-        if (externalEventLogger != null) externalEventLogger.loginBegin(details);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.loginBegin(details);
+        }
     }
 
     public void authSuccess() {
         digitsScribeClient.loginSuccess();
-        if (externalEventLogger != null) externalEventLogger.loginSuccess();
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.loginSuccess();
+        }
     }
 
     public void authFailure() {
@@ -54,8 +66,9 @@ class DigitsEventCollector {
     //Phone screen events
     public void phoneScreenImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.AUTH);
-        if (externalEventLogger != null)
-            externalEventLogger.phoneNumberImpression(details);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.phoneNumberImpression(details);
+        }
     }
     public void countryCodeClickOnPhoneScreen() {
         digitsScribeClient.click(Component.AUTH, Element.COUNTRY_CODE);
@@ -63,7 +76,9 @@ class DigitsEventCollector {
 
     public void submitClickOnPhoneScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.AUTH, Element.SUBMIT);
-        if (externalEventLogger != null) externalEventLogger.phoneNumberSubmit(details);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.phoneNumberSubmit(details);
+        }
     }
 
     public void retryClickOnPhoneScreen() {
@@ -72,7 +87,9 @@ class DigitsEventCollector {
 
     public void submitPhoneSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.AUTH);
-        if (externalEventLogger != null) externalEventLogger.phoneNumberSuccess(details);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.phoneNumberSuccess(details);
+        }
     }
 
     public void submitPhoneFailure() {
@@ -102,8 +119,9 @@ class DigitsEventCollector {
 
     public void loginCodeSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.LOGIN);
-        if (externalEventLogger != null) externalEventLogger.loginSuccess();
-
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.loginSuccess();
+        }
     }
 
     public void loginFailure() {
@@ -133,7 +151,9 @@ class DigitsEventCollector {
 
     public void signupSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.SIGNUP);
-        if (externalEventLogger != null) externalEventLogger.loginSuccess();
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.loginSuccess();
+        }
     }
 
     public void signupFailure() {
@@ -185,6 +205,7 @@ class DigitsEventCollector {
     public void submitEmailException(DigitsException exception) {
         digitsScribeClient.error(Component.EMAIL, exception);
     }
+
     //Contacts upload screen events
     public void contactScreenImpression() {
         digitsScribeClient.impression(Component.CONTACTS);

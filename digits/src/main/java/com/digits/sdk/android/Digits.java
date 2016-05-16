@@ -59,15 +59,16 @@ public class Digits extends Kit<Void> {
     private ActivityClassManager activityClassManager;
     private DefaultScribeClient twitterScribeClient;
     private DigitsSessionVerifier digitsSessionVerifier;
-
+    private DefaultAnswersLogger defaultAnswersLogger;
     private int themeResId;
 
     public Digits() {
         super();
         //create api client wrappers only.
         //all expensive api clients are created in the background
+        defaultAnswersLogger = new DefaultAnswersLogger();
         digitsScribeClient = new DigitsScribeClient();
-        digitsEventCollector = new DigitsEventCollector(digitsScribeClient);
+        digitsEventCollector = new DigitsEventCollector(digitsScribeClient, defaultAnswersLogger);
     }
 
     public static Digits getInstance() {
@@ -308,6 +309,6 @@ public class Digits extends Kit<Void> {
     }
 
     private void setExternalLogger(DigitsEventLogger externalEventLogger) {
-        digitsEventCollector.setLoggerResultReceiver(externalEventLogger);
+        digitsEventCollector.addDigitsEventLogger(externalEventLogger);
     }
 }

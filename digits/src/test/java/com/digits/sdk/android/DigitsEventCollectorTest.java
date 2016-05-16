@@ -31,6 +31,7 @@ import org.robolectric.annotation.Config;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -45,23 +46,31 @@ public class DigitsEventCollectorTest {
             .withAuthStartTime(System.currentTimeMillis())
             .withCurrentTime(System.currentTimeMillis())
             .build();
+    private final DigitsEventLogger digitsEventLogger2 = mock(DigitsEventLogger.class);
+    private final DigitsEventLogger digitsEventLogger1 = mock(DigitsEventLogger.class);
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        digitsEventCollector = new DigitsEventCollector(digitsScribeClient);
+        digitsEventCollector = new DigitsEventCollector(digitsScribeClient, digitsEventLogger1);
     }
 
     @Test
     public void testAuthImpression() {
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.authImpression(details);
         verify(digitsScribeClient).impression(Component.EMPTY);
+        verify(digitsEventLogger1).loginBegin(details);
+        verify(digitsEventLogger2).loginBegin(details);
     }
 
     @Test
     public void testAuthSuccess() {
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.authSuccess();
         verify(digitsScribeClient).loginSuccess();
+        verify(digitsEventLogger1).loginSuccess();
+        verify(digitsEventLogger2).loginSuccess();
     }
 
     @Test
@@ -73,8 +82,11 @@ public class DigitsEventCollectorTest {
     //Phone screen events
     @Test
     public void testPhoneScreenImpression() {
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.phoneScreenImpression(details);
         verify(digitsScribeClient).impression(Component.AUTH);
+        verify(digitsEventLogger1).phoneNumberImpression(details);
+        verify(digitsEventLogger2).phoneNumberImpression(details);
     }
 
     @Test
@@ -86,8 +98,11 @@ public class DigitsEventCollectorTest {
 
     @Test
     public void testSubmitClickOnPhoneScreen() {
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitClickOnPhoneScreen(details);
         verify(digitsScribeClient).click(Component.AUTH, DigitsScribeConstants.Element.SUBMIT);
+        verify(digitsEventLogger1).phoneNumberSubmit(details);
+        verify(digitsEventLogger2).phoneNumberSubmit(details);
     }
 
     @Test
@@ -98,8 +113,11 @@ public class DigitsEventCollectorTest {
 
     @Test
     public void testSubmitPhoneSuccess() {
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitPhoneSuccess(details);
         verify(digitsScribeClient).success(Component.AUTH);
+        verify(digitsEventLogger1).phoneNumberSuccess(details);
+        verify(digitsEventLogger2).phoneNumberSuccess(details);
     }
 
     @Test
@@ -299,51 +317,13 @@ public class DigitsEventCollectorTest {
         verify(digitsScribeClient).click(Component.FAILURE, DigitsScribeConstants.Element.DISMISS);
     }
 
-    //External Logger event delegators
-    //We test methods that delegate to the external event logger separately
-    //The tests above implicitly test for the case where the external event logger is not set.
     @Test
-    public void testAuthImpression_withExternalLogger() {
-        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
-        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
-        digitsEventCollector.authImpression(details);
-        verify(digitsScribeClient).impression(Component.EMPTY);
-        verify(digitsEventLogger).loginBegin(details);
-    }
-
-    @Test
-    public void testAuthSuccess_withExternalLogger() {
-        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
-        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
-        digitsEventCollector.authSuccess();
-        verify(digitsScribeClient).loginSuccess();
-        verify(digitsEventLogger).loginSuccess();
-    }
-
-    @Test
-    public void testPhoneScreenImpression_withExternalLogger() {
-        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
-        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
+    public void testLoggerDeduping() {
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger1);
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger1);
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger1);
         digitsEventCollector.phoneScreenImpression(details);
         verify(digitsScribeClient).impression(Component.AUTH);
-        verify(digitsEventLogger).phoneNumberImpression(details);
-    }
-
-    @Test
-    public void testSubmitClickOnPhoneScreen_withExternalLogger(){
-        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
-        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
-        digitsEventCollector.submitClickOnPhoneScreen(details);
-        verify(digitsScribeClient).click(Component.AUTH, DigitsScribeConstants.Element.SUBMIT);
-        verify(digitsEventLogger).phoneNumberSubmit(details);
-    }
-
-    @Test
-    public void testSubmitPhoneSuccess_withExternalLogger() {
-        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
-        digitsEventCollector.setLoggerResultReceiver(digitsEventLogger);
-        digitsEventCollector.submitPhoneSuccess(details);
-        verify(digitsScribeClient).success(Component.AUTH);
-        verify(digitsEventLogger).phoneNumberSuccess(details);
+        verify(digitsEventLogger1, times(1)).phoneNumberImpression(details);
     }
 }
