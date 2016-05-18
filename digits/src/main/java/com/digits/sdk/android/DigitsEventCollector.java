@@ -293,14 +293,23 @@ class DigitsEventCollector {
     //Contacts upload screen events
     public void contactScreenImpression() {
         digitsScribeClient.impression(Component.CONTACTS);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.contactsPermissionImpression();
+        }
     }
 
     public void cancelClickOnContactScreen() {
         digitsScribeClient.click(Component.CONTACTS, Element.CANCEL);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.contactsPermissionCancel();
+        }
     }
 
     public void submitClickOnContactScreen() {
         digitsScribeClient.click(Component.CONTACTS, Element.SUBMIT);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.contactsPermissionSubmit();
+        }
     }
 
     //Failure screen events

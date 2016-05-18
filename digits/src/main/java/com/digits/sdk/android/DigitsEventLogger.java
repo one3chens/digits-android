@@ -18,33 +18,37 @@
 package com.digits.sdk.android;
 
 /**
- * DigitsEventLogger can be implented to receive synchronous callbacks from Digits when the user completes
+ * DigitsEventLogger can be implemented to receive synchronous callbacks from Digits when the user completes
  * different stages of the Digits Auth.
  * DigitsEventLogger may be used by apps to plugin analytics frameworks like Fabric' s Answers to better understand
  * their login/signup funnel.
  */
 public abstract class DigitsEventLogger {
-    public void loginBegin(DigitsEventDetails digitsEventDetails){};
-    public void loginSuccess(DigitsEventDetails digitsEventDetails) {};
-    public void loginFailure(DigitsEventDetails digitsEventDetails) {};
+    public void loginBegin(DigitsEventDetails digitsEventDetails){}
+    public void loginSuccess(DigitsEventDetails digitsEventDetails) {}
+    public void loginFailure(DigitsEventDetails digitsEventDetails) {}
 
-    public void phoneNumberImpression(DigitsEventDetails digitsEventDetails){};
-    public void phoneNumberSubmit(DigitsEventDetails digitsEventDetails) {};
-    public void phoneNumberSuccess(DigitsEventDetails digitsEventDetails) {};
+    public void phoneNumberImpression(DigitsEventDetails digitsEventDetails){}
+    public void phoneNumberSubmit(DigitsEventDetails digitsEventDetails) {}
+    public void phoneNumberSuccess(DigitsEventDetails digitsEventDetails) {}
 
-    public void confirmationCodeImpression(DigitsEventDetails digitsEventDetails){};
-    public void confirmationCodeSubmit(DigitsEventDetails digitsEventDetails) {};
-    public void confirmationCodeSuccess(DigitsEventDetails digitsEventDetails) {};
+    public void confirmationCodeImpression(DigitsEventDetails digitsEventDetails){}
+    public void confirmationCodeSubmit(DigitsEventDetails digitsEventDetails) {}
+    public void confirmationCodeSuccess(DigitsEventDetails digitsEventDetails) {}
 
-    public void twoFactorPinImpression(DigitsEventDetails digitsEventDetails){};
-    public void twoFactorPinSubmit(DigitsEventDetails digitsEventDetails){};
-    public void twoFactorPinSuccess(DigitsEventDetails digitsEventDetails){};
+    public void twoFactorPinImpression(DigitsEventDetails digitsEventDetails){}
+    public void twoFactorPinSubmit(DigitsEventDetails digitsEventDetails){}
+    public void twoFactorPinSuccess(DigitsEventDetails digitsEventDetails){}
 
-    public void emailImpression(DigitsEventDetails digitsEventDetails){};
-    public void emailSubmit(DigitsEventDetails digitsEventDetails) {};
-    public void emailSuccess(DigitsEventDetails digitsEventDetails) {};
+    public void emailImpression(DigitsEventDetails digitsEventDetails){}
+    public void emailSubmit(DigitsEventDetails digitsEventDetails) {}
+    public void emailSuccess(DigitsEventDetails digitsEventDetails) {}
 
-    public void failureImpression(DigitsEventDetails digitsEventDetails){};
-    public void failureRetryClick(DigitsEventDetails digitsEventDetails) {};
-    public void failureDismissClick(DigitsEventDetails digitsEventDetails) {};
+    public void failureImpression(DigitsEventDetails digitsEventDetails){}
+    public void failureRetryClick(DigitsEventDetails digitsEventDetails) {}
+    public void failureDismissClick(DigitsEventDetails digitsEventDetails) {}
+
+    public void contactsPermissionImpression() {}
+    public void contactsPermissionSubmit() {}
+    public void contactsPermissionCancel() {}
 }

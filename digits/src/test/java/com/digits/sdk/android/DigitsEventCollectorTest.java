@@ -401,4 +401,28 @@ public class DigitsEventCollectorTest {
         verify(digitsScribeClient).impression(Component.AUTH);
         verify(digitsEventLogger1, times(1)).phoneNumberImpression(details);
     }
+
+    @Test
+    public void testContactScreenImpression_withExternalLogger() {
+        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger);
+        testContactScreenImpression();
+        verify(digitsEventLogger).contactsPermissionImpression();
+    }
+
+    @Test
+    public void testCancelClickOnContactScreen_withExternalLogger() {
+        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger);
+        testCancelClickOnContactScreen();
+        verify(digitsEventLogger).contactsPermissionCancel();
+    }
+
+    @Test
+    public void testSubmitClickOnContactScreen_withExternalLogger() {
+        final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
+        digitsEventCollector.addDigitsEventLogger(digitsEventLogger);
+        testSubmitClickOnContactScreen();
+        verify(digitsEventLogger).contactsPermissionSubmit();
+    }
 }
