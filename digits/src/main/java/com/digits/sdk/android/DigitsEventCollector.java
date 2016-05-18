@@ -298,6 +298,10 @@ class DigitsEventCollector {
         }
     }
 
+    public void backClickOnContactScreen() {
+        digitsScribeClient.click(Component.CONTACTS, Element.BACK);
+    }
+
     public void cancelClickOnContactScreen() {
         digitsScribeClient.click(Component.CONTACTS, Element.CANCEL);
         for (DigitsEventLogger logger: eventLoggers) {

@@ -32,4 +32,10 @@ public class ContactsActivity extends Activity {
         delegate = new ContactsActivityDelegateImpl(this);
         delegate.init();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        delegate.onBackPressed();
+    }
 }

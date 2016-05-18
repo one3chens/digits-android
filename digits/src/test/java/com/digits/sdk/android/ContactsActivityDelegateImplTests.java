@@ -115,6 +115,12 @@ public class ContactsActivityDelegateImplTests {
         verify(activity).finish();
     }
 
+    @Test
+    public void testOnBackPressed() {
+        delegate.onBackPressed();
+        verify(digitsEventCollector).backClickOnContactScreen();
+    }
+
     public class DummyContactsDelegateImpl extends ContactsActivityDelegateImpl {
 
         public DummyContactsDelegateImpl(Activity activity, ContactsController controller,

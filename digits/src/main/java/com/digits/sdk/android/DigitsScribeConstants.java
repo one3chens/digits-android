@@ -18,8 +18,8 @@ package com.digits.sdk.android;
 
 class DigitsScribeConstants {
     enum Element {
-        COUNTRY_CODE("country_code"), SUBMIT("submit"), RETRY("retry"), CALL("call"), CANCEL
-                ("cancel"), RESEND("resend"), DISMISS("dismiss"), EMPTY("");
+        COUNTRY_CODE("country_code"), SUBMIT("submit"), RETRY("retry"), BACK ("back"),
+        CALL("call"), CANCEL ("cancel"), RESEND("resend"), DISMISS("dismiss"), EMPTY("");
 
         private final String element;
 

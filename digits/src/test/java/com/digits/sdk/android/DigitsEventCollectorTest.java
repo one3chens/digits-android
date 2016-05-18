@@ -356,6 +356,12 @@ public class DigitsEventCollectorTest {
     }
 
     @Test
+    public void testBackClickOnContactScreen() {
+        digitsEventCollector.backClickOnContactScreen();
+        verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.BACK);
+    }
+
+    @Test
     public void testSubmitClickOnContactScreen() {
         digitsEventCollector.submitClickOnContactScreen();
         verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.SUBMIT);

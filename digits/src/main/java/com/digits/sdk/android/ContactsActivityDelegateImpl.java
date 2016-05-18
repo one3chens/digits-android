@@ -45,6 +45,10 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
         setUpViews();
     }
 
+    public void onBackPressed(){
+        digitsEventCollector.backClickOnContactScreen();
+    }
+
     protected void setContentView() {
         activity.setContentView(R.layout.dgts__activity_contacts);
     }
