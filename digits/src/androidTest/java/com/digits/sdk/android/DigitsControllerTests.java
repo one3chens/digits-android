@@ -33,6 +33,8 @@ import com.twitter.sdk.android.core.TwitterException;
 
 import org.mockito.ArgumentCaptor;
 
+import java.util.Locale;
+
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -41,10 +43,10 @@ import static org.mockito.Mockito.when;
 
 public abstract class DigitsControllerTests<T extends DigitsControllerImpl> extends
         DigitsAndroidTestCase {
-    static final Integer COUNTRY_CODE = 123;
+    static final CountryInfo COUNTRY_INFO = new CountryInfo(new Locale("", "US"), 123);
     static final String COUNTRY = "US";
     static final String PHONE = "123456789";
-    static final String PHONE_WITH_COUNTRY_CODE = "+" + COUNTRY_CODE + "123456789";
+    static final String PHONE_WITH_COUNTRY_CODE = "+" + COUNTRY_INFO.countryCode + "123456789";
     static final String CODE = "123456";
     static final String EMPTY_CODE = "";
     static final long USER_ID = 1234567;

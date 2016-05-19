@@ -43,12 +43,13 @@ class CountryListAdapter extends ArrayAdapter<CountryInfo> implements SectionInd
         // Create index and add entries to adapter
         int index = 0;
         for (CountryInfo countryInfo : countries) {
-            final String key = countryInfo.country.substring(0, 1).toUpperCase(Locale.getDefault());
+            final String key = countryInfo.locale.getDisplayCountry().substring(0, 1)
+                    .toUpperCase(Locale.getDefault());
 
             if (!alphaIndex.containsKey(key)) {
                 alphaIndex.put(key, index);
             }
-            countryPosition.put(countryInfo.country, index);
+            countryPosition.put(countryInfo.locale.getDisplayCountry(), index);
 
             index++;
             add(countryInfo);

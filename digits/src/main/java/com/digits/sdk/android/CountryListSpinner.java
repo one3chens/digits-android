@@ -67,21 +67,22 @@ public class CountryListSpinner extends TextView implements View.OnClickListener
         dialogPopup = new DialogPopup(countryListAdapter);
         textFormat = getResources().getString(R.string.dgts__country_spinner_format);
         selectedCountryName = "";
-        final String defaultCountry = Locale.US.getDisplayCountry();
+        final Locale defaultLocale = Locale.US;
         final int defaultCountryCode = 1;
 
-        setSpinnerText(defaultCountryCode, defaultCountry);
+        setSpinnerText(defaultCountryCode, defaultLocale);
     }
 
-    private void setSpinnerText(int countryCode, String country) {
-        setText(String.format(textFormat, country, countryCode));
-        setTag(countryCode);
+    private void setSpinnerText(int countryCode, Locale locale) {
+        setText(String.format(textFormat, locale.getDisplayCountry(), countryCode));
+        setTag(new CountryInfo(locale, countryCode));
     }
 
-    public void setSelectedForCountry(final String countryName, String countryCode) {
+    public void setSelectedForCountry(final Locale locale, String countryCode) {
+        final String countryName = locale.getDisplayName();
         if (!TextUtils.isEmpty(countryName) && !TextUtils.isEmpty(countryCode)) {
             selectedCountryName = countryName;
-            setSpinnerText(Integer.valueOf(countryCode), countryName);
+            setSpinnerText(Integer.valueOf(countryCode), locale);
         }
     }
 
@@ -171,8 +172,8 @@ public class CountryListSpinner extends TextView implements View.OnClickListener
         @Override
         public void onClick(DialogInterface dialog, int which) {
             final CountryInfo countryInfo = listAdapter.getItem(which);
-            selectedCountryName = countryInfo.country;
-            setSpinnerText(countryInfo.countryCode, countryInfo.country);
+            selectedCountryName = countryInfo.locale.getDisplayCountry();
+            setSpinnerText(countryInfo.countryCode, countryInfo.locale);
             dismiss();
         }
     }

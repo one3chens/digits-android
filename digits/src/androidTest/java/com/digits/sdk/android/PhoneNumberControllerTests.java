@@ -61,7 +61,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         assertFalse(controller.voiceEnabled);
         assertFalse(controller.emailCollection);
         assertFalse(controller.resendState);
-        when(countrySpinner.getTag()).thenReturn(COUNTRY_CODE);
+        when(countrySpinner.getTag()).thenReturn(COUNTRY_INFO);
         when(countrySpinner.getText()).thenReturn(COUNTRY);
     }
 
@@ -206,7 +206,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final PhoneNumber validPhoneNumber = new PhoneNumber(PHONE, US_ISO2, US_COUNTRY_CODE);
         controller.setCountryCode(validPhoneNumber);
         verify(countrySpinner).setSelectedForCountry(new Locale("",
-                        validPhoneNumber.getCountryIso()).getDisplayName(),
+                        validPhoneNumber.getCountryIso()),
                 validPhoneNumber.getCountryCode());
     }
 
@@ -214,7 +214,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final PhoneNumber validCountryNoPhoneNumber = new PhoneNumber("", US_ISO2, US_COUNTRY_CODE);
         controller.setCountryCode(validCountryNoPhoneNumber);
         verify(countrySpinner).setSelectedForCountry(new Locale("",
-                        validCountryNoPhoneNumber.getCountryIso()).getDisplayName(),
+                        validCountryNoPhoneNumber.getCountryIso()),
                 validCountryNoPhoneNumber.getCountryCode());
     }
 

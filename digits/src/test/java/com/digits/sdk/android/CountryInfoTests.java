@@ -22,14 +22,16 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.Locale;
+
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class CountryInfoTests {
-    private static final String COUNTRY_NAME_US = "United States";
+    private static final Locale COUNTRY_NAME_US = new Locale("", "US");
     private static final int COUNTRY_CODE_US = 1;
-    private static final String COUNTRY_NAME_BS = "Bahamas";
+    private static final Locale COUNTRY_NAME_BS = new Locale("", "BS");
     private static final int COUNTRY_CODE_JP = 81;
 
     @Test
@@ -88,7 +90,7 @@ public class CountryInfoTests {
         final CountryInfo usCountryInfo = new CountryInfo(COUNTRY_NAME_US, COUNTRY_CODE_US);
         final CountryInfo bsCountryInfo = new CountryInfo(null, COUNTRY_CODE_US);
 
-        assertEquals(1416475714, usCountryInfo.hashCode());
+        assertEquals(2611999, usCountryInfo.hashCode());
         assertEquals(1, bsCountryInfo.hashCode());
     }
 
@@ -96,7 +98,7 @@ public class CountryInfoTests {
     public void testToString() throws Exception {
         final CountryInfo usCountryInfo = new CountryInfo(COUNTRY_NAME_US, COUNTRY_CODE_US);
 
-        assertEquals(usCountryInfo.country + " +" + usCountryInfo.countryCode,
+        assertEquals(usCountryInfo.locale.getDisplayCountry() + " +" + usCountryInfo.countryCode,
                 usCountryInfo.toString());
     }
 }

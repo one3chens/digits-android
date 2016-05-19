@@ -25,6 +25,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,10 +37,10 @@ public class CountryListAdapterTests {
     @Before
     public void setUp() throws Exception {
         final ArrayList<CountryInfo> countries = new ArrayList<>();
-        countries.add(new CountryInfo("Germany", 1));
-        countries.add(new CountryInfo("Saoma", 2));
-        countries.add(new CountryInfo("spain", 3));
-        countries.add(new CountryInfo("United States", 4));
+        countries.add(new CountryInfo(new Locale("", "DE"), 1));
+        countries.add(new CountryInfo(new Locale("", "TD"), 2));
+        countries.add(new CountryInfo(new Locale("", "CL"), 3));
+        countries.add(new CountryInfo(new Locale("", "IN"), 4));
 
         countryListAdapter = new CountryListAdapter(RuntimeEnvironment.application);
         countryListAdapter.setData(countries);
@@ -49,8 +50,8 @@ public class CountryListAdapterTests {
     public void testGetSections() {
         assertEquals(3, countryListAdapter.getSections().length);
         assertEquals("G", countryListAdapter.getSections()[0]);
-        assertEquals("S", countryListAdapter.getSections()[1]);
-        assertEquals("U", countryListAdapter.getSections()[2]);
+        assertEquals("C", countryListAdapter.getSections()[1]);
+        assertEquals("I", countryListAdapter.getSections()[2]);
     }
 
     @Test

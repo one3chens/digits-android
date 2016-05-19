@@ -80,13 +80,13 @@ class PhoneNumberController extends DigitsControllerImpl implements
     public void setCountryCode(PhoneNumber phoneNumber) {
         if (PhoneNumber.isCountryValid(phoneNumber)) {
             countryCodeSpinner.setSelectedForCountry(new Locale("",
-                    phoneNumber.getCountryIso()).getDisplayName(), phoneNumber.getCountryCode());
+                    phoneNumber.getCountryIso()), phoneNumber.getCountryCode());
         }
     }
 
     LoginOrSignupComposer createCompositeCallback(final Context context, final String phoneNumber) {
         final DigitsEventDetailsBuilder dm = this.digitsEventDetailsBuilder
-                .withCountry(countryCodeSpinner.getText().toString())
+                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
                 .withCurrentTime(System.currentTimeMillis());
 
         return new LoginOrSignupComposer(context, digitsClient, phoneNumber,
@@ -97,7 +97,8 @@ class PhoneNumberController extends DigitsControllerImpl implements
             public void success(final Intent intent) {
                 final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
                         this.digitsEventDetailsBuilder
-                        .withCountry(countryCodeSpinner.getText().toString())
+                        .withCountry(((CountryInfo) countryCodeSpinner.getTag())
+                                .locale.getISO3Country())
                         .withCurrentTime(System.currentTimeMillis());
 
                 sendButton.showFinish();
@@ -130,7 +131,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
-            final int code = (Integer) countryCodeSpinner.getTag();
+            final int code = ((CountryInfo) countryCodeSpinner.getTag()).countryCode;
             final String number = editText.getText().toString();
             final String phoneNumber = getNumber(code, number);
             createCompositeCallback(context, phoneNumber).start();
@@ -139,7 +140,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
 
     private void scribeRequest() {
         final DigitsEventDetails digitsEventDetails = this.digitsEventDetailsBuilder
-                .withCountry(countryCodeSpinner.getText().toString())
+                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
                 .withCurrentTime(System.currentTimeMillis())
                 .build();
 

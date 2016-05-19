@@ -22,45 +22,43 @@ import java.util.Locale;
 
 class CountryInfo implements Comparable<CountryInfo> {
     private final Collator collator;
-    public final String country;
+    public final Locale locale;
     public final int countryCode;
 
-    public CountryInfo(String country, int countryCode) {
+    public CountryInfo(Locale locale, int countryCode) {
         collator = Collator.getInstance(Locale.getDefault());
         collator.setStrength(Collator.PRIMARY);
 
-        this.country = country;
+        this.locale = locale;
         this.countryCode = countryCode;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        final CountryInfo that = (CountryInfo) obj;
+        final CountryInfo that = (CountryInfo) o;
 
-        return countryCode == that.countryCode && !(country != null ? !country.equals(that
-                .country) : that.country != null);
+        if (countryCode != that.countryCode) return false;
+        return !(locale != null ? !locale.equals(that.locale) : that.locale != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = country != null ? country.hashCode() : 0;
+        int result = locale != null ? locale.hashCode() : 0;
         result = 31 * result + countryCode;
         return result;
     }
 
     @Override
     public String toString() {
-        return country + " +" + countryCode;
+        return this.locale.getDisplayCountry() + " +" + countryCode;
     }
 
     @Override
     public int compareTo(CountryInfo info) {
-        return collator.compare(country, info.country);
+        return collator.compare(this.locale.getDisplayCountry(), info.locale.getDisplayCountry());
     }
 }

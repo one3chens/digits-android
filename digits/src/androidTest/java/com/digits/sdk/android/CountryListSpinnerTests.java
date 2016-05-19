@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class CountryListSpinnerTests extends DigitsAndroidTestCase {
-    static final int US_COUNTRY_CODE = 1;
+    static final CountryInfo US_COUNTRY_INFO = new CountryInfo(Locale.US, 1);
 
     @Override
     public void setUp() throws Exception {
@@ -70,10 +70,11 @@ public class CountryListSpinnerTests extends DigitsAndroidTestCase {
         final String spinnerFormat = getContext().getResources().getString(R.string
                 .dgts__country_spinner_format);
         final String usTest = Locale.US.getDisplayCountry();
-        final String countryInfoText = String.format(spinnerFormat, usTest, US_COUNTRY_CODE);
+        final String countryInfoText = String.format(spinnerFormat, usTest,
+                US_COUNTRY_INFO.countryCode);
 
         assertEquals(countryInfoText, spinner.getText());
-        assertEquals(US_COUNTRY_CODE, spinner.getTag());
+        assertEquals(US_COUNTRY_INFO, spinner.getTag());
     }
 
     public void testSetOnClickListener() {
