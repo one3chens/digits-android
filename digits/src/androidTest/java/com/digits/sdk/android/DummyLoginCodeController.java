@@ -26,7 +26,7 @@ import com.twitter.sdk.android.core.SessionManager;
 import static org.mockito.Mockito.mock;
 
 public class DummyLoginCodeController extends LoginCodeController {
-    private final DigitsApiClient.SdkService accountService;
+    private final ApiInterface accountService;
     public DummyLoginCodeController(ResultReceiver resultReceiver, StateButton sendButton,
                                     InvertedStateButton resendButton,
                                     InvertedStateButton callMeButton, EditText phoneEditText,
@@ -41,11 +41,11 @@ public class DummyLoginCodeController extends LoginCodeController {
                 sessionManager, digitsClient, requestId, userId, phoneWithCountryCode, errors,
                 activityClassManagerImp, digitsEventCollector, emailCollection, timerTextView,
                 digitsEventDetailsBuilder);
-        accountService = mock(DigitsApiClient.SdkService.class);
+        accountService = mock(ApiInterface.class);
     }
 
     @Override
-    DigitsApiClient.SdkService getAccountService(DigitsSession session) {
+    ApiInterface getAccountService(DigitsSession session) {
         return accountService;
     }
 

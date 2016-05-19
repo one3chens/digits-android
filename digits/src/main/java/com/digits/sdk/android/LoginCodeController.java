@@ -191,8 +191,8 @@ class LoginCodeController extends DigitsControllerImpl {
                 && newSession.getId() == session.getId();
     }
 
-    DigitsApiClient.SdkService getAccountService(DigitsSession session) {
-        return new DigitsApiClient(session).getService();
+    ApiInterface getAccountService(DigitsSession session) {
+        return Digits.getInstance().getDigitsClient().getApiClient().getService();
     }
 
 }

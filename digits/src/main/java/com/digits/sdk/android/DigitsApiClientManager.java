@@ -75,7 +75,7 @@ public class DigitsApiClientManager {
         return digitsApiClient;
     }
 
-    DigitsApiClient.SdkService getService(){
+    ApiInterface getService(){
        return getApiClient().getService();
     }
 

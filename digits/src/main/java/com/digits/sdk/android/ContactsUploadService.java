@@ -53,7 +53,7 @@ public class ContactsUploadService extends IntentService {
     private static final int CORE_THREAD_POOL_SIZE = 2;
     private static final int INITIAL_BACKOFF_MS = 1000;
     private static final int MAX_PAGE_SIZE = 100;
-    private DigitsApiClient.SdkService sdkService;
+    private ApiInterface sdkService;
     private ContactsHelper helper;
     private ContactsPreferenceManager prefManager;
     private RetryThreadPoolExecutor executor;
@@ -75,7 +75,7 @@ public class ContactsUploadService extends IntentService {
     /*
      * Testing only
      */
-    ContactsUploadService(DigitsApiClient.SdkService sdkService, ContactsHelper helper,
+    ContactsUploadService(ApiInterface sdkService, ContactsHelper helper,
                           ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
                           Logger logger, Locale locale) {
         super(THREAD_NAME);
@@ -83,7 +83,7 @@ public class ContactsUploadService extends IntentService {
         init(sdkService, helper, prefManager, executor, logger, locale);
     }
 
-    private void init(DigitsApiClient.SdkService sdkService, ContactsHelper helper,
+    private void init(ApiInterface sdkService, ContactsHelper helper,
               ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
                       Logger logger, Locale locale) {
         this.sdkService = sdkService;

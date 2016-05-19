@@ -54,7 +54,7 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
 
         mainRequest();
 
-        final DigitsApiClient.SdkService sdkService = controller.getSdkService(null);
+        final ApiInterface sdkService = controller.getSdkService(null);
         verify(sdkService).email(eq(TestConstants.VALID_EMAIL), callbackCaptor.capture());
         return callbackCaptor.getValue();
     }

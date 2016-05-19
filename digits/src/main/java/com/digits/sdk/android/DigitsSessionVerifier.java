@@ -41,13 +41,13 @@ class DigitsSessionVerifier implements SessionVerifier {
     @Override
     public void verifySession(final Session session) {
         if (session instanceof DigitsSession && !((DigitsSession) session).isLoggedOutUser()) {
-            final DigitsApiClient.SdkService service = getAccountService(session);
+            final ApiInterface service = getAccountService();
             service.verifyAccount(verificationCallback);
         }
     }
 
-    DigitsApiClient.SdkService getAccountService(Session session) {
-        return new DigitsApiClient(session).getService();
+    ApiInterface getAccountService() {
+        return Digits.getInstance().getDigitsClient().getApiClient().getService();
     }
 
     public void addSessionListener(SessionListener sessionListener) {

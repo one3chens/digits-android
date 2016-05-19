@@ -25,7 +25,7 @@ import static org.mockito.Mockito.mock;
 
 public class DummyEmailRequestController extends EmailRequestController {
 
-    private final DigitsApiClient.SdkService sdkService;
+    private final ApiInterface sdkService;
 
     public DummyEmailRequestController(ResultReceiver resultReceiver, StateButton sendButton,
                                        EditText phoneEditText,
@@ -37,11 +37,11 @@ public class DummyEmailRequestController extends EmailRequestController {
         super(resultReceiver, sendButton, phoneEditText, sessionManager,
                 activityClassManagerImp, digitsClient, phoneWithCountryCode, digitsEventCollector,
                 errors);
-        sdkService = mock(DigitsApiClient.SdkService.class);
+        sdkService = mock(ApiInterface.class);
     }
 
     @Override
-    DigitsApiClient.SdkService getSdkService(DigitsSession session) {
+    ApiInterface getSdkService(DigitsSession session) {
         return sdkService;
     }
 }

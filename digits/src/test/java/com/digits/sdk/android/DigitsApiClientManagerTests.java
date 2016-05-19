@@ -54,7 +54,7 @@ public class DigitsApiClientManagerTests {
     private SessionManager<DigitsSession> mockSessionManager;
     private DigitsSession activeSession;
     private DigitsApiClient activeClient;
-    private DigitsApiClient.SdkService service;
+    private ApiInterface service;
     private DigitsController controller;
     private AuthCallback callback;
     private ExecutorService executorService;
@@ -76,7 +76,7 @@ public class DigitsApiClientManagerTests {
         twitterCore = mock(TwitterCore.class);
         twitterAuthConfig = new TwitterAuthConfig(TestConstants.CONSUMER_KEY,
                 TestConstants.CONSUMER_SECRET);
-        service = mock(DigitsApiClient.SdkService.class);
+        service = mock(ApiInterface.class);
         controller = mock(DigitsController.class);
         callback = mock(AuthCallback.class);
         executorService = mock(ExecutorService.class);

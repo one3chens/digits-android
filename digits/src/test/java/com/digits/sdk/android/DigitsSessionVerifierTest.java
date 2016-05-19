@@ -37,21 +37,21 @@ import static org.mockito.Mockito.when;
 public class DigitsSessionVerifierTest {
     private DigitsSessionVerifier.VerificationCallback verificationCallback;
     private DigitsSessionVerifier verifier;
-    private DigitsApiClient.SdkService accountService;
+    private ApiInterface accountService;
     private SessionListener listener;
 
     @Before
     public void setUp() throws Exception {
         verificationCallback = mock(DigitsSessionVerifier.VerificationCallback.class);
         verifier = spy(new DigitsSessionVerifier(verificationCallback));
-        accountService = mock(DigitsApiClient.SdkService.class);
+        accountService = mock(ApiInterface.class);
         listener = mock(SessionListener.class);
     }
 
     @Test
     public void testVerifySession_digitsSession() throws Exception {
         final DigitsSession session = mock(DigitsSession.class);
-        doReturn(accountService).when(verifier).getAccountService(session);
+        doReturn(accountService).when(verifier).getAccountService();
         when(session.isLoggedOutUser()).thenReturn(false);
         verifier.verifySession(session);
         verify(accountService).verifyAccount(verificationCallback);
@@ -60,7 +60,7 @@ public class DigitsSessionVerifierTest {
     @Test
     public void testVerifySession_digitsSessionLoggedOut() throws Exception {
         final DigitsSession session = mock(DigitsSession.class);
-        doReturn(accountService).when(verifier).getAccountService(session);
+        doReturn(accountService).when(verifier).getAccountService();
         when(session.isLoggedOutUser()).thenReturn(true);
         verifier.verifySession(session);
         verifyZeroInteractions(accountService);
@@ -70,7 +70,7 @@ public class DigitsSessionVerifierTest {
     @Test
     public void testVerifySession_nonDigitsSession() throws Exception {
         final Session session = mock(Session.class);
-        doReturn(accountService).when(verifier).getAccountService(session);
+        doReturn(accountService).when(verifier).getAccountService();
         verifier.verifySession(session);
         verifyZeroInteractions(accountService);
         verifyZeroInteractions(verificationCallback);

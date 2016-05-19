@@ -120,8 +120,8 @@ class PinCodeController extends DigitsControllerImpl {
                 });
     }
 
-    DigitsApiClient.SdkService getAccountService(DigitsSession session) {
-        return new DigitsApiClient(session).getService();
+    ApiInterface getAccountService(DigitsSession session) {
+        return Digits.getInstance().getDigitsClient().getApiClient().getService();
     }
 
 }

@@ -65,7 +65,7 @@ public class EmailRequestController extends DigitsControllerImpl {
             final String email = editText.getText().toString();
             final DigitsSession session = sessionManager.getActiveSession();
             if (session != null && !session.isLoggedOutUser()) {
-                final DigitsApiClient.SdkService service =
+                final ApiInterface service =
                         getSdkService(session);
                 service.email(email, new DigitsCallback<DigitsSessionResponse>(context, this) {
                     @Override
@@ -82,8 +82,8 @@ public class EmailRequestController extends DigitsControllerImpl {
         }
     }
 
-    DigitsApiClient.SdkService getSdkService(DigitsSession session) {
-        return new DigitsApiClient(session).getService();
+    ApiInterface getSdkService(DigitsSession session) {
+        return Digits.getInstance().getDigitsClient().getApiClient().getService();
     }
 
     @Override

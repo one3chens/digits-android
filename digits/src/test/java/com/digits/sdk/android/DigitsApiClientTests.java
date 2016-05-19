@@ -61,8 +61,8 @@ public class DigitsApiClientTests {
 
     @Test
     public void testGetSdkService() throws Exception {
-        final DigitsApiClient.SdkService sdkService = digitsApiClient.getService();
-        final DigitsApiClient.SdkService newSdkService = digitsApiClient.getService();
+        final ApiInterface sdkService = digitsApiClient.getService();
+        final ApiInterface newSdkService = digitsApiClient.getService();
         assertTrue(sdkService == newSdkService);
     }
 }

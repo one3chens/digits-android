@@ -62,7 +62,7 @@ public class ContactsUploadServiceTests {
     private Cursor cursor;
     private ContactsHelper helper;
     private RetryThreadPoolExecutor executor;
-    private DigitsApiClient.SdkService sdkService;
+    private ApiInterface sdkService;
     private ContactsPreferenceManager perfManager;
     private ArrayList<String> cradList;
     private ContactsUploadService service;
@@ -73,7 +73,7 @@ public class ContactsUploadServiceTests {
     public void setUp() throws Exception {
         executor = mock(RetryThreadPoolExecutor.class);
         perfManager = mock(MockContactsPreferenceManager.class);
-        sdkService = mock(DigitsApiClient.SdkService.class);
+        sdkService = mock(ApiInterface.class);
         logger = mock(Logger.class);
         cursor = ContactsHelperTests.createCursor();
         cradList = ContactsHelperTests.createCardList();

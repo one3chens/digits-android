@@ -93,7 +93,7 @@ public class ContactsClient {
         context.startService(new Intent(context, ContactsUploadService.class));
     }
 
-    protected DigitsApiClient.SdkService getDigitsApiService() {
+    protected ApiInterface getDigitsApiService() {
         return apiClientManager.getService();
     }
 

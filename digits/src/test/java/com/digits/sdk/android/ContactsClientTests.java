@@ -39,7 +39,7 @@ public class ContactsClientTests {
     private MockContext context;
     private ContactsClient contactsClient;
     private DigitsApiClientManager apiClientManager;
-    private DigitsApiClient.SdkService sdkService;
+    private ApiInterface sdkService;
     private ComponentName activityComponent;
     private ComponentName serviceComponent;
     private ContactsCallback callback;
@@ -63,7 +63,7 @@ public class ContactsClientTests {
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(digits.getActivityClassManager()).thenReturn(new ActivityClassManagerImp());
 
-        sdkService = mock(DigitsApiClient.SdkService.class);
+        sdkService = mock(ApiInterface.class);
         apiClientManager = mock(DigitsApiClientManager.class);
         when(apiClientManager.getService()).thenReturn(sdkService);
 
