@@ -27,8 +27,7 @@ import android.widget.TextView;
 
 import io.fabric.sdk.android.services.common.CommonUtils;
 
-class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
-        PhoneNumberTask.Listener, TosView {
+class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements TosView {
     private final DigitsEventCollector digitsEventCollector;
     private Activity activity;
 
@@ -81,22 +80,23 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
         setUpCountrySpinner(countryCodeSpinner);
 
-        executePhoneNumberTask(new PhoneNumberUtils(SimManager.createSimManager(activity)),
-                bundle);
+        setupPhoneNumber(SimManager.createSimManager(activity), bundle);
 
         CommonUtils.openKeyboard(activity, phoneEditText);
     }
 
-    private void executePhoneNumberTask(PhoneNumberUtils phoneNumberUtils, Bundle bundle) {
-        final String phoneNumber = bundle.getString(DigitsClient.EXTRA_PHONE);
+    void setupPhoneNumber(SimManager simManager, Bundle bundle) {
+        final String bundledPhoneNumber = bundle.getString(DigitsClient.EXTRA_PHONE);
+        final PhoneNumber normalizedPhoneNumber;
 
-        if (TextUtils.isEmpty(phoneNumber)) {
-            new PhoneNumberTask(phoneNumberUtils, this).executeOnExecutor(Digits.getInstance()
-                    .getExecutorService());
+        if (TextUtils.isEmpty(bundledPhoneNumber)) {
+            normalizedPhoneNumber = PhoneNumberUtils.getPhoneNumber("", simManager);
         } else {
-            new PhoneNumberTask(phoneNumberUtils, phoneNumber, this).executeOnExecutor(Digits
-                    .getInstance().getExecutorService());
+            normalizedPhoneNumber = PhoneNumberUtils.getPhoneNumber(bundledPhoneNumber, simManager);
         }
+
+        controller.setPhoneNumber(normalizedPhoneNumber);
+        controller.setCountryCode(normalizedPhoneNumber);
     }
 
     PhoneNumberController initController(Bundle bundle) {
@@ -128,11 +128,6 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
                 .withCurrentTime(System.currentTimeMillis());
         digitsEventCollector.phoneScreenImpression(deb.build());
         controller.onResume();
-    }
-
-    public void onLoadComplete(PhoneNumber phoneNumber) {
-        controller.setPhoneNumber(phoneNumber);
-        controller.setCountryCode(phoneNumber);
     }
 
     @Override

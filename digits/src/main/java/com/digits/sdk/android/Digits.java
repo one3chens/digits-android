@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutorService;
 import io.fabric.sdk.android.Fabric;
 import io.fabric.sdk.android.Kit;
 import io.fabric.sdk.android.services.common.IdManager;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 import io.fabric.sdk.android.services.concurrency.DependsOn;
 import io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
 
@@ -209,6 +210,17 @@ public class Digits extends Kit<Void> {
 
     @Override
     protected Void doInBackground() {
+        //Force initialize the PhoneNumberUtils
+        //We kick off an async task to avoid slowing down
+        //other initializations that follow.
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                PhoneNumberUtils.load();
+                return null;
+            }
+        }.execute();
+
         // Trigger restoration of session
         sessionManager.getActiveSession();
         createTwitterScribeClient(sessionManager, getIdManager());
@@ -220,6 +232,7 @@ public class Digits extends Kit<Void> {
         // Monitor activity lifecycle after sessions have been restored. Otherwise we would not
         // have any sessions to monitor anyways.
         userSessionMonitor.monitorActivityLifecycle(getFabric().getActivityLifecycleManager());
+
         return null;
     }
 
@@ -309,6 +322,8 @@ public class Digits extends Kit<Void> {
     }
 
     private void setExternalLogger(DigitsEventLogger externalEventLogger) {
-        digitsEventCollector.addDigitsEventLogger(externalEventLogger);
+        if (externalEventLogger != null) {
+            digitsEventCollector.addDigitsEventLogger(externalEventLogger);
+        }
     }
 }

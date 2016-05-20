@@ -19,6 +19,7 @@ package com.digits.sdk.android;
 
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.telephony.TelephonyManager;
 import android.text.SpannedString;
 import android.view.View;
 import android.widget.EditText;
@@ -35,11 +36,13 @@ public class PhoneNumberActivityDelegateTests extends
         DigitsActivityDelegateTests<PhoneNumberActivityDelegate> {
     CountryListSpinner spinner;
     private ArgumentCaptor<DigitsEventDetails> digitsEventDetailsArgumentCaptor;
+    private ArgumentCaptor<PhoneNumber> phoneNumberArgumentCaptor;
 
     @Override
     public void setUp() throws Exception {
         spinner = mock(CountryListSpinner.class);
         digitsEventDetailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
+        phoneNumberArgumentCaptor = ArgumentCaptor.forClass(PhoneNumber.class);
         super.setUp();
     }
 
@@ -136,12 +139,24 @@ public class PhoneNumberActivityDelegateTests extends
         verify(textView).setText(new SpannedString(""));
     }
 
-    public void testOnLoadComplete() {
+    public void testExecutePhoneNumber() {
         final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
+        final SimManager simManager = mock(MockSimManager.class);
+        final Bundle bundle = new Bundle();
+        bundle.putString(DigitsClient.EXTRA_PHONE, "+14349873237");
+
         delegate.controller = controller;
-        delegate.onLoadComplete(PhoneNumber.emptyPhone());
-        verify(controller).setPhoneNumber(PhoneNumber.emptyPhone());
-        verify(controller).setCountryCode(PhoneNumber.emptyPhone());
+        delegate.setupPhoneNumber(simManager, bundle);
+
+        verify(controller).setPhoneNumber(phoneNumberArgumentCaptor.capture());
+        PhoneNumber p = phoneNumberArgumentCaptor.getValue();
+        assertEquals(p.getCountryIso(), "US");
+        assertEquals(p.getPhoneNumber(), "4349873237");
+
+        verify(controller).setCountryCode(phoneNumberArgumentCaptor.capture());
+        p = phoneNumberArgumentCaptor.getValue();
+        assertEquals(p.getCountryIso(), "US");
+        assertEquals(p.getPhoneNumber(), "4349873237");
     }
 
     public void testOnActivityResult_notResendResult() throws Exception {
@@ -167,6 +182,12 @@ public class PhoneNumberActivityDelegateTests extends
                                    DigitsEventDetailsBuilder eventDetailsBuilder) {
             super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
                     tosView, digitsEventCollector, emailCollection, eventDetailsBuilder);
+        }
+    }
+
+    public class MockSimManager extends SimManager{
+        protected MockSimManager(TelephonyManager telephonyManager, boolean canReadPhoneState) {
+            super(telephonyManager, canReadPhoneState);
         }
     }
 }

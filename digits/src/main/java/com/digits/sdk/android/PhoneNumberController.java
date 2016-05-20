@@ -31,8 +31,7 @@ import java.util.Locale;
 
 import io.fabric.sdk.android.services.common.CommonUtils;
 
-class PhoneNumberController extends DigitsControllerImpl implements
-        PhoneNumberTask.Listener {
+class PhoneNumberController extends DigitsControllerImpl {
     private final TosView tosView;
     final CountryListSpinner countryCodeSpinner;
     boolean voiceEnabled;

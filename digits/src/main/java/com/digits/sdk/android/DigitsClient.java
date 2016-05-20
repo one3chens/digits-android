@@ -91,23 +91,22 @@ public class DigitsClient {
         final DigitsSession session = sessionManager.getActiveSession();
         final boolean isCustomPhoneUI = (digitsAuthConfig.confirmationCodeCallback != null);
         final boolean isAuthorizedPartner = isAuthorizedPartner(digitsAuthConfig);
-        final DigitsEventDetailsBuilder digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
+        final DigitsEventDetailsBuilder details = new DigitsEventDetailsBuilder()
                 .withAuthStartTime(System.currentTimeMillis())
                 .withLanguage(Locale.getDefault().getLanguage())
                 .withCurrentTime(System.currentTimeMillis());
 
-        digitsEventCollector.authImpression(digitsEventDetailsBuilder.build());
+        digitsEventCollector.authImpression(details.build());
 
         if (session != null && !session.isLoggedOutUser()) {
             digitsAuthConfig.authCallback.success(session, null);
-            digitsEventCollector.authSuccess();
         } else if (isCustomPhoneUI && isAuthorizedPartner) {
-            sendConfirmationCode(digitsAuthConfig);
+            sendConfirmationCode(digitsAuthConfig, details);
         } else if (isCustomPhoneUI) {
             throw new IllegalArgumentException("Invalid partner key");
         } else {
             startPhoneNumberActivity(createBundleForAuthFlow(digitsAuthConfig,
-                    digitsEventDetailsBuilder));
+                    details));
         }
     }
 
@@ -182,36 +181,45 @@ public class DigitsClient {
         });
     }
 
-    protected void sendConfirmationCode(final DigitsAuthConfig digitsAuthConfig) {
+    protected void sendConfirmationCode(final DigitsAuthConfig digitsAuthConfig,
+                                        DigitsEventDetailsBuilder outerDetails) {
+        final PhoneNumber phoneNumber = PhoneNumberUtils
+                .getPhoneNumber(digitsAuthConfig.phoneNumber);
+
+        final DigitsEventDetailsBuilder details = outerDetails
+                .withCountry(phoneNumber.getCountryIso())
+                .withCurrentTime(System.currentTimeMillis());
+
+        digitsEventCollector.submitClickOnPhoneScreen(details.build());
+
         final LoginOrSignupComposer signupAndLoginCombinedCallback =
-                createCompositeCallback(digitsAuthConfig);
+                createCompositeCallback(digitsAuthConfig, details);
 
         signupAndLoginCombinedCallback.start();
     }
 
-    LoginOrSignupComposer createCompositeCallback(final DigitsAuthConfig digitsAuthConfig) {
+    LoginOrSignupComposer createCompositeCallback(final DigitsAuthConfig digitsAuthConfig,
+                                                  final DigitsEventDetailsBuilder outerDetails) {
         final Context context = digits.getContext();
         final ActivityClassManager activityClassManager =
                 Digits.getInstance().getActivityClassManager();
-        //TODO: araghav country selection broken for custom UI
-        final DigitsEventDetailsBuilder digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
-                .withAuthStartTime(System.currentTimeMillis())
-                .withLanguage(Locale.getDefault().getLanguage());
 
         return new LoginOrSignupComposer(context, this, digitsAuthConfig.phoneNumber,
                 Verification.sms, digitsAuthConfig.isEmailRequired,
                 createResultReceiver(digitsAuthConfig.authCallback), activityClassManager,
-                digitsEventDetailsBuilder) {
+                outerDetails) {
 
             @Override
             public void success(final Intent intent) {
-                //TODO: araghav
-                //Fix Scribing logic for custom UI
+                final DigitsEventDetailsBuilder details =
+                        outerDetails.withCurrentTime(System.currentTimeMillis());
+                digitsEventCollector.submitPhoneSuccess(details.build());
                 digitsAuthConfig.confirmationCodeCallback.success(intent);
             }
 
             @Override
             public void failure(DigitsException exception) {
+                digitsEventCollector.submitPhoneFailure();
                 digitsAuthConfig.confirmationCodeCallback.failure(exception);
             }
         };

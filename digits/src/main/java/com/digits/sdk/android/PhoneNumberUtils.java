@@ -20,10 +20,12 @@ package com.digits.sdk.android;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class PhoneNumberUtils {
     private final static String DEFAULT_COUNTRY_CODE = "1";
@@ -33,10 +35,22 @@ class PhoneNumberUtils {
     private final static int MAX_COUNTRY_CODES = 286;
     private static final int MAX_LENGTH_COUNTRY_CODE = 3;
 
-    private final SimManager simManager;
+    private static final Map<Integer, List<String>> CountryCodeToRegionCodeMap;
+    private static final Map<String, Integer> CountryCodeByIsoMap;
 
-    PhoneNumberUtils(SimManager simManager) {
-        this.simManager = simManager;
+    static {
+        CountryCodeToRegionCodeMap =
+                Collections.unmodifiableMap(createCountryCodeToRegionCodeMap());
+        CountryCodeByIsoMap =
+                Collections.unmodifiableMap(createCountryCodeByIsoMap());
+    }
+
+    /**
+     * This method may be used to force initialize the static members in the class.
+     * It is recommended to do this in the background since the HashMaps created above
+     * may be time consuming operations on some devices.
+     */
+    static void load(){
     }
 
     /**
@@ -45,40 +59,37 @@ class PhoneNumberUtils {
      *
      * @return an instance of the PhoneNumber using the SIM information
      */
-    protected PhoneNumber getPhoneNumber() {
+    protected static PhoneNumber getPhoneNumber(SimManager simManager) {
         if (simManager == null) {
             return PhoneNumber.emptyPhone();
         }
-        return createPhoneNumber(createCountryCodeByIsoMap());
+        return createPhoneNumber(simManager);
     }
 
     /**
-     * This method should not be called on UI thread. Potentially creates a country code by iso
-     * * map which can take long in some devices
-     *
      * @return an instance of the PhoneNumber using the a provided phone number
      */
-    protected PhoneNumber getPhoneNumber(String providedPhoneNumber) {
+    protected static PhoneNumber getPhoneNumber(String providedPhoneNumber, SimManager simManager) {
         if (TextUtils.isEmpty(providedPhoneNumber)) {
-            return getPhoneNumber();
+            return getPhoneNumber(simManager);
         }
+        return getPhoneNumber(providedPhoneNumber);
+    }
+
+    protected static PhoneNumber getPhoneNumber(String providedPhoneNumber) {
         String countryCode = DEFAULT_COUNTRY_CODE;
         String countryIso = DEFAULT_COUNTRY_ISO;
         String phoneNumber = providedPhoneNumber;
         if (providedPhoneNumber.startsWith("+")) {
-            final Map<Integer, List<String>> countryCodeToRegionCodeMap =
-                    createCountryCodeToRegionCodeMap();
-            countryCode = countryCodeForPhoneNumber(countryCodeToRegionCodeMap,
-                    providedPhoneNumber);
-            countryIso = countryIsoForCountryCode(countryCodeToRegionCodeMap, countryCode);
+            countryCode = countryCodeForPhoneNumber(providedPhoneNumber);
+            countryIso = countryIsoForCountryCode(countryCode);
             phoneNumber = stripCountryCode(providedPhoneNumber, countryCode);
         }
         return new PhoneNumber(phoneNumber, countryIso, countryCode);
     }
 
-    private String countryIsoForCountryCode(Map<Integer, List<String>>
-            countryCodeToRegionCodeMap, String countryCode) {
-        final List<String> countries = countryCodeToRegionCodeMap.get(Integer.valueOf(countryCode));
+    private static String countryIsoForCountryCode(String countryCode) {
+        final List<String> countries = CountryCodeToRegionCodeMap.get(Integer.valueOf(countryCode));
         if (countries != null) {
             return countries.get(0);
         }
@@ -89,8 +100,7 @@ class PhoneNumberUtils {
      * Country code extracted using shortest matching prefix like libPhoneNumber. See:
      * https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com/google/i18n/phonenumbers/PhoneNumberUtil.java#L2395
      */
-    private String countryCodeForPhoneNumber(Map<Integer, List<String>>
-            countryCodeToRegionCodeMap, String normalizedPhoneNumber) {
+    private static String countryCodeForPhoneNumber(String normalizedPhoneNumber) {
         final String phoneWithoutPlusPrefix = normalizedPhoneNumber
                 .replaceFirst("^\\+", "");
         final int numberLength = phoneWithoutPlusPrefix.length();
@@ -99,7 +109,7 @@ class PhoneNumberUtils {
             final String potentialCountryCode = phoneWithoutPlusPrefix.substring(0, i);
             final Integer countryCodeKey = Integer.valueOf(potentialCountryCode);
 
-            if (countryCodeToRegionCodeMap.containsKey(countryCodeKey)) {
+            if (CountryCodeToRegionCodeMap.containsKey(countryCodeKey)) {
                 return potentialCountryCode;
             }
         }
@@ -107,19 +117,18 @@ class PhoneNumberUtils {
         return DEFAULT_COUNTRY_CODE;
     }
 
-
-    private PhoneNumber createPhoneNumber(Map<String, Integer> countryCodeByIso) {
+    private static PhoneNumber createPhoneNumber(SimManager simManager) {
         final String countryIso = simManager.getCountryIso();
-        final String countryCode = getCountryCode(countryIso, countryCodeByIso);
+        final String countryCode = getCountryCode(countryIso);
         final String phoneNumber = stripCountryCode(simManager.getRawPhoneNumber(),
                 countryCode);
 
         return new PhoneNumber(phoneNumber, countryIso, countryCode);
     }
 
-    private Map<Integer, List<String>> createCountryCodeToRegionCodeMap() {
+    private static Map<Integer, List<String>> createCountryCodeToRegionCodeMap() {
         final Map<Integer, List<String>> countryCodeToRegionCodeMap =
-                new HashMap<>(MAX_COUNTRY_CODES);
+                new ConcurrentHashMap<>(MAX_COUNTRY_CODES);
 
         ArrayList<String> listWithRegionCode;
 
@@ -1024,7 +1033,7 @@ class PhoneNumberUtils {
         return countryCodeToRegionCodeMap;
     }
 
-    private Map<String, Integer> createCountryCodeByIsoMap() {
+    private synchronized  static Map<String, Integer> createCountryCodeByIsoMap() {
         final Map<String, Integer> countryCodeByIso = new HashMap<>(MAX_COUNTRIES);
         countryCodeByIso.put("AF", 93);
         countryCodeByIso.put("AX", 358);
@@ -1275,15 +1284,16 @@ class PhoneNumberUtils {
         return countryCodeByIso;
     }
 
-    private String getCountryCode(String countryIso, Map<String, Integer> result) {
+    private static String getCountryCode(String countryIso) {
         if (countryIso == null) {
             return "";
         }
-        final Integer countryCode = result.get(countryIso.toUpperCase(Locale.getDefault()));
+        final Integer countryCode = CountryCodeByIsoMap
+                .get(countryIso.toUpperCase(Locale.getDefault()));
         return countryCode == null ? "" : countryCode.toString();
     }
 
-    private String stripCountryCode(String phoneNumber, String countryCode) {
+    private static String stripCountryCode(String phoneNumber, String countryCode) {
         return phoneNumber.replaceFirst("^\\+?" + countryCode, "");
     }
 }

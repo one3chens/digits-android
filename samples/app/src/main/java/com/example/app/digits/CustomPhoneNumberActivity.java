@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.ConfirmationCodeCallback;
 import com.digits.sdk.android.Digits;
@@ -21,10 +22,12 @@ import com.twitter.sdk.android.core.TwitterAuthToken;
 public class CustomPhoneNumberActivity extends Activity {
     private Button digitsSubmitPhoneButton;
     private EditText digitsPhoneNumberEditText;
+    private Answers answers;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.digits_activity_custom_phone_number);
+        this.answers = Answers.getInstance();
 
         final AuthCallback callback = new AuthCallback() {
             @Override
@@ -68,7 +71,8 @@ public class CustomPhoneNumberActivity extends Activity {
                         .withEmailCollection()
                         .withCustomPhoneNumberScreen(confirmationCodeCallback)
                         .withPartnerKey(BuildConfig.PARTNER_KEY)
-                        .withThemeResId(R.style.LightTheme);
+                        .withThemeResId(R.style.LightTheme)
+                        .withEventLogger(new AnswersLogger(answers));
 
                 Digits.authenticate(digitsAuthConfigBuilder.build());
             }

@@ -88,6 +88,7 @@ public class DigitsClientTests {
     private Activity activity;
     private LoginResultReceiver loginResultReceiver;
     private ArgumentCaptor<DigitsEventDetails> digitsEventDetailsArgumentCaptor;
+    private DigitsEventDetailsBuilder digitsEventDetailsBuilder;
 
     @Before
     public void setUp() throws Exception {
@@ -112,7 +113,10 @@ public class DigitsClientTests {
         userSession = DigitsSession.create(TestConstants.DIGITS_USER, TestConstants.PHONE);
         guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
         digitsEventDetailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
-
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withAuthStartTime(System.currentTimeMillis())
+                .withCountry("US")
+                .withLanguage("en");
         when(digitsApiClient.getService()).thenReturn(service);
         when(digits.getContext()).thenReturn(context);
         when(digits.getAuthConfig()).thenReturn(twitterAuthConfig);
@@ -218,7 +222,6 @@ public class DigitsClientTests {
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
-        verify(digitsEventCollector).authSuccess();
         verify(callback).success(userSession, null);
     }
 
@@ -234,7 +237,6 @@ public class DigitsClientTests {
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
-        verify(digitsEventCollector).authSuccess();
         verify(callback).success(userSession, null);
     }
 
@@ -284,10 +286,13 @@ public class DigitsClientTests {
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
         final LoginOrSignupComposer loginOrSignupComposer =
-                digitsClient.createCompositeCallback(digitsAuthConfig);
+                digitsClient.createCompositeCallback(digitsAuthConfig, digitsEventDetailsBuilder);
         final Intent intent  = mock(Intent.class);
 
         loginOrSignupComposer.success(intent);
+        verify(digitsEventCollector).submitPhoneSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(confirmationCodeCallback).success(intent);
     }
 
@@ -302,9 +307,10 @@ public class DigitsClientTests {
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
         final LoginOrSignupComposer loginOrSignupComposer =
-                digitsClient.createCompositeCallback(digitsAuthConfig);
+                digitsClient.createCompositeCallback(digitsAuthConfig, digitsEventDetailsBuilder);
         final Intent intent  = mock(Intent.class);
         loginOrSignupComposer.failure(TestConstants.ANY_EXCEPTION);
+        verify(digitsEventCollector).submitPhoneFailure();
         verify(confirmationCodeCallback).failure(TestConstants.ANY_EXCEPTION);
     }
 
@@ -483,11 +489,11 @@ public class DigitsClientTests {
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
-        verifyNoMoreInteractions(digitsEventCollector);
+        verify(digitsEventCollector)
+                .submitClickOnPhoneScreen(digitsEventDetailsArgumentCaptor.capture());
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(digitsClient.loginOrSignupComposer).start();
     }
-
-
 
     private DigitsAuthRequestQueue createRequestQueue() {
         final DigitsAuthRequestQueue authRequestQueue = mock(DigitsAuthRequestQueue.class);
@@ -524,7 +530,7 @@ public class DigitsClientTests {
                 actualBundle.get(DigitsClient.EXTRA_EMAIL));
     }
 
-    class MockDigitsClient extends DigitsClient{
+    public class MockDigitsClient extends DigitsClient{
         LoginOrSignupComposer loginOrSignupComposer;
 
         public MockDigitsClient(Digits digits, SessionManager<DigitsSession> sessionManager,
@@ -538,7 +544,9 @@ public class DigitsClientTests {
         }
 
         @Override
-        LoginOrSignupComposer createCompositeCallback(final DigitsAuthConfig digitsAuthConfig) {
+        LoginOrSignupComposer createCompositeCallback(final DigitsAuthConfig digitsAuthConfig,
+                                                      DigitsEventDetailsBuilder details
+        ) {
             return this.loginOrSignupComposer;
         }
 
