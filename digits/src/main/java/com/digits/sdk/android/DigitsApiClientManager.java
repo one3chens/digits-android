@@ -22,29 +22,32 @@ import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.concurrent.ExecutorService;
 
+import io.fabric.sdk.android.Fabric;
+
 
 public class DigitsApiClientManager {
-    private final Digits digits;
-    private final DigitsUserAgent userAgent;
     private final SessionManager<DigitsSession> sessionManager;
     private final TwitterCore twitterCore;
     private final ExecutorService executorService;
+    private final DigitsRequestInterceptor interceptor;
+    private boolean sandboxEnabled;
+    private ApiInterface mockInterface;
+
     private DigitsApiClient digitsApiClient;
 
     DigitsApiClientManager() {
-        this(Digits.getInstance(), new DigitsUserAgent(), TwitterCore.getInstance(),
-                Digits.getInstance().getExecutorService(), Digits.getSessionManager(), null);
+        this(new DigitsUserAgent(), TwitterCore.getInstance(),
+                Digits.getInstance().getExecutorService(), Digits.getSessionManager(), null,
+                new DigitsRequestInterceptor(new DigitsUserAgent()));
     }
 
-    DigitsApiClientManager(Digits digits, DigitsUserAgent userAgent, TwitterCore twitterCore,
+    DigitsApiClientManager(DigitsUserAgent userAgent, TwitterCore twitterCore,
                            ExecutorService executorService,
                            SessionManager<DigitsSession> sessionManager,
-                           DigitsApiClient apiClient) {
+                           DigitsApiClient apiClient,
+                           DigitsRequestInterceptor interceptor) {
         if (twitterCore == null) {
             throw new IllegalArgumentException("twitter must not be null");
-        }
-        if (digits == null) {
-            throw new IllegalArgumentException("digits must not be null");
         }
         if (userAgent == null) {
             throw new IllegalArgumentException("userAgent must not be null");
@@ -54,15 +57,34 @@ public class DigitsApiClientManager {
         }
 
         this.twitterCore = twitterCore;
-        this.digits = digits;
-        this.userAgent = userAgent;
         this.executorService = executorService;
         this.sessionManager = sessionManager;
+        this.interceptor = interceptor;
+        this.sandboxEnabled = false;
+        this.mockInterface = new MockApiInterface();
+
         if (apiClient != null) {
             this.digitsApiClient = apiClient;
         } else {
             this.digitsApiClient = createNewClient();
         }
+    }
+
+    DigitsApiClientManager enableSandbox(){
+        sandboxEnabled = true;
+        this.digitsApiClient = createNewClient();
+        return this;
+    }
+
+    DigitsApiClientManager disableSandbox(){
+        sandboxEnabled = false;
+        this.digitsApiClient = createNewClient();
+        return this;
+    }
+
+    DigitsApiClientManager setSandboxClient(ApiInterface mockInterface){
+        this.mockInterface = mockInterface;
+        return this;
     }
 
     DigitsApiClient getApiClient(){
@@ -78,9 +100,17 @@ public class DigitsApiClientManager {
     }
 
     protected DigitsApiClient createNewClient(){
-        return new DigitsApiClient(sessionManager.getActiveSession(), twitterCore,
-                twitterCore.getSSLSocketFactory(),
-                executorService, userAgent);
+        if (sandboxEnabled) {
+            Fabric.getLogger().i(Digits.TAG, "Sandbox is enabled");
+            return new DigitsApiClient(sessionManager.getActiveSession(), twitterCore,
+                    twitterCore.getSSLSocketFactory(),
+                    executorService, interceptor, mockInterface);
+        } else {
+            Fabric.getLogger().i(Digits.TAG, "Sandbox is disabled");
+            return new DigitsApiClient(sessionManager.getActiveSession(), twitterCore,
+                    twitterCore.getSSLSocketFactory(),
+                    executorService, interceptor);
+        }
     }
 
 }

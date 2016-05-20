@@ -28,10 +28,10 @@ public class MockDigitsApiClient extends DigitsApiClient {
 
     public MockDigitsApiClient(DigitsSession session, TwitterCore twitterCore,
                          SSLSocketFactory sslFactory, ExecutorService executorService,
-                         DigitsUserAgent userAgent){
+                               DigitsRequestInterceptor interceptor,
+                               ApiInterface mockService) {
         super(session, twitterCore,
-                sslFactory,  executorService,
-                userAgent);
+                sslFactory, executorService, interceptor, mockService);
         activeSession = session;
     }
 

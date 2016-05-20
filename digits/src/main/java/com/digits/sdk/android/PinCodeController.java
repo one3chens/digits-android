@@ -122,6 +122,7 @@ class PinCodeController extends DigitsControllerImpl {
 
     ApiInterface getAccountService() {
         return Digits.getInstance().getDigitsClient().getApiClientManager().getService();
+
     }
 
 }

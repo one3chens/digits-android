@@ -166,6 +166,23 @@ public class DigitsMainActivity extends Activity {
             }
         });
 
+        Button toggleSandboxButton = (Button) findViewById(R.id.toggle_sandbox_button);
+        toggleSandboxButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Button button = (Button) view;
+                Object tag = button.getTag(R.id.is_sandbox_enabled_tag);
+                boolean isEnabled = tag != null && (boolean) tag;
+                if (isEnabled) {
+                    Digits.getInstance().disableSandbox();
+                } else {
+                    Digits.getInstance().enableSandbox();
+                }
+                button.setText(isEnabled ? R.string.enable_sandbox : R.string.disable_sandbox);
+                button.setTag(R.id.is_sandbox_enabled_tag, !isEnabled);
+            }
+        });
+
         sessionListener = new SessionListener() {
             @Override
             public void changed(DigitsSession newSession) {

@@ -17,7 +17,6 @@
 
 package com.digits.sdk.android;
 
-
 import com.google.gson.annotations.SerializedName;
 
 class AuthResponse {

@@ -75,7 +75,7 @@ public class DigitsClient {
         this.digitsEventCollector = digitsEventCollector;
     }
 
-    public DigitsApiClientManager getApiClientManager(){
+    DigitsApiClientManager getApiClientManager(){
         return apiClientManager;
     }
 
@@ -161,8 +161,8 @@ public class DigitsClient {
         authRequestQueue.addClientRequest(new CallbackWrapper<AuthResponse>(callback) {
 
             @Override
-            public void success(Result<DigitsApiClient> result) {
-                result.data.getService().auth(phoneNumber, verificationType.name(),
+            public void success(Result<ApiInterface> result) {
+                result.data.auth(phoneNumber, verificationType.name(),
                         Locale.getDefault().getLanguage(), callback);
             }
 
@@ -174,8 +174,8 @@ public class DigitsClient {
         authRequestQueue.addClientRequest(new CallbackWrapper<DigitsUser>(callback) {
 
             @Override
-            public void success(Result<DigitsApiClient> result) {
-                result.data.getService().account(phoneNumber, pin, callback);
+            public void success(Result<ApiInterface> result) {
+                result.data.account(phoneNumber, pin, callback);
             }
 
         });
@@ -230,8 +230,8 @@ public class DigitsClient {
         authRequestQueue.addClientRequest(new CallbackWrapper<DigitsSessionResponse>(callback) {
 
             @Override
-            public void success(Result<DigitsApiClient> result) {
-                result.data.getService().login(requestId, userId, code, callback);
+            public void success(Result<ApiInterface> result) {
+                result.data.login(requestId, userId, code, callback);
             }
 
         });
@@ -243,8 +243,8 @@ public class DigitsClient {
                 new CallbackWrapper<DeviceRegistrationResponse>(callback) {
 
                     @Override
-                    public void success(Result<DigitsApiClient> result) {
-                        result.data.getService().register(phoneNumber,
+                    public void success(Result<ApiInterface> result) {
+                        result.data.register(phoneNumber,
                                 THIRD_PARTY_CONFIRMATION_CODE,
                                 true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER,
                                 verificationType.name(), callback);
@@ -258,14 +258,14 @@ public class DigitsClient {
         authRequestQueue.addClientRequest(new CallbackWrapper<DigitsSessionResponse>(callback) {
 
             @Override
-            public void success(Result<DigitsApiClient> result) {
-                result.data.getService().verifyPin(requestId, userId, pin, callback);
+            public void success(Result<ApiInterface> result) {
+                result.data.verifyPin(requestId, userId, pin, callback);
             }
 
         });
     }
 
-    static abstract class CallbackWrapper<T> extends Callback<DigitsApiClient> {
+    static abstract class CallbackWrapper<T> extends Callback<ApiInterface> {
         final Callback<T> callback;
 
         public CallbackWrapper(Callback<T> callback) {

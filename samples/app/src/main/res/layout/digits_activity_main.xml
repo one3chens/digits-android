@@ -54,6 +54,12 @@
         android:layout_height="wrap_content"
         android:text="@string/contact_lookup"/>
 
+    <Button
+        android:id="@+id/toggle_sandbox_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_sandbox"/>
+
 
     <Button
         android:id="@+id/custom_login_button"

@@ -47,7 +47,6 @@ import static org.mockito.Mockito.when;
 public class DigitsApiClientManagerTests {
 
     private MockDigitsApiClientManager digitsClient;
-    private Digits digits;
     private DigitsUserAgent digitsUserAgent;
     private TwitterCore twitterCore;
     private TwitterAuthConfig twitterAuthConfig;
@@ -60,13 +59,14 @@ public class DigitsApiClientManagerTests {
     private ExecutorService executorService;
     private Context context;
     private SSLSocketFactory sslFactory;
+    private DigitsRequestInterceptor interceptor;
 
 
     @Before
     public void setUp() throws Exception {
-        digits = mock(Digits.class);
         context = mock(Context.class);
         digitsUserAgent = new DigitsUserAgent("digitsVersion", "androidVersion", "appName");
+        interceptor = mock(DigitsRequestInterceptor.class);
         mockSessionManager = mock(SessionManager.class);
         activeSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
         activeClient = mock(DigitsApiClient.class);
@@ -84,19 +84,18 @@ public class DigitsApiClientManagerTests {
 
         when(twitterCore.getAuthConfig()).thenReturn(twitterAuthConfig);
         when(twitterCore.getSSLSocketFactory()).thenReturn(mock(SSLSocketFactory.class));
-        when(digits.getVersion()).thenReturn("1.1");
         when(controller.getErrors()).thenReturn(mock(ErrorCodes.class));
 
 
-        digitsClient = new MockDigitsApiClientManager(digits, digitsUserAgent, twitterCore,
-                executorService, mockSessionManager, activeClient);
+        digitsClient = new MockDigitsApiClientManager(digitsUserAgent, twitterCore,
+                executorService, mockSessionManager, activeClient, interceptor);
     }
 
     @Test
     public void testConstructor_nullTwitter() throws Exception {
         try {
-            new MockDigitsApiClientManager(digits, digitsUserAgent, null, executorService,
-                    mockSessionManager, activeClient);
+            new MockDigitsApiClientManager(digitsUserAgent, null, executorService,
+                    mockSessionManager, activeClient, interceptor);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("twitter must not be null", e.getMessage());
@@ -104,32 +103,10 @@ public class DigitsApiClientManagerTests {
     }
 
     @Test
-    public void testConstructor_nullDigits() throws Exception {
-        try {
-            new MockDigitsApiClientManager(null, digitsUserAgent, twitterCore, executorService,
-                    mockSessionManager, activeClient);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("digits must not be null", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testConstructor_nullDigitsUserAgent() throws Exception {
-        try {
-            new MockDigitsApiClientManager(digits, null, twitterCore, executorService,
-                    mockSessionManager, activeClient);
-            fail("Expected IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("userAgent must not be null", e.getMessage());
-        }
-    }
-
-    @Test
     public void testConstructor_nullSessionManager() throws Exception {
         try {
-            new MockDigitsApiClientManager(digits, digitsUserAgent, twitterCore, executorService,
-                    null, activeClient);
+            new MockDigitsApiClientManager(digitsUserAgent, twitterCore, executorService,
+                    null, activeClient, interceptor);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("sessionManager must not be null", e.getMessage());
@@ -139,7 +116,7 @@ public class DigitsApiClientManagerTests {
     @Test
     public void testGetApiClient_withSameSession() {
         final MockDigitsApiClientManager client =
-                new MockDigitsApiClientManager(digits, digitsUserAgent,
+                new MockDigitsApiClientManager(digitsUserAgent,
                         twitterCore, executorService, mockSessionManager, activeClient);
         // Want to ensure it returns same client
         final DigitsApiClient activeClient = digitsClient.getApiClient();
@@ -153,8 +130,9 @@ public class DigitsApiClientManagerTests {
     public void testGetApiClient_withDifferentSession() {
         final DigitsSession session2 = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
         final MockDigitsApiClientManager client =
-                new MockDigitsApiClientManager(digits, digitsUserAgent,
-                        twitterCore, executorService, mockSessionManager, activeClient);
+                new MockDigitsApiClientManager(digitsUserAgent,
+                        twitterCore, executorService, mockSessionManager,
+                        activeClient, interceptor);
         // Want to ensure it returns different client
         final DigitsApiClient firstClient = digitsClient.getApiClient();
         final Session active = firstClient.getSession();
@@ -173,13 +151,25 @@ public class DigitsApiClientManagerTests {
     }
 
     class MockDigitsApiClientManager extends DigitsApiClientManager {
-        public MockDigitsApiClientManager(Digits digits, DigitsUserAgent userAgent,
+
+        public MockDigitsApiClientManager(DigitsUserAgent userAgent,
                                           TwitterCore twitterCore,
                                           ExecutorService executorService,
                                           SessionManager<DigitsSession> sessionManager,
+                                          DigitsApiClient apiClient,
+                                          DigitsRequestInterceptor interceptor) {
+            super(digitsUserAgent, twitterCore,
+                    executorService, sessionManager, apiClient, interceptor);
+        }
+
+
+        public MockDigitsApiClientManager(DigitsUserAgent userAgent,
+                                    TwitterCore twitterCore,
+                                    ExecutorService executorService,
+                                    SessionManager<DigitsSession> sessionManager,
                                           DigitsApiClient apiClient) {
-            super(digits, userAgent, twitterCore,
-                    executorService, sessionManager, apiClient);
+            super(digitsUserAgent, twitterCore,
+                    executorService, sessionManager, apiClient, interceptor);
         }
 
         @Override

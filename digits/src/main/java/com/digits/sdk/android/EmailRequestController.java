@@ -37,7 +37,8 @@ public class EmailRequestController extends DigitsControllerImpl {
                            ResultReceiver resultReceiver, String phoneNumber,
                            DigitsEventCollector digitsEventCollector) {
         this(resultReceiver, stateButton, editText, Digits.getSessionManager(),
-                Digits.getInstance().getActivityClassManager(), new DigitsClient(), phoneNumber,
+                Digits.getInstance().getActivityClassManager(),
+                Digits.getInstance().getDigitsClient(), phoneNumber,
                 digitsEventCollector, new EmailErrorCodes(stateButton.getContext().getResources()));
     }
 

@@ -112,27 +112,27 @@ class LoginCodeController extends DigitsControllerImpl {
                            final Verification verificationType) {
         activeButton.showProgress();
         digitsClient.authDevice(phoneNumber, verificationType,
-            new DigitsCallback<AuthResponse>(context, this) {
-                @Override
-                public void success(final Result<AuthResponse> result) {
-                    activeButton.showFinish();
-                    requestId = result.data.requestId;
-                    activeButton.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            activeButton.showStart();
-                            timerText.setText(
-                                    String.valueOf(
+                new DigitsCallback<AuthResponse>(context, this) {
+                    @Override
+                    public void success(final Result<AuthResponse> result) {
+                        activeButton.showFinish();
+                        requestId = result.data.requestId;
+                        activeButton.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                activeButton.showStart();
+                                timerText.setText(
+                                        String.valueOf(
                                             DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
-                                    TextView.BufferType.NORMAL);
-                            resendButton.setEnabled(false);
-                            callMeButton.setEnabled(false);
-                            startTimer();
-                        }
-                    }, POST_DELAY_MS);
+                                        TextView.BufferType.NORMAL);
+                                resendButton.setEnabled(false);
+                                callMeButton.setEnabled(false);
+                                startTimer();
+                            }
+                        }, POST_DELAY_MS);
 
+                    }
                 }
-            }
         );
     }
 

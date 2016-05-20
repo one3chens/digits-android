@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import retrofit.MockRestAdapter;
 import retrofit.RestAdapter;
 import retrofit.android.MainThreadExecutor;
 
@@ -36,29 +37,30 @@ class DigitsApiClient {
 
     DigitsApiClient(DigitsSession session) {
         this(session, TwitterCore.getInstance(), TwitterCore.getInstance().getSSLSocketFactory(),
-                Digits.getInstance()
-                        .getExecutorService());
+                Digits.getInstance().getExecutorService(),
+                new DigitsRequestInterceptor(new DigitsUserAgent()));
     }
 
     DigitsApiClient(DigitsSession session, TwitterCore twitterCore, SSLSocketFactory sslFactory,
-                    ExecutorService executorService) {
-        this(session, twitterCore, sslFactory, executorService, new DigitsUserAgent());
+                    ExecutorService executorService, DigitsRequestInterceptor interceptor) {
+        this.session = session;
+        final RestAdapter adapter = createAdapter(executorService, twitterCore,
+                sslFactory, interceptor);
+        this.service = adapter.create(ApiInterface.class);
     }
 
-    DigitsApiClient(DigitsSession session, TwitterCore twitterCore,
-                    SSLSocketFactory sslFactory, ExecutorService executorService,
-                    DigitsUserAgent userAgent) {
+    DigitsApiClient(DigitsSession session, TwitterCore twitterCore, SSLSocketFactory sslFactory,
+                    ExecutorService executorService, DigitsRequestInterceptor interceptor,
+                    ApiInterface mockInterface) {
+        if (mockInterface == null) {
+            throw new IllegalArgumentException("mock interface cannot be null!");
+        }
+
         this.session = session;
-
-        final RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(new DigitsApi().getBaseHostUrl())
-                .setRequestInterceptor(new DigitsRequestInterceptor(userAgent))
-                .setExecutors(executorService, new MainThreadExecutor())
-                .setClient(
-                        new AuthenticatedClient(twitterCore.getAuthConfig(), session, sslFactory))
-                .build();
-        this.service = restAdapter.create(ApiInterface.class);
-
+        final RestAdapter adapter = createAdapter(executorService, twitterCore,
+                sslFactory, interceptor);
+        this.service = MockRestAdapter.from(adapter)
+                .create(ApiInterface.class, mockInterface);
     }
 
     public DigitsSession getSession() {
@@ -67,6 +69,19 @@ class DigitsApiClient {
 
     public ApiInterface getService() {
         return service;
+    }
+
+    protected RestAdapter createAdapter(ExecutorService executorService,
+                                                       TwitterCore twitterCore,
+                                        SSLSocketFactory sslSocketFactory,
+                                                       DigitsRequestInterceptor interceptor) {
+        return new RestAdapter.Builder()
+                .setEndpoint(new DigitsApi().getBaseHostUrl())
+                .setRequestInterceptor(interceptor)
+                .setExecutors(executorService,
+                        new MainThreadExecutor())
+                .setClient(new AuthenticatedClient(twitterCore.getAuthConfig(),
+                        session, sslSocketFactory)).build();
     }
 
 }

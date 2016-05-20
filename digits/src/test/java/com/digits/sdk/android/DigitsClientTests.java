@@ -501,8 +501,8 @@ public class DigitsClientTests {
                 new Answer<Object>() {
                     @Override
                     public Object answer(InvocationOnMock invocation) throws Throwable {
-                        ((Callback<DigitsApiClient>) invocation.getArguments()[0])
-                                .success(digitsApiClient, null);
+                        ((Callback<ApiInterface>) invocation.getArguments()[0])
+                                .success(service, null);
                         return null;
                     }
                 }

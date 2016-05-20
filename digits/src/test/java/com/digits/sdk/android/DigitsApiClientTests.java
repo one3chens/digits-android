@@ -55,8 +55,8 @@ public class DigitsApiClientTests {
         digitsApiClient = new DigitsApiClient(guestSession, twitterCore,
                 mock(SSLSocketFactory.class),
                 mock(ExecutorService.class),
-                new DigitsUserAgent("digitsVersion", "androidVersion",
-                "appName"));
+                mock(DigitsRequestInterceptor.class),
+                mock(ApiInterface.class));
     }
 
     @Test

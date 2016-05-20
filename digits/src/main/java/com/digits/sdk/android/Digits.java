@@ -76,6 +76,7 @@ public class Digits extends Kit<Void> {
         return Fabric.getKit(Digits.class);
     }
 
+
     /**
      * Starts the authentication flow
      *
@@ -189,6 +190,30 @@ public class Digits extends Kit<Void> {
             throw new NullPointerException("sessionListener must not be null");
         }
         digitsSessionVerifier.removeSessionListener(sessionListener);
+    }
+
+    /**
+     * Enable sandbox mode
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public static void enableSandbox() {
+        getInstance().getDigitsClient().getApiClientManager().enableSandbox();
+    }
+
+    /**
+     * Disable sandbox mode
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public static void disableSandbox() {
+        getInstance().getDigitsClient().getApiClientManager().disableSandbox();
+    }
+
+    /**
+     * Set sandbox
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public static void setSandbox(ApiInterface sandbox) {
+        getInstance().getDigitsClient().getApiClientManager().setSandboxClient(sandbox);
     }
 
     @Override

@@ -25,7 +25,7 @@ import com.twitter.sdk.android.core.internal.AuthRequestQueue;
 import com.twitter.sdk.android.core.internal.SessionProvider;
 
 /**
- * Queues requests until a {@link DigitsApiClient} with a session is ready. Gets an active session
+ * Queues requests until a {@link ApiInterface} with a session is ready. Gets an active session
  * from the {@link SessionProvider} or requests {@link SessionProvider} perform authentication.
  */
 class DigitsAuthRequestQueue extends AuthRequestQueue {
@@ -37,12 +37,12 @@ class DigitsAuthRequestQueue extends AuthRequestQueue {
         this.digitsClient = digitsClient;
     }
 
-    protected synchronized boolean addClientRequest(final Callback<DigitsApiClient> callback) {
+    protected synchronized boolean addClientRequest(final Callback<ApiInterface> callback) {
         return addRequest(new Callback<Session>() {
             @Override
             public void success(Result<Session> result) {
                 callback.success(new Result<>(
-                        digitsClient.getApiClientManager().getApiClient(), null));
+                        digitsClient.getApiClientManager().getApiClient().getService(), null));
             }
 
             @Override
