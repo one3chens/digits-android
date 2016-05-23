@@ -35,13 +35,11 @@ import static org.mockito.Mockito.verify;
 public class PhoneNumberActivityDelegateTests extends
         DigitsActivityDelegateTests<PhoneNumberActivityDelegate> {
     CountryListSpinner spinner;
-    private ArgumentCaptor<DigitsEventDetails> digitsEventDetailsArgumentCaptor;
     private ArgumentCaptor<PhoneNumber> phoneNumberArgumentCaptor;
 
     @Override
     public void setUp() throws Exception {
         spinner = mock(CountryListSpinner.class);
-        digitsEventDetailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
         phoneNumberArgumentCaptor = ArgumentCaptor.forClass(PhoneNumber.class);
         super.setUp();
     }
@@ -124,8 +122,8 @@ public class PhoneNumberActivityDelegateTests extends
         delegate.onResume();
         verify(controller).onResume();
         verify(digitsEventCollector)
-                .phoneScreenImpression(digitsEventDetailsArgumentCaptor.capture());
-        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+                .phoneScreenImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
     }

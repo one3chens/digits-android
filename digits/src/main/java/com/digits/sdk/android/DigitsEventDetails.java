@@ -17,17 +17,43 @@
 
 package com.digits.sdk.android;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 /**
+ * @Deprecated
  * DigitsEventDetails contains information passed into the DigitsEventLogger implementations.
  */
 public class DigitsEventDetails {
+    @NonNull
     public final String language;
+
+    @Nullable
     public final String country;
+
+    @NonNull
     public final Long elapsedTimeInMillis;
 
-    public DigitsEventDetails(String language, String country, Long elapsedTimeInMillis) {
+    public DigitsEventDetails(@NonNull String language,
+                              @Nullable String country,
+                              @NonNull Long elapsedTimeInMillis) {
         this.language = language;
         this.country = country;
         this.elapsedTimeInMillis = elapsedTimeInMillis;
+    }
+
+
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("DigitsEventDetails{");
+
+        if (language != null) stringBuilder.append("language='" + language + '\'');
+        if (elapsedTimeInMillis != null) stringBuilder.append("elapsedTimeInMillis='"
+                + elapsedTimeInMillis + '\'');
+        if (country != null) stringBuilder.append("country='" + country + '\'');
+
+        stringBuilder.append("}'");
+        return stringBuilder.toString();
     }
 }

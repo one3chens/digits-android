@@ -35,20 +35,24 @@ public class EmailRequestController extends DigitsControllerImpl {
 
     EmailRequestController(StateButton stateButton, EditText editText,
                            ResultReceiver resultReceiver, String phoneNumber,
-                           DigitsEventCollector digitsEventCollector) {
+                           DigitsEventCollector digitsEventCollector,
+                           DigitsEventDetailsBuilder details) {
         this(resultReceiver, stateButton, editText, Digits.getSessionManager(),
                 Digits.getInstance().getActivityClassManager(),
                 Digits.getInstance().getDigitsClient(), phoneNumber,
-                digitsEventCollector, new EmailErrorCodes(stateButton.getContext().getResources()));
+                digitsEventCollector, new EmailErrorCodes(stateButton.getContext().getResources()),
+                details);
     }
 
     EmailRequestController(ResultReceiver resultReceiver, StateButton stateButton,
                            EditText editText, SessionManager<DigitsSession> sessionManager,
                            ActivityClassManager activityClassManager, DigitsClient client,
                            String phoneNumber, DigitsEventCollector digitsEventCollector,
-                           ErrorCodes emailErrorCodes) {
+                           ErrorCodes emailErrorCodes,
+                           DigitsEventDetailsBuilder details) {
         super(resultReceiver, stateButton, editText, client, emailErrorCodes,
-                activityClassManager, sessionManager, digitsEventCollector);
+                activityClassManager, sessionManager, digitsEventCollector,
+                details);
         this.phoneNumber = phoneNumber;
     }
 
@@ -59,7 +63,8 @@ public class EmailRequestController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        digitsEventCollector.submitClickOnEmailScreen();
+        digitsEventCollector.submitClickOnEmailScreen(eventDetailsBuilder
+                .withCurrentTime(System.currentTimeMillis()).build());
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -71,8 +76,9 @@ public class EmailRequestController extends DigitsControllerImpl {
                 service.email(email, new DigitsCallback<DigitsSessionResponse>(context, this) {
                     @Override
                     public void success(Result<DigitsSessionResponse> result) {
-                        digitsEventCollector.submitEmailSuccess();
-                        loginSuccess(context, session, phoneNumber);
+                        digitsEventCollector.submitEmailSuccess(eventDetailsBuilder
+                                .withCurrentTime(System.currentTimeMillis()).build());
+                        loginSuccess(context, session, phoneNumber, eventDetailsBuilder);
                     }
                 });
             } else {

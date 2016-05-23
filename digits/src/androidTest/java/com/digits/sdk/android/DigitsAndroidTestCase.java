@@ -32,10 +32,12 @@ public class DigitsAndroidTestCase extends FabricAndroidTestCase {
             new UnrecoverableException(ERROR_MESSAGE);
     static final int ANY_REQUEST = 1010;
     static final int ANY_RESULT = Activity.RESULT_OK;
+    static final long ANY_LONG = 11231L;
 
     protected static final String TWITTER_URL = "http://twitter.com";
     protected static final String US_COUNTRY_CODE = "1";
     protected static final String US_ISO2 = "us";
+    protected static final String LANG = "en";
 
     protected void verifyNoInteractions(Object... objects) {
         for (Object object : objects) {

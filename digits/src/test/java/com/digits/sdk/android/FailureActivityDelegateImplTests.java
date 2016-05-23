@@ -36,6 +36,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -60,6 +61,9 @@ public class FailureActivityDelegateImplTests {
     DigitsException exception;
     ResultReceiver resultReceiver;
     private DigitsEventCollector digitsEventCollector;
+    ArgumentCaptor<DigitsEventDetails> detailsArgumentCaptor;
+    ArgumentCaptor<DigitsEventDetailsBuilder> detailsBuilderArgumentCaptor;
+    DigitsEventDetailsBuilder digitsEventDetailsBuilder;
 
     @Before
     public void setUp() throws Exception {
@@ -75,9 +79,17 @@ public class FailureActivityDelegateImplTests {
         resultReceiver = new ResultReceiver(null);
         exception = new DigitsException("", TwitterApiErrorConstants.UNKNOWN_ERROR,
                 new AuthConfig());
+        detailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
+        detailsBuilderArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetailsBuilder.class);
+
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withLanguage("lang")
+                .withCountry("US")
+                .withAuthStartTime(1L);
 
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         bundle.putSerializable(DigitsClient.EXTRA_FALLBACK_REASON, exception);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
         when(intent.getExtras()).thenReturn(bundle);
         when(activity.getIntent()).thenReturn(intent);
     }
@@ -86,12 +98,20 @@ public class FailureActivityDelegateImplTests {
     public void testInit_validBundle() {
         when(activity.findViewById(R.id.dgts__dismiss_button)).thenReturn(button);
         when(activity.findViewById(R.id.dgts__try_another_phone)).thenReturn(button);
+        delegate.eventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withLanguage("lang")
+                .withCountry("US")
+                .withAuthStartTime(1L);
 
         delegate.init();
 
         verify(delegate).setContentView();
         verify(delegate).setUpViews();
-        verify(digitsEventCollector).failureScreenImpression();
+        verify(digitsEventCollector).failureScreenImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails details = detailsArgumentCaptor.getValue();
+        assertNotNull(details.language);
+        assertNotNull(details.country);
+        assertNotNull(details.elapsedTimeInMillis);
     }
 
     @Test
@@ -117,6 +137,10 @@ public class FailureActivityDelegateImplTests {
     public void testSetUpViews() {
         when(activity.findViewById(R.id.dgts__dismiss_button)).thenReturn(button);
         when(activity.findViewById(R.id.dgts__try_another_phone)).thenReturn(button);
+        delegate.eventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withLanguage("lang")
+                .withCountry("US")
+                .withAuthStartTime(1L);
 
         delegate.setUpViews();
 
@@ -126,31 +150,53 @@ public class FailureActivityDelegateImplTests {
 
     @Test
     public void testSetUpDismissButton() {
+        delegate.eventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withLanguage("lang")
+                .withCountry("US")
+                .withAuthStartTime(1L);
         delegate.setUpDismissButton(button);
 
         verify(button).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
 
-        verify(digitsEventCollector).dismissClickOnFailureScreen();
+        verify(digitsEventCollector).dismissClickOnFailureScreen(detailsArgumentCaptor.capture());
+        final DigitsEventDetails details = detailsArgumentCaptor.getValue();
+        assertNotNull(details.language);
+        assertNotNull(details.country);
+        assertNotNull(details.elapsedTimeInMillis);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             verify(activity).finishAffinity();
         } else {
             verify(activity).setResult(anyInt());
             verify(activity).finish();
         }
-        verify(controller).sendFailure(resultReceiver, exception);
+        verify(controller).sendFailure(eq(resultReceiver), eq(exception),
+                detailsBuilderArgumentCaptor.capture());
+        final DigitsEventDetailsBuilder capturedDetails = detailsBuilderArgumentCaptor.getValue();
+        assertNotNull(capturedDetails.language);
+        assertNotNull(capturedDetails.country);
     }
 
     @Test
     public void testSetUpTryAnotherPhoneButton() {
+        delegate.eventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withLanguage("lang")
+                .withCountry("US")
+                .withAuthStartTime(1L);
+
         delegate.setUpTryAnotherPhoneButton(button);
 
         verify(button).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
 
-        verify(digitsEventCollector).retryClickOnFailureScreen();
+        verify(digitsEventCollector).retryClickOnFailureScreen(detailsArgumentCaptor.capture());
+        final DigitsEventDetails details = detailsArgumentCaptor.getValue();
+        assertNotNull(details.language);
+        assertNotNull(details.country);
+        assertNotNull(details.elapsedTimeInMillis);
         verify(controller).tryAnotherNumber(eq(activity), any(ResultReceiver.class));
         verify(activity).finish();
     }

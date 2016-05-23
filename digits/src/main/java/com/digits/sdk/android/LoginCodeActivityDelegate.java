@@ -132,7 +132,8 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void onResume() {
-        digitsEventCollector.loginScreenImpression();
+        digitsEventCollector.loginScreenImpression(eventDetailsBuilder
+                .withCurrentTime(System.currentTimeMillis()).build());
         controller.onResume();
     }
 

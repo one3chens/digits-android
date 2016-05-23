@@ -32,26 +32,42 @@ class LoginResultReceiver extends ResultReceiver {
     final WeakAuthCallback callback;
     final SessionManager<DigitsSession> sessionManager;
 
+    private final DigitsEventCollector digitsEventCollector;
+
     LoginResultReceiver(AuthCallback callback, SessionManager<DigitsSession> sessionManager) {
-        super(null);
-        this.callback = new WeakAuthCallback(callback);
-        this.sessionManager = sessionManager;
+        this(new WeakAuthCallback(callback), sessionManager,
+                Digits.getInstance().getDigitsEventCollector());
     }
-    //Test only
-    LoginResultReceiver(WeakAuthCallback callback, SessionManager<DigitsSession> sessionManager) {
+
+    LoginResultReceiver(WeakAuthCallback callback, SessionManager<DigitsSession> sessionManager,
+                        DigitsEventCollector digitsEventCollector) {
         super(null);
         this.callback = callback;
         this.sessionManager = sessionManager;
+        this.digitsEventCollector = digitsEventCollector;
     }
 
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
+        final DigitsEventDetailsBuilder details = resultData
+                .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+
         if (callback != null) {
             if (resultCode == RESULT_OK) {
+                if (details != null) {
+                    digitsEventCollector.authSuccess(details
+                            .withCurrentTime(System.currentTimeMillis()).build());
+                }
+
                 callback.success(sessionManager.getActiveSession(),
                         resultData.getString(DigitsClient.EXTRA_PHONE));
             } else if (resultCode == RESULT_ERROR) {
+                if (details != null) {
+                    digitsEventCollector.authFailure(details
+                            .withCurrentTime(System.currentTimeMillis()).build());
+                }
+
                 callback.failure(new DigitsException(resultData.getString(KEY_ERROR)));
             }
         }

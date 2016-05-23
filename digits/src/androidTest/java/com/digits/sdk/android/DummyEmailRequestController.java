@@ -33,10 +33,10 @@ public class DummyEmailRequestController extends EmailRequestController {
                                        ActivityClassManagerImp activityClassManagerImp,
                                        DigitsClient digitsClient, String phoneWithCountryCode,
                                        DigitsEventCollector digitsEventCollector,
-                                       ErrorCodes errors) {
+                                       ErrorCodes errors, DigitsEventDetailsBuilder details) {
         super(resultReceiver, sendButton, phoneEditText, sessionManager,
                 activityClassManagerImp, digitsClient, phoneWithCountryCode, digitsEventCollector,
-                errors);
+                errors, details);
         sdkService = mock(ApiInterface.class);
     }
 

@@ -31,7 +31,6 @@ public abstract class DigitsCallback<T> extends Callback<T> {
     private final WeakReference<Context> context;
 
     DigitsCallback(Context context, DigitsController controller) {
-
         this.context = new WeakReference<>(context);
         this.controller = controller;
     }

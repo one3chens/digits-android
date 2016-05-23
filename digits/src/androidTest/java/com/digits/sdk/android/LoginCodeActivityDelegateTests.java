@@ -198,9 +198,18 @@ public class LoginCodeActivityDelegateTests extends
 
     public void testOnResume() {
         delegate.controller = controller;
+        delegate.eventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withLanguage("lang")
+                .withCountry("US")
+                .withAuthStartTime(1L);
+
         delegate.onResume();
         verify(controller).onResume();
-        verify(digitsEventCollector).loginScreenImpression();
+        verify(digitsEventCollector).loginScreenImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails details = detailsArgumentCaptor.getValue();
+        assertNotNull(details.language);
+        assertNotNull(details.country);
+        assertNotNull(details.elapsedTimeInMillis);
     }
 
     public void testSetupResendButton() throws Exception {

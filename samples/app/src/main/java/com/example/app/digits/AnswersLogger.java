@@ -41,72 +41,121 @@ public class AnswersLogger extends DigitsEventLogger {
     }
 
     @Override
-    public void loginBegin(DigitsEventDetails digitsEventDetails) {
+    public void loginBegin(DigitsEventDetails details) {
         answers.logCustom(new CustomEvent("Login-Digits")
                 .putCustomAttribute("Action", "loginBegin")
-                .putCustomAttribute("Language", digitsEventDetails.language)
-                .putCustomAttribute("ElapsedTime", digitsEventDetails.elapsedTimeInMillis / 1000));
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
 
         Fabric.getLogger().d(TAG, "loginBegin event received");
         Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
-                digitsEventDetails.elapsedTimeInMillis / 1000));
+                details.elapsedTimeInMillis / 1000));
         Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
-                digitsEventDetails.language));
+                details.language));
     }
 
     @Override
-    public void phoneNumberImpression(DigitsEventDetails digitsEventDetails) {
+    public void phoneNumberImpression(DigitsEventDetails details) {
         answers.logCustom(new CustomEvent("Login-Digits")
                 .putCustomAttribute("Action", "phoneNumberImpression")
-                .putCustomAttribute("Language", digitsEventDetails.language)
-                .putCustomAttribute("ElapsedTime", digitsEventDetails.elapsedTimeInMillis / 1000));
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
 
         Fabric.getLogger().d(TAG, "phoneNumberImpression event received");
         Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
-                digitsEventDetails.elapsedTimeInMillis / 1000));
+                details.elapsedTimeInMillis / 1000));
         Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
-                digitsEventDetails.language));
+                details.language));
     }
 
     @Override
-    public void phoneNumberSubmit(DigitsEventDetails digitsEventDetails) {
-        answers.logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "phoneNumberSubmit")
-                .putCustomAttribute("Language", digitsEventDetails.language)
-                .putCustomAttribute("Country", digitsEventDetails.country)
-                .putCustomAttribute("ElapsedTime", digitsEventDetails.elapsedTimeInMillis / 1000));
-
-        Fabric.getLogger().d(TAG, "phoneNumberSubmit event received");
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
-                digitsEventDetails.elapsedTimeInMillis / 1000));
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
-                digitsEventDetails.language));
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "country = %s",
-                digitsEventDetails.country));
+    public void phoneNumberSubmit(DigitsEventDetails details) {
+        statAndPrintAll("phoneNumberSubmit", details);
     }
 
     @Override
-    public void phoneNumberSuccess(DigitsEventDetails digitsEventDetails) {
-        answers.logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "phoneNumberSuccess event received")
-                .putCustomAttribute("Language", digitsEventDetails.language)
-                .putCustomAttribute("Country", digitsEventDetails.country)
-                .putCustomAttribute("ElapsedTime", digitsEventDetails.elapsedTimeInMillis / 1000));
-
-        Fabric.getLogger().d(TAG, "phoneNumberSuccess event received");
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
-                digitsEventDetails.elapsedTimeInMillis / 1000));
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
-                digitsEventDetails.language));
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "country = %s",
-                digitsEventDetails.country));
+    public void phoneNumberSuccess(DigitsEventDetails details) {
+        statAndPrintAll("phoneNumberSuccess", details);
     }
 
-   @Override
-   public void loginSuccess() {
-        answers.logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "loginSuccess"));
+    @Override
+    public void confirmationCodeImpression(DigitsEventDetails details) {
+        statAndPrintAll("confirmationCodeImpression", details);
+    }
 
-       Fabric.getLogger().d(TAG, "loginSuccess");
+    @Override
+    public void confirmationCodeSubmit(DigitsEventDetails details) {
+        statAndPrintAll("confirmationCodeSubmit", details);
+    }
+
+    @Override
+    public void confirmationCodeSuccess(DigitsEventDetails details) {
+        statAndPrintAll("confirmationCodeSuccess", details);
+    }
+
+    @Override
+    public void twoFactorPinImpression(DigitsEventDetails details) {
+        statAndPrintAll("twoFactorPinImpression", details);
+    }
+
+    @Override
+    public void twoFactorPinSubmit(DigitsEventDetails details) {
+        statAndPrintAll("twoFactorPinSubmit", details);
+    }
+
+    @Override
+    public void twoFactorPinSuccess(DigitsEventDetails details) {
+        statAndPrintAll("twoFactorPinSuccess", details);
+    }
+
+    @Override
+    public void emailImpression(DigitsEventDetails details) {
+        statAndPrintAll("emailImpression", details);
+    }
+
+    @Override
+    public void emailSubmit(DigitsEventDetails details) {
+        statAndPrintAll("emailSubmit", details);
+    }
+
+    @Override
+    public void emailSuccess(DigitsEventDetails details) {
+        statAndPrintAll("emailSuccess", details);
+    }
+
+    @Override
+    public void failureImpression(DigitsEventDetails details) {
+        statAndPrintAll("failureImpression", details);
+    }
+
+    @Override
+    public void failureRetryClick(DigitsEventDetails details) {
+        statAndPrintAll("failureRetryClick", details);
+    }
+
+    @Override
+    public void failureDismissClick(DigitsEventDetails details) {
+        statAndPrintAll("failureDismissClick", details);
+    }
+
+    @Override
+    public void loginSuccess(DigitsEventDetails details) {
+        statAndPrintAll("loginSuccess", details);
+    }
+
+    @Override
+    public void loginFailure(DigitsEventDetails details) {
+        statAndPrintAll("loginFailure", details);
+    }
+
+    private void statAndPrintAll(String event, DigitsEventDetails details) {
+        answers.logCustom(new CustomEvent(event)
+                .putCustomAttribute("Action", String.format("%s event received", event))
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
+
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "%s event received", event));
+        Fabric.getLogger().d(TAG, details.toString());
     }
 }

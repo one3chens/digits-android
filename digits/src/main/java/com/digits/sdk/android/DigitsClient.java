@@ -99,6 +99,10 @@ public class DigitsClient {
         digitsEventCollector.authImpression(details.build());
 
         if (session != null && !session.isLoggedOutUser()) {
+            final PhoneNumber phoneNumber = PhoneNumberUtils
+                    .getPhoneNumber(digitsAuthConfig.phoneNumber);
+            digitsEventCollector.authSuccess(details.withCountry(phoneNumber.getCountryIso())
+                    .build());
             digitsAuthConfig.authCallback.success(session, session.getPhoneNumber());
         } else if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
             final DigitsSession blackboxSession = MockApiInterface.createDigitsSession();

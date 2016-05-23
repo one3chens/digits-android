@@ -72,7 +72,8 @@ class ConfirmationCodeController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        digitsEventCollector.submitClickOnSignupScreen();
+        digitsEventCollector.submitClickOnSignupScreen(eventDetailsBuilder
+                .withCurrentTime(System.currentTimeMillis()).build());
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -81,18 +82,16 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                     new DigitsCallback<DigitsUser>(context, this) {
                         @Override
                         public void success(Result<DigitsUser> result) {
-                            final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
-                                    ConfirmationCodeController.this.digitsEventDetailsBuilder
-                                            .withCurrentTime(System.currentTimeMillis());
-
-                            digitsEventCollector.signupSuccess(digitsEventDetailsBuilder.build());
+                            digitsEventCollector.signupSuccess(eventDetailsBuilder
+                                    .withCurrentTime(System.currentTimeMillis()).build());
                             final DigitsSession session =
                                     DigitsSession.create(result, phoneNumber);
                             sessionManager.setActiveSession(session);
                             if (isEmailCollection) {
-                                startEmailRequest(context, phoneNumber);
+                                startEmailRequest(context, phoneNumber, eventDetailsBuilder);
                             } else {
-                                loginSuccess(context, session, phoneNumber);
+                                loginSuccess(context, session, phoneNumber,
+                                        eventDetailsBuilder);
                             }
                         }
 

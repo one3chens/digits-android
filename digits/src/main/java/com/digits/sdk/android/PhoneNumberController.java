@@ -84,7 +84,7 @@ class PhoneNumberController extends DigitsControllerImpl {
     }
 
     LoginOrSignupComposer createCompositeCallback(final Context context, final String phoneNumber) {
-        final DigitsEventDetailsBuilder dm = this.digitsEventDetailsBuilder
+        final DigitsEventDetailsBuilder dm = eventDetailsBuilder
                 .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
                 .withCurrentTime(System.currentTimeMillis());
 
@@ -94,11 +94,10 @@ class PhoneNumberController extends DigitsControllerImpl {
 
             @Override
             public void success(final Intent intent) {
-                final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
-                        this.digitsEventDetailsBuilder
-                        .withCountry(((CountryInfo) countryCodeSpinner.getTag())
-                                .locale.getISO3Country())
-                        .withCurrentTime(System.currentTimeMillis());
+                final DigitsEventDetailsBuilder digitsEventDetailsBuilder = eventDetailsBuilder
+                    .withCountry(((CountryInfo) countryCodeSpinner.getTag())
+                            .locale.getISO3Country())
+                    .withCurrentTime(System.currentTimeMillis());
 
                 sendButton.showFinish();
 
@@ -116,9 +115,9 @@ class PhoneNumberController extends DigitsControllerImpl {
                 if (digitsException instanceof OperatorUnsupportedException) {
                     voiceEnabled = digitsException.getConfig().isVoiceEnabled;
                     resend();
-                    PhoneNumberController.this.handleError(context, digitsException);
+                    handleError(context, digitsException);
                 } else {
-                    PhoneNumberController.this.handleError(context, digitsException);
+                    handleError(context, digitsException);
                 }
             }
         };
@@ -138,13 +137,13 @@ class PhoneNumberController extends DigitsControllerImpl {
     }
 
     private void scribeRequest() {
-        final DigitsEventDetails digitsEventDetails = this.digitsEventDetailsBuilder
+        final DigitsEventDetails digitsEventDetails = this.eventDetailsBuilder
                 .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
                 .withCurrentTime(System.currentTimeMillis())
                 .build();
 
         if (isRetry()) {
-            digitsEventCollector.retryClickOnPhoneScreen();
+            digitsEventCollector.retryClickOnPhoneScreen(digitsEventDetails);
         } else {
             digitsEventCollector.submitClickOnPhoneScreen(digitsEventDetails);
         }
@@ -193,11 +192,16 @@ class PhoneNumberController extends DigitsControllerImpl {
         digitsEventCollector.submitPhoneException(exception);
     }
 
+    //We override the base startFallback and avoid finishing affinity.
+    //The phoneNumber activity remains on the backstack and can be resumed when the user choses
+    //to try again in the Failure screen.
     @Override
     public void startFallback(Context context, ResultReceiver receiver, DigitsException reason) {
         final Intent intent = new Intent(context, activityClassManager.getFailureActivity());
         intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, receiver);
         intent.putExtra(DigitsClient.EXTRA_FALLBACK_REASON, reason);
+        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder
+                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country()));
         context.startActivity(intent);
     }
 

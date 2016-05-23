@@ -80,6 +80,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
                 .submitClickOnPhoneScreen(digitsEventDetailsArgumentCaptor.capture());
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sendButton).showProgress();
         verify(dummyPhoneNumberController.loginOrSignupComposer).start();
@@ -146,6 +147,13 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
         assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
+
+        final DigitsEventDetailsBuilder details = intent.getExtras()
+                .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+        assertNotNull(details.country);
+        assertNotNull(details.language);
+        assertNotNull(details.authStartTime);
+
         verify(context, times(0)).finish();
     }
 
@@ -308,7 +316,11 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     public void testRetryScribing() throws Exception {
         controller.errorCount = 1;
         controller.executeRequest(context);
-        verify(digitsEventCollector).retryClickOnPhoneScreen();
+        verify(digitsEventCollector)
+                .retryClickOnPhoneScreen(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
     }
 
     private AuthConfig createAuthConfig(boolean tosUpdate, boolean isVoiceEnabled,

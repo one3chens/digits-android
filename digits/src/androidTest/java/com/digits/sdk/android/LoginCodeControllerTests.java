@@ -272,7 +272,12 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final ArgumentCaptor<DigitsCallback> callbackArgumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
         controller.executeRequest(context);
-        verify(digitsEventCollector).submitClickOnLoginScreen();
+        verify(digitsEventCollector)
+                .submitClickOnLoginScreen(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sendButton).showProgress();
         verify(digitsClient).loginDevice(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
                 callbackArgumentCaptor.capture());

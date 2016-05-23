@@ -45,9 +45,14 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
     public void setUp() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder().withAuthStartTime(1L)
+                .withCountry("US")
+                .withLanguage("en");
+
         controller = new PinCodeController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE,
-                errors, new ActivityClassManagerImp(), digitsEventCollector, false);
+                errors, new ActivityClassManagerImp(), digitsEventCollector, false,
+                digitsEventDetailsBuilder);
     }
 
     public void testExecuteRequest_success() throws Exception {
@@ -55,7 +60,12 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         final Result<DigitsSessionResponse> result = new Result(response, null);
         callback.success(result);
-        verify(digitsEventCollector).twoFactorPinVerificationSuccess();
+        verify(digitsEventCollector)
+                .twoFactorPinVerificationSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         assertEquals(sessionManager.isSet, true);
         assertEquals(sessionManager.getActiveSession(), DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
@@ -80,7 +90,12 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final ArgumentCaptor<DigitsCallback> callbackArgumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
         controller.executeRequest(context);
-        verify(digitsEventCollector).submitClickOnPinScreen();
+        verify(digitsEventCollector)
+                .submitClickOnPinScreen(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sendButton).showProgress();
         verify(digitsClient).verifyPin(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
                 callbackArgumentCaptor.capture());
@@ -112,7 +127,8 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
                 TestConstants.getVerifyAccountResponse(), null);
         controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
-                new ActivityClassManagerImp(), digitsEventCollector, true);
+                new ActivityClassManagerImp(), digitsEventCollector, true,
+                digitsEventDetailsBuilder);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -120,7 +136,12 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
                 .getValue();
         emailRequestCallback.success(resultEmailRequest);
-        verify(digitsEventCollector).twoFactorPinVerificationSuccess();
+        verify(digitsEventCollector)
+                .twoFactorPinVerificationSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         final DigitsSession session = DigitsSession.create(
                 TestConstants.getVerifyAccountResponse());
         verifyEmailRequest(session);
@@ -132,7 +153,8 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final Result<DigitsSessionResponse> result = new Result(response, null);
         controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
-                new ActivityClassManagerImp(), digitsEventCollector, true);
+                new ActivityClassManagerImp(), digitsEventCollector, true,
+                digitsEventDetailsBuilder);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
@@ -155,7 +177,8 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
                 controller.activityClassManager.getEmailRequestActivity());
         controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
-                new ActivityClassManagerImp(), digitsEventCollector, true);
+                new ActivityClassManagerImp(), digitsEventCollector, true,
+                digitsEventDetailsBuilder);
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);

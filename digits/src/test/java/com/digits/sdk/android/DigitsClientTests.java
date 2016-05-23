@@ -88,8 +88,8 @@ public class DigitsClientTests {
     private Fabric fabric;
     private Activity activity;
     private LoginResultReceiver loginResultReceiver;
-    private ArgumentCaptor<DigitsEventDetails> digitsEventDetailsArgumentCaptor;
     private DigitsEventDetailsBuilder digitsEventDetailsBuilder;
+    private ArgumentCaptor<DigitsEventDetails> detailsArgumentCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -108,16 +108,17 @@ public class DigitsClientTests {
         digitsEventCollector = mock(DigitsEventCollector.class);
         fabric = mock(Fabric.class);
         activity = mock(Activity.class);
-        loginResultReceiver = new LoginResultReceiver(new WeakAuthCallback(callback,
-                mock(DigitsEventCollector.class)), sessionManager);
+        loginResultReceiver = new LoginResultReceiver(new WeakAuthCallback(callback),
+                sessionManager, mock(DigitsEventCollector.class));
         authRequestQueue = createRequestQueue();
         userSession = DigitsSession.create(TestConstants.DIGITS_USER, TestConstants.PHONE);
         guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
-        digitsEventDetailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
         digitsEventDetailsBuilder = new DigitsEventDetailsBuilder()
                 .withAuthStartTime(System.currentTimeMillis())
                 .withCountry("US")
                 .withLanguage("en");
+        detailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
+
         when(digitsApiClient.getService()).thenReturn(service);
         when(digits.getContext()).thenReturn(context);
         when(digits.getAuthConfig()).thenReturn(twitterAuthConfig);
@@ -219,9 +220,15 @@ public class DigitsClientTests {
                 .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(configWithCallback);
-        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
-        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
+        DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
+
+        verify(digitsEventCollector).authSuccess(detailsArgumentCaptor.capture());
+        digitsEventDetails = detailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(callback).success(userSession, TestConstants.PHONE);
     }
@@ -234,9 +241,15 @@ public class DigitsClientTests {
                 .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(configWithPhone);
-        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
-        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
+        DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
+
+        verify(digitsEventCollector).authSuccess(detailsArgumentCaptor.capture());
+        digitsEventDetails = detailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(callback).success(userSession, TestConstants.PHONE);
     }
@@ -291,8 +304,8 @@ public class DigitsClientTests {
         final Intent intent  = mock(Intent.class);
 
         loginOrSignupComposer.success(intent);
-        verify(digitsEventCollector).submitPhoneSuccess(digitsEventDetailsArgumentCaptor.capture());
-        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        verify(digitsEventCollector).submitPhoneSuccess(detailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(confirmationCodeCallback).success(intent);
     }
@@ -381,8 +394,8 @@ public class DigitsClientTests {
         final Bundle expectedBundle = createBundle(loginResultReceiver, "", false);
 
         digitsClient.startSignUp(configWithCallback);
-        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
-        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verifyNoMoreInteractions(digitsEventCollector);
@@ -411,8 +424,8 @@ public class DigitsClientTests {
         final Bundle expectedBundle = createBundle(loginResultReceiver, phone, emailCollection);
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
-        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verifyNoMoreInteractions(digitsEventCollector);
@@ -455,8 +468,8 @@ public class DigitsClientTests {
         };
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
-        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verifyNoMoreInteractions(digitsEventCollector);
@@ -486,12 +499,12 @@ public class DigitsClientTests {
         };
 
         digitsClient.startSignUp(digitsAuthConfig);
-        verify(digitsEventCollector).authImpression(digitsEventDetailsArgumentCaptor.capture());
-        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(digitsEventCollector)
-                .submitClickOnPhoneScreen(digitsEventDetailsArgumentCaptor.capture());
+                .submitClickOnPhoneScreen(detailsArgumentCaptor.capture());
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(digitsClient.loginOrSignupComposer).start();
     }

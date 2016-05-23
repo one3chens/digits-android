@@ -118,6 +118,13 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
         assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
+
+        final DigitsEventDetailsBuilder details = intent.getExtras()
+                .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+        assertNotNull(details.country);
+        assertNotNull(details.language);
+        assertNotNull(details.authStartTime);
+
         verify(context).finish();
     }
 

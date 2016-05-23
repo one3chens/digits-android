@@ -55,7 +55,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
         final boolean isValidBundle = BundleManager.assertContains(bundle,
                 DigitsClient.EXTRA_RESULT_RECEIVER, DigitsClient.EXTRA_PHONE);
 
-        if (isValidBundle){
+        if (isValidBundle) {
             final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
                     bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
 
@@ -121,7 +121,8 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void onResume() {
-        digitsEventCollector.signupScreenImpression();
+        digitsEventCollector.signupScreenImpression(eventDetailsBuilder
+                .withCurrentTime(System.currentTimeMillis()).build());
         controller.onResume();
     }
 

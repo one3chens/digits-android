@@ -45,7 +45,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     final StateButton sendButton;
     final SessionManager<DigitsSession> sessionManager;
     final DigitsEventCollector digitsEventCollector;
-    final DigitsEventDetailsBuilder digitsEventDetailsBuilder;
+    final DigitsEventDetailsBuilder eventDetailsBuilder;
     int errorCount;
     CountDownTimer countDownTimer;
 
@@ -54,7 +54,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
                          ActivityClassManager activityClassManager,
                          SessionManager<DigitsSession> sessionManager,
                          DigitsEventCollector digitsEventCollector,
-                         DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
+                         DigitsEventDetailsBuilder eventDetailsBuilder) {
         this.resultReceiver = resultReceiver;
         this.digitsClient = client;
         this.activityClassManager = activityClassManager;
@@ -64,26 +64,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         this.sessionManager = sessionManager;
         this.errorCount = 0;
         this.digitsEventCollector = digitsEventCollector;
-        this.digitsEventDetailsBuilder = digitsEventDetailsBuilder;
-    }
-
-    //TODO:araghav
-    //This controller to be phased out after refactor
-    DigitsControllerImpl(ResultReceiver resultReceiver, StateButton stateButton, EditText editText,
-                         DigitsClient client, ErrorCodes errors,
-                         ActivityClassManager activityClassManager,
-                         SessionManager<DigitsSession> sessionManager,
-                         DigitsEventCollector digitsEventCollector) {
-        this.resultReceiver = resultReceiver;
-        this.digitsClient = client;
-        this.activityClassManager = activityClassManager;
-        this.sendButton = stateButton;
-        this.editText = editText;
-        this.errors = errors;
-        this.sessionManager = sessionManager;
-        this.errorCount = 0;
-        this.digitsEventCollector = digitsEventCollector;
-        this.digitsEventDetailsBuilder = null;
+        this.eventDetailsBuilder = eventDetailsBuilder;
     }
 
     abstract void scribeControllerFailure();
@@ -116,6 +97,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         final Intent intent = new Intent(context, activityClassManager.getFailureActivity());
         intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, receiver);
         intent.putExtra(DigitsClient.EXTRA_FALLBACK_REASON, reason);
+        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         context.startActivity(intent);
         finishActivity(context);
     }
@@ -173,30 +155,33 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
 
     abstract Uri getTosUri();
 
-    Bundle getBundle(String phoneNumber) {
+    Bundle getBundle(String phoneNumber, DigitsEventDetailsBuilder detailsBuilder) {
         final Bundle bundle = new Bundle();
         bundle.putString(DigitsClient.EXTRA_PHONE, phoneNumber);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, detailsBuilder);
         return bundle;
     }
 
     void loginSuccess(final Context context, final DigitsSession session,
-                      final String phoneNumber) {
+                      final String phoneNumber, final DigitsEventDetailsBuilder detailsBuilder) {
         sessionManager.setActiveSession(session);
         sendButton.showFinish();
         editText.postDelayed(new Runnable() {
             @Override
             public void run() {
-                resultReceiver.send(LoginResultReceiver.RESULT_OK, getBundle(phoneNumber));
+                resultReceiver.send(LoginResultReceiver.RESULT_OK,
+                        getBundle(phoneNumber, detailsBuilder));
                 CommonUtils.finishAffinity((Activity) context,
                         DigitsActivity.RESULT_FINISH_DIGITS);
             }
         }, POST_DELAY_MS);
     }
 
-    void startEmailRequest(final Context context, String phoneNumber) {
+    void startEmailRequest(final Context context, String phoneNumber,
+                           DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         sendButton.showFinish();
         final Intent intent = new Intent(context, activityClassManager.getEmailRequestActivity());
-        final Bundle bundle = getBundle(phoneNumber);
+        final Bundle bundle = getBundle(phoneNumber, digitsEventDetailsBuilder);
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);

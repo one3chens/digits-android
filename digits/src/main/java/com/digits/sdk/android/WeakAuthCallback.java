@@ -19,34 +19,23 @@ package com.digits.sdk.android;
 
 import java.lang.ref.WeakReference;
 
-class WeakAuthCallback implements AuthCallback {
+class WeakAuthCallback {
     private final WeakReference<AuthCallback> callbackWeakReference;
-    private final DigitsEventCollector digitsEventCollector;
 
-    public WeakAuthCallback(AuthCallback callback) {
-        this(callback, Digits.getInstance().getDigitsEventCollector());
-    }
-
-    WeakAuthCallback(AuthCallback callback,
-                     DigitsEventCollector digitsEventCollector) {
+    WeakAuthCallback(AuthCallback callback) {
         this.callbackWeakReference = new WeakReference<>(callback);
-        this.digitsEventCollector = digitsEventCollector;
     }
 
-    @Override
     public void success(DigitsSession session, String phoneNumber) {
         final AuthCallback callback = callbackWeakReference.get();
         if (callback != null) {
-            digitsEventCollector.authSuccess();
             callback.success(session, phoneNumber);
         }
     }
 
-    @Override
     public void failure(DigitsException error) {
         final AuthCallback callback = callbackWeakReference.get();
         if (callback != null) {
-            digitsEventCollector.authFailure();
             callback.failure(error);
         }
     }

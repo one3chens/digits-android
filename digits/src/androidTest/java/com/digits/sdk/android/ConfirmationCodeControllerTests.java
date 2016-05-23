@@ -167,7 +167,12 @@ public class ConfirmationCodeControllerTests extends
         when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
                 (CODE));
         controller.executeRequest(context);
-        verify(digitsEventCollector).submitClickOnSignupScreen();
+        verify(digitsEventCollector)
+                .submitClickOnSignupScreen(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sendButton).showProgress();
         final ArgumentCaptor<DigitsCallback> argumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);

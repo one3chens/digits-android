@@ -25,8 +25,26 @@ package com.digits.sdk.android;
  */
 public abstract class DigitsEventLogger {
     public void loginBegin(DigitsEventDetails digitsEventDetails){};
+    public void loginSuccess(DigitsEventDetails digitsEventDetails) {};
+    public void loginFailure(DigitsEventDetails digitsEventDetails) {};
+
     public void phoneNumberImpression(DigitsEventDetails digitsEventDetails){};
     public void phoneNumberSubmit(DigitsEventDetails digitsEventDetails) {};
     public void phoneNumberSuccess(DigitsEventDetails digitsEventDetails) {};
-    public void loginSuccess() {};
+
+    public void confirmationCodeImpression(DigitsEventDetails digitsEventDetails){};
+    public void confirmationCodeSubmit(DigitsEventDetails digitsEventDetails) {};
+    public void confirmationCodeSuccess(DigitsEventDetails digitsEventDetails) {};
+
+    public void twoFactorPinImpression(DigitsEventDetails digitsEventDetails){};
+    public void twoFactorPinSubmit(DigitsEventDetails digitsEventDetails){};
+    public void twoFactorPinSuccess(DigitsEventDetails digitsEventDetails){};
+
+    public void emailImpression(DigitsEventDetails digitsEventDetails){};
+    public void emailSubmit(DigitsEventDetails digitsEventDetails) {};
+    public void emailSuccess(DigitsEventDetails digitsEventDetails) {};
+
+    public void failureImpression(DigitsEventDetails digitsEventDetails){};
+    public void failureRetryClick(DigitsEventDetails digitsEventDetails) {};
+    public void failureDismissClick(DigitsEventDetails digitsEventDetails) {};
 }

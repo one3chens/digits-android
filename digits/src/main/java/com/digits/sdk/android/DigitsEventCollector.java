@@ -52,15 +52,18 @@ class DigitsEventCollector {
         }
     }
 
-    public void authSuccess() {
+    public void authSuccess(DigitsEventDetails details) {
         digitsScribeClient.loginSuccess();
         for (DigitsEventLogger logger: eventLoggers) {
-            logger.loginSuccess();
+            logger.loginSuccess(details);
         }
     }
 
-    public void authFailure() {
+    public void authFailure(DigitsEventDetails details) {
         digitsScribeClient.failure(Component.EMPTY);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.loginFailure(details);
+        }
     }
 
     //Phone screen events
@@ -81,8 +84,11 @@ class DigitsEventCollector {
         }
     }
 
-    public void retryClickOnPhoneScreen() {
+    public void retryClickOnPhoneScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.AUTH, Element.RETRY);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.phoneNumberSubmit(details);
+        }
     }
 
     public void submitPhoneSuccess(DigitsEventDetails details) {
@@ -101,12 +107,18 @@ class DigitsEventCollector {
     }
 
     //Login screen events
-    public void loginScreenImpression() {
+    public void loginScreenImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.LOGIN);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.confirmationCodeImpression(details);
+        }
     }
 
-    public void submitClickOnLoginScreen() {
+    public void submitClickOnLoginScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.LOGIN, Element.SUBMIT);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.confirmationCodeSubmit(details);
+        }
     }
 
     public void resendClickOnLoginScreen() {
@@ -120,7 +132,7 @@ class DigitsEventCollector {
     public void loginCodeSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.LOGIN);
         for (DigitsEventLogger logger: eventLoggers) {
-            logger.loginSuccess();
+            logger.confirmationCodeSuccess(details);
         }
     }
 
@@ -133,12 +145,18 @@ class DigitsEventCollector {
     }
 
     //Signup screen events
-    public void signupScreenImpression() {
+    public void signupScreenImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.SIGNUP);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.confirmationCodeImpression(details);
+        }
     }
 
-    public void submitClickOnSignupScreen() {
+    public void submitClickOnSignupScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.SIGNUP, Element.SUBMIT);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.confirmationCodeSubmit(details);
+        }
     }
 
     public void resendClickOnSignupScreen() {
@@ -152,7 +170,7 @@ class DigitsEventCollector {
     public void signupSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.SIGNUP);
         for (DigitsEventLogger logger: eventLoggers) {
-            logger.loginSuccess();
+            logger.confirmationCodeSuccess(details);
         }
     }
 
@@ -165,16 +183,25 @@ class DigitsEventCollector {
     }
 
     //Pin screen events
-    public void pinScreenImpression() {
+    public void pinScreenImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.PIN);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.twoFactorPinImpression(details);
+        }
     }
 
-    public void submitClickOnPinScreen() {
+    public void submitClickOnPinScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.PIN, Element.SUBMIT);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.twoFactorPinSubmit(details);
+        }
     }
 
-    public void twoFactorPinVerificationSuccess() {
+    public void twoFactorPinVerificationSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.PIN);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.twoFactorPinSuccess(details);
+        }
     }
 
     public void twoFactorPinVerificationFailure() {
@@ -186,16 +213,25 @@ class DigitsEventCollector {
     }
 
     //Email screen events
-    public void emailScreenImpression() {
+    public void emailScreenImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.EMAIL);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.emailImpression(details);
+        }
     }
 
-    public void submitClickOnEmailScreen() {
+    public void submitClickOnEmailScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.EMAIL, Element.SUBMIT);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.emailSubmit(details);
+        }
     }
 
-    public void submitEmailSuccess() {
+    public void submitEmailSuccess(DigitsEventDetails details) {
         digitsScribeClient.success(Component.EMAIL);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.emailSuccess(details);
+        }
     }
 
     public void submitEmailFailure() {
@@ -220,15 +256,24 @@ class DigitsEventCollector {
     }
 
     //Failure screen events
-    public void failureScreenImpression() {
+    public void failureScreenImpression(DigitsEventDetails details) {
         digitsScribeClient.impression(Component.FAILURE);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.failureImpression(details);
+        }
     }
 
-    public void retryClickOnFailureScreen() {
+    public void retryClickOnFailureScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.FAILURE, Element.RETRY);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.failureRetryClick(details);
+        }
     }
 
-    public void dismissClickOnFailureScreen() {
+    public void dismissClickOnFailureScreen(DigitsEventDetails details) {
         digitsScribeClient.click(Component.FAILURE, Element.DISMISS);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.failureDismissClick(details);
+        }
     }
 }

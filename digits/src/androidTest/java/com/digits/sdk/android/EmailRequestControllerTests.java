@@ -42,9 +42,12 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
         MockitoAnnotations.initMocks(this);
         sessionManager = new DummySessionManager(
                 DigitsSession.create(TestConstants.DIGITS_USER, PHONE_WITH_COUNTRY_CODE));
+        digitsEventDetailsBuilder = new DigitsEventDetailsBuilder().withAuthStartTime(1L)
+                .withCountry("US")
+                .withLanguage("en");
         controller = new DummyEmailRequestController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, new ActivityClassManagerImp(), digitsClient,
-                PHONE_WITH_COUNTRY_CODE, digitsEventCollector, errors);
+                PHONE_WITH_COUNTRY_CODE, digitsEventCollector, errors, digitsEventDetailsBuilder);
     }
 
     @Override
@@ -62,7 +65,13 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
     private void mainRequest() {
         controller.executeRequest(context);
 
-        verify(digitsEventCollector).submitClickOnEmailScreen();
+        verify(digitsEventCollector)
+                .submitClickOnEmailScreen(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
+
         verify(sendButton).showProgress();
         verify(phoneEditText, times(2)).getText();
         verifyNoInteractions(digitsClient);
@@ -75,10 +84,14 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
         final DigitsCallback callback = executeRequest();
         callback.success(result);
 
-        verify(digitsEventCollector).submitEmailSuccess();
         assertEquals(sessionManager.isSet(), true);
         assertEquals(sessionManager.getActiveSession(), DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
+        verify(digitsEventCollector).submitEmailSuccess(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
                 (Runnable.class);

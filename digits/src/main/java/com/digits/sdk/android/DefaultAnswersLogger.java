@@ -110,6 +110,19 @@ class DefaultAnswersLogger extends DigitsEventLogger {
         invokeMethod(answersVersion, logCustomMethod, answersInstance, customEvent);
     }
 
+    @Override
+    public void loginSuccess(DigitsEventDetails details) {
+        final Object answersInstance = invokeMethod(answersVersion, getInstanceMethod,
+                answersClass);
+        final Object customEvent =
+                newInstance(answersVersion, customEventConstructor, "Digits Login Success");
+
+        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Language",
+                details.language);
+        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Country",
+                details.country);
+        invokeMethod(answersVersion, logCustomMethod, answersInstance, customEvent);
+    }
 
     @NonNull
     private static String getAnswersVersion() {

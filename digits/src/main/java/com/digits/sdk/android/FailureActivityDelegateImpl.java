@@ -30,6 +30,7 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
     final Activity activity;
     final FailureController controller;
     final DigitsEventCollector digitsEventCollector;
+    DigitsEventDetailsBuilder eventDetailsBuilder;
 
     public FailureActivityDelegateImpl(Activity activity) {
         this(activity, new FailureControllerImpl(), Digits.getInstance().getDigitsEventCollector());
@@ -43,11 +44,15 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
     }
 
     public void init() {
-        digitsEventCollector.failureScreenImpression();
         final Bundle bundle = activity.getIntent().getExtras();
+
         if (isBundleValid(bundle)) {
             setContentView();
             setUpViews();
+            eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+
+            digitsEventCollector.failureScreenImpression(eventDetailsBuilder
+                    .withCurrentTime(System.currentTimeMillis()).build());
         } else {
             throw new IllegalAccessError("This activity can only be started from Digits");
         }
@@ -74,9 +79,11 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                digitsEventCollector.dismissClickOnFailureScreen();
+                digitsEventCollector.dismissClickOnFailureScreen(eventDetailsBuilder
+                        .withCurrentTime(System.currentTimeMillis()).build());
                 CommonUtils.finishAffinity(activity, DigitsActivity.RESULT_FINISH_DIGITS);
-                controller.sendFailure(getBundleResultReceiver(), getBundleException());
+                controller.sendFailure(getBundleResultReceiver(), getBundleException(),
+                        eventDetailsBuilder);
             }
         });
     }
@@ -85,7 +92,8 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                digitsEventCollector.retryClickOnFailureScreen();
+                digitsEventCollector.retryClickOnFailureScreen(eventDetailsBuilder
+                        .withCurrentTime(System.currentTimeMillis()).build());
                 controller.tryAnotherNumber(activity, getBundleResultReceiver());
                 activity.finish();
             }

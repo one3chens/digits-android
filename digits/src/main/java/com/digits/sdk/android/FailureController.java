@@ -22,5 +22,6 @@ import android.os.ResultReceiver;
 
 interface FailureController {
     void tryAnotherNumber(Activity activity, ResultReceiver resultReceiver);
-    void sendFailure(ResultReceiver resultReceiver, Exception exception);
+    void sendFailure(ResultReceiver resultReceiver, Exception exception,
+                     DigitsEventDetailsBuilder detailsBuilder);
 }

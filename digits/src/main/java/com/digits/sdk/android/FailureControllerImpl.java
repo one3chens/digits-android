@@ -39,9 +39,11 @@ class FailureControllerImpl implements FailureController {
         activity.finish();
     }
 
-    public void sendFailure(ResultReceiver resultReceiver, Exception exception) {
+    public void sendFailure(ResultReceiver resultReceiver, Exception exception,
+                            DigitsEventDetailsBuilder detailsBuilder) {
         final Bundle bundle = new Bundle();
         bundle.putString(LoginResultReceiver.KEY_ERROR, exception.getLocalizedMessage());
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, detailsBuilder);
         resultReceiver.send(LoginResultReceiver.RESULT_ERROR, bundle);
     }
 

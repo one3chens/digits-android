@@ -32,8 +32,14 @@ public class PinCodeActivityDelegateTests extends
     }
 
     public void testIsValid() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang")
+                        .withCountry("US");
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
         bundle.putString(DigitsClient.EXTRA_USER_ID, "");
@@ -42,7 +48,13 @@ public class PinCodeActivityDelegateTests extends
     }
 
     public void testIsValid_missingResultReceiver() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang")
+                        .withCountry("US");
         final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
         bundle.putString(DigitsClient.EXTRA_USER_ID, "");
@@ -51,7 +63,13 @@ public class PinCodeActivityDelegateTests extends
     }
 
     public void testIsValid_missingPhoneNumber() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang")
+                        .withCountry("US");
         final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
         bundle.putString(DigitsClient.EXTRA_USER_ID, "");
@@ -60,6 +78,11 @@ public class PinCodeActivityDelegateTests extends
     }
 
     public void testIsValid_missingRequestId() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang")
+                        .withCountry("US");
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
@@ -69,10 +92,61 @@ public class PinCodeActivityDelegateTests extends
     }
 
     public void testIsValid_missingUserId() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang")
+                        .withCountry("US");
         final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+
+        assertFalse(delegate.isValid(bundle));
+    }
+
+    public void testIsValid_missingAuthStartTime() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withLanguage("lang")
+                        .withCountry("US");
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+
+        assertFalse(delegate.isValid(bundle));
+    }
+
+    public void testIsValid_missingLanguage() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withCountry("US");
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+
+        assertFalse(delegate.isValid(bundle));
+    }
+
+    public void testIsValid_missingCountry() {
+        final DigitsEventDetailsBuilder eventDetailsBuilder =
+                new DigitsEventDetailsBuilder()
+                        .withAuthStartTime(1L)
+                        .withLanguage("lang");
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -83,9 +157,17 @@ public class PinCodeActivityDelegateTests extends
 
     public void testOnResume() {
         delegate.controller = controller;
+        delegate.eventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withLanguage("lang")
+                .withCountry("US")
+                .withAuthStartTime(1L);
         delegate.onResume();
         verify(controller).onResume();
-        verify(digitsEventCollector).pinScreenImpression();
+        verify(digitsEventCollector).pinScreenImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails details = detailsArgumentCaptor.getValue();
+        assertNotNull(details.language);
+        assertNotNull(details.country);
+        assertNotNull(details.elapsedTimeInMillis);
     }
 
     public class DummyPinCodeActivityDelegate extends PinCodeActivityDelegate {

@@ -36,12 +36,12 @@ class PinCodeController extends DigitsControllerImpl {
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                       EditText phoneEditText, String requestId, long userId,
                       String phoneNumber, DigitsEventCollector digitsEventCollector,
-                      Boolean isEmailCollection) {
+                      Boolean isEmailCollection, DigitsEventDetailsBuilder details) {
         this(resultReceiver, stateButton, phoneEditText, Digits.getSessionManager(),
                 Digits.getInstance().getDigitsClient(), requestId, userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), digitsEventCollector,
-                isEmailCollection);
+                isEmailCollection, details);
     }
 
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
@@ -49,9 +49,10 @@ class PinCodeController extends DigitsControllerImpl {
                       DigitsClient digitsClient, String requestId, long userId,
                       String phoneNumber, ErrorCodes errors,
                       ActivityClassManager activityClassManager,
-                      DigitsEventCollector digitsEventCollector, Boolean isEmailCollection) {
+                      DigitsEventCollector digitsEventCollector, Boolean isEmailCollection,
+                      DigitsEventDetailsBuilder details) {
         super(resultReceiver, stateButton, phoneEditText, digitsClient, errors,
-                activityClassManager, sessionManager, digitsEventCollector);
+                activityClassManager, sessionManager, digitsEventCollector, details);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
@@ -75,7 +76,8 @@ class PinCodeController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        digitsEventCollector.submitClickOnPinScreen();
+        digitsEventCollector.submitClickOnPinScreen(eventDetailsBuilder
+                        .withCurrentTime(System.currentTimeMillis()).build());
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -84,14 +86,16 @@ class PinCodeController extends DigitsControllerImpl {
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         @Override
                         public void success(Result<DigitsSessionResponse> result) {
-                            digitsEventCollector.twoFactorPinVerificationSuccess();
+                            digitsEventCollector.twoFactorPinVerificationSuccess(eventDetailsBuilder
+                                            .withCurrentTime(System.currentTimeMillis()).build());
                             final DigitsSession session = DigitsSession.create(result.data,
                                     phoneNumber);
                             sessionManager.setActiveSession(session);
                             if (isEmailCollection) {
                                 emailRequest(context, session);
                             } else {
-                                loginSuccess(context, session, phoneNumber);
+                                loginSuccess(context, session, phoneNumber,
+                                        eventDetailsBuilder);
                             }
                         }
                     });
@@ -112,9 +116,10 @@ class PinCodeController extends DigitsControllerImpl {
                         final DigitsSession newSession =
                                 DigitsSession.create(result.data);
                         if (canRequestEmail(newSession, session)) {
-                            startEmailRequest(context, phoneNumber);
+                            startEmailRequest(context, phoneNumber, eventDetailsBuilder);
                         } else {
-                            loginSuccess(context, newSession, phoneNumber);
+                            loginSuccess(context, newSession, phoneNumber,
+                                    eventDetailsBuilder);
                         }
                     }
                 });

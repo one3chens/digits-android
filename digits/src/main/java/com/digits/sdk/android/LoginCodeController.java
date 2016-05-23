@@ -44,13 +44,13 @@ class LoginCodeController extends DigitsControllerImpl {
                         InvertedStateButton resendButton, InvertedStateButton callMeButton,
                         EditText phoneEditText, String requestId, long userId, String phoneNumber,
                         DigitsEventCollector digitsEventCollector, Boolean emailCollection,
-                        TextView timerText, DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
+                        TextView timerText, DigitsEventDetailsBuilder details) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(), requestId,
                 userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), digitsEventCollector,
-                emailCollection, timerText, digitsEventDetailsBuilder);
+                emailCollection, timerText, details);
     }
 
     LoginCodeController(ResultReceiver resultReceiver,
@@ -60,9 +60,9 @@ class LoginCodeController extends DigitsControllerImpl {
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
                         ActivityClassManager activityClassManager,
                         DigitsEventCollector digitsEventCollector, Boolean emailCollection,
-                        TextView timerText, DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
+                        TextView timerText, DigitsEventDetailsBuilder details) {
         super(resultReceiver, stateButton, loginEditText, client, errors, activityClassManager,
-                sessionManager, digitsEventCollector, digitsEventDetailsBuilder);
+                sessionManager, digitsEventCollector, details);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
@@ -77,7 +77,8 @@ class LoginCodeController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        digitsEventCollector.submitClickOnLoginScreen();
+        digitsEventCollector.submitClickOnLoginScreen(
+                eventDetailsBuilder.withCurrentTime(System.currentTimeMillis()).build());
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -85,11 +86,10 @@ class LoginCodeController extends DigitsControllerImpl {
             digitsClient.loginDevice(requestId, userId, code,
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         public void success(Result<DigitsSessionResponse> result) {
-                            final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
-                                LoginCodeController.this.digitsEventDetailsBuilder
-                                        .withCurrentTime(System.currentTimeMillis());
-                            digitsEventCollector
-                                    .loginCodeSuccess(digitsEventDetailsBuilder.build());
+                            digitsEventCollector.loginCodeSuccess(
+                                    eventDetailsBuilder
+                                            .withCurrentTime(System.currentTimeMillis())
+                                            .build());
                             if (result.data.isEmpty()) {
                                 startPinCodeActivity(context);
                             } else {
@@ -99,7 +99,8 @@ class LoginCodeController extends DigitsControllerImpl {
                                 if (emailCollection) {
                                     emailRequest(context, session);
                                 } else {
-                                    loginSuccess(context, session, phoneNumber);
+                                    loginSuccess(context, session, phoneNumber,
+                                            eventDetailsBuilder);
                                 }
                             }
                         }
@@ -161,9 +162,11 @@ class LoginCodeController extends DigitsControllerImpl {
                         final DigitsSession newSession =
                                 DigitsSession.create(result.data);
                         if (canRequestEmail(newSession, session)) {
-                            startEmailRequest(context, phoneNumber);
+                            startEmailRequest(context, phoneNumber,
+                                    LoginCodeController.this.eventDetailsBuilder);
                         } else {
-                            loginSuccess(context, newSession, phoneNumber);
+                            loginSuccess(context, newSession, phoneNumber,
+                                    LoginCodeController.this.eventDetailsBuilder);
                         }
                     }
                 });
@@ -171,7 +174,7 @@ class LoginCodeController extends DigitsControllerImpl {
 
     private void startPinCodeActivity(Context context) {
         final Intent intent = new Intent(context, activityClassManager.getPinCodeActivity());
-        final Bundle bundle = getBundle(phoneNumber);
+        final Bundle bundle = getBundle(phoneNumber, eventDetailsBuilder);
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, requestId);
         bundle.putLong(DigitsClient.EXTRA_USER_ID, userId);

@@ -31,6 +31,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -47,6 +48,9 @@ public class LoginResultReceiverTests {
     private SessionManager<DigitsSession> mockSessionManager;
     private DigitsSession session;
     private LoginResultReceiver receiver;
+    private ArgumentCaptor<DigitsEventDetails> detailsArgumentCaptor;
+    private DigitsEventDetailsBuilder details;
+    private DigitsEventCollector collector;
 
     @Before
     public void setUp() throws Exception {
@@ -54,41 +58,65 @@ public class LoginResultReceiverTests {
                 TestConstants.SECRET), TestConstants.USER_ID, TestConstants.PHONE,
                 TestConstants.EMAIL);
         mockSessionManager = mock(SessionManager.class);
+        details = new DigitsEventDetailsBuilder()
+                .withAuthStartTime(1L)
+                .withLanguage("en")
+                .withCountry("US");
+
         when(mockSessionManager.getActiveSession()).thenReturn(session);
         callback = mock(WeakAuthCallback.class);
         bundle = new Bundle();
         bundle.putString(LoginResultReceiver.KEY_ERROR, ERROR);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, details);
         digitsErrorCaptor = ArgumentCaptor.forClass(DigitsException.class);
         sessionCaptor = ArgumentCaptor.forClass(DigitsSession.class);
+        detailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
+        collector = mock(DigitsEventCollector.class);
     }
 
     @Test
     public void testOnReceiveResult_nullListener() throws Exception {
-        final LoginResultReceiver receiver = new LoginResultReceiver(null, mockSessionManager);
+        final LoginResultReceiver receiver = new LoginResultReceiver((WeakAuthCallback) null,
+                mockSessionManager, collector);
         receiver.onReceiveResult(LoginResultReceiver.RESULT_OK, bundle);
         receiver.onReceiveResult(LoginResultReceiver.RESULT_ERROR, bundle);
     }
 
     @Test
     public void testOnReceiveResult_errorResultCode() throws Exception {
-        receiver = new LoginResultReceiver(callback, mockSessionManager);
+        receiver = new LoginResultReceiver(callback, mockSessionManager, collector);
         receiver.onReceiveResult(LoginResultReceiver.RESULT_ERROR, bundle);
+
         Mockito.verify(callback).failure(digitsErrorCaptor.capture());
         digitsErrorCaptor.getValue().getMessage().equals(ERROR);
+
+        Mockito.verify(collector).authFailure(detailsArgumentCaptor.capture());
+        final DigitsEventDetails actualDetails = detailsArgumentCaptor.getValue();
+
+        assertEquals(details.country, actualDetails.country);
+        assertEquals(details.language, actualDetails.language);
+        assertNotNull(actualDetails.elapsedTimeInMillis);
     }
 
     @Test
     public void testOnReceiveResult_successResultCode() throws Exception {
-        receiver = new LoginResultReceiver(callback, mockSessionManager);
+        receiver = new LoginResultReceiver(callback, mockSessionManager, collector);
         bundle.putString(DigitsClient.EXTRA_PHONE, PHONE);
         receiver.onReceiveResult(LoginResultReceiver.RESULT_OK, bundle);
         Mockito.verify(callback).success(sessionCaptor.capture(), eq(PHONE));
         assertEquals(session, sessionCaptor.getValue());
+
+        verify(collector).authSuccess(detailsArgumentCaptor.capture());
+        final DigitsEventDetails actualDetails = detailsArgumentCaptor.getValue();
+
+        assertEquals(details.country, actualDetails.country);
+        assertEquals(details.language, actualDetails.language);
+        assertNotNull(actualDetails.elapsedTimeInMillis);
     }
 
     @Test
     public void testOnReceiveResult_randomResultCode() throws Exception {
-        receiver = new LoginResultReceiver(callback, mockSessionManager);
+        receiver = new LoginResultReceiver(callback, mockSessionManager, collector);
         receiver.onReceiveResult(-1, bundle);
         verifyZeroInteractions(callback);
     }

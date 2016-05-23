@@ -39,13 +39,13 @@ abstract class LoginOrSignupComposer {
     final boolean emailCollection;
     final ResultReceiver resultReceiver;
     final ActivityClassManager activityClassManager;
-    final DigitsEventDetailsBuilder digitsEventDetailsBuilder;
+    final DigitsEventDetailsBuilder eventDetailsBuilder;
 
     LoginOrSignupComposer(final Context context, final DigitsClient digitsClient,
                           final String phoneNumber, final Verification verificationType,
                           boolean emailCollection, ResultReceiver resultReceiver,
                           ActivityClassManager activityClassManager,
-                          DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
+                          DigitsEventDetailsBuilder eventDetailsBuilder) {
         this.context = context;
         this.digitsClient = digitsClient;
         this.phoneNumber = phoneNumber;
@@ -53,7 +53,7 @@ abstract class LoginOrSignupComposer {
         this.emailCollection = emailCollection;
         this.resultReceiver = resultReceiver;
         this.activityClassManager = activityClassManager;
-        this.digitsEventDetailsBuilder = digitsEventDetailsBuilder;
+        this.eventDetailsBuilder = eventDetailsBuilder;
 
         loginCallback = new Callback<AuthResponse>() {
             @Override
@@ -135,7 +135,7 @@ abstract class LoginOrSignupComposer {
         intent.putExtra(DigitsClient.EXTRA_PHONE, phoneNumber);
         intent.putExtra(DigitsClient.EXTRA_AUTH_CONFIG, (Parcelable) config);
         intent.putExtra(DigitsClient.EXTRA_EMAIL, emailCollection);
-        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         return intent;
     }

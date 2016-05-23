@@ -37,7 +37,8 @@ public class DigitsActivityTests<T extends Activity> extends ActivityInstrumenta
                 .withCountry("US");
 
         final SessionManager<DigitsSession> sessionManager = Digits.getSessionManager();
-        final LoginResultReceiver resultReceiver = new LoginResultReceiver(null, sessionManager);
+        final LoginResultReceiver resultReceiver =
+                new LoginResultReceiver((WeakAuthCallback) null, sessionManager, null);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);

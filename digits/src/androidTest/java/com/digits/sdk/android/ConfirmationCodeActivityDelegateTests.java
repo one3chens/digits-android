@@ -35,48 +35,37 @@ import static org.mockito.Mockito.when;
 
 public class ConfirmationCodeActivityDelegateTests extends
         DigitsActivityDelegateTests<ConfirmationCodeActivityDelegate> {
-
+    final DigitsEventDetailsBuilder completeDetails =
+            new DigitsEventDetailsBuilder()
+                    .withAuthStartTime(ANY_LONG)
+                    .withLanguage(LANG)
+                    .withCountry(US_ISO2);
     @Override
     public ConfirmationCodeActivityDelegate getDelegate() {
         return spy(new DummyConfirmationCodeActivityDelegate(digitsEventCollector));
     }
 
     public void testIsValid() {
-        final DigitsEventDetailsBuilder eventDetailsBuilder =
-                new DigitsEventDetailsBuilder()
-                        .withAuthStartTime(1L)
-                        .withLanguage("lang")
-                        .withCountry("US");
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
 
         assertTrue(delegate.isValid(bundle));
     }
 
     public void testIsValid_missingResultReceiver() {
-        final DigitsEventDetailsBuilder eventDetailsBuilder =
-                new DigitsEventDetailsBuilder()
-                        .withAuthStartTime(1L)
-                        .withLanguage("lang")
-                        .withCountry("US");
         final Bundle bundle = new Bundle();
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
 
         assertFalse(delegate.isValid(bundle));
     }
 
     public void testIsValid_missingPhoneNumber() {
-        final DigitsEventDetailsBuilder eventDetailsBuilder =
-                new DigitsEventDetailsBuilder()
-                        .withAuthStartTime(1L)
-                        .withLanguage("lang")
-                        .withCountry("US");
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -84,8 +73,8 @@ public class ConfirmationCodeActivityDelegateTests extends
     public void testIsValid_missingAuthStartTime() {
         final DigitsEventDetailsBuilder eventDetailsBuilder =
                 new DigitsEventDetailsBuilder()
-                        .withLanguage("lang")
-                        .withCountry("US");
+                        .withLanguage(LANG)
+                        .withCountry(US_ISO2);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
@@ -97,8 +86,8 @@ public class ConfirmationCodeActivityDelegateTests extends
     public void testIsValid_missingLanguage() {
         final DigitsEventDetailsBuilder eventDetailsBuilder =
                 new DigitsEventDetailsBuilder()
-                        .withAuthStartTime(1L)
-                        .withCountry("US");
+                        .withAuthStartTime(ANY_LONG)
+                        .withCountry(US_ISO2);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
@@ -110,8 +99,8 @@ public class ConfirmationCodeActivityDelegateTests extends
     public void testIsValid_missingCountry() {
         final DigitsEventDetailsBuilder eventDetailsBuilder =
                 new DigitsEventDetailsBuilder()
-                        .withAuthStartTime(1L)
-                        .withLanguage("lang");
+                        .withAuthStartTime(ANY_LONG)
+                        .withLanguage(LANG);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
         bundle.putString(DigitsClient.EXTRA_PHONE, "");
@@ -134,9 +123,18 @@ public class ConfirmationCodeActivityDelegateTests extends
 
     public void testOnResume() {
         delegate.controller = controller;
+        delegate.eventDetailsBuilder = new DigitsEventDetailsBuilder()
+                .withLanguage(LANG)
+                .withCountry(US_ISO2)
+                .withAuthStartTime(ANY_LONG);
+
         delegate.onResume();
         verify(controller).onResume();
-        verify(digitsEventCollector).signupScreenImpression();
+        verify(digitsEventCollector).signupScreenImpression(detailsArgumentCaptor.capture());
+        final DigitsEventDetails details = detailsArgumentCaptor.getValue();
+        assertEquals(LANG, details.language);
+        assertEquals(US_ISO2, details.country);
+        assertNotNull(details.elapsedTimeInMillis);
     }
 
     public void testSetupResendButton() throws Exception {

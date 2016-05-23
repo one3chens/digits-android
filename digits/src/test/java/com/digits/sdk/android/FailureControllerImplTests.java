@@ -31,6 +31,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -47,6 +48,7 @@ public class FailureControllerImplTests {
     ResultReceiver receiver;
     DigitsException exception;
     Class<?> activityClass;
+    ArgumentCaptor<DigitsEventDetailsBuilder> detailsBuilderArgumentCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -57,6 +59,7 @@ public class FailureControllerImplTests {
         exception = mock(DigitsException.class);
         controller = new FailureControllerImpl(new ActivityClassManagerImp());
         activityClass = controller.classManager.getPhoneNumberActivity();
+        detailsBuilderArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetailsBuilder.class);
 
         when(activity.getPackageName()).thenReturn(activityClass.getPackage().toString());
     }
@@ -70,12 +73,20 @@ public class FailureControllerImplTests {
     @Test
     public void testSendFailure() {
         when(exception.getLocalizedMessage()).thenReturn(RANDOM_ERROR_MSG);
+        final DigitsEventDetailsBuilder details  = new DigitsEventDetailsBuilder()
+                .withAuthStartTime(1L)
+                .withLanguage("en")
+                .withCountry("US");
 
-        controller.sendFailure(receiver, exception);
-
+        controller.sendFailure(receiver, exception, details);
         verify(receiver).send(eq(LoginResultReceiver.RESULT_ERROR), bundleArgumentCaptor.capture());
         final Bundle bundle = bundleArgumentCaptor.getValue();
         assertEquals(RANDOM_ERROR_MSG, bundle.getString(LoginResultReceiver.KEY_ERROR));
+        final DigitsEventDetailsBuilder actualDetailsBuilder = bundle
+                .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+        assertNotNull(actualDetailsBuilder.authStartTime);
+        assertNotNull(actualDetailsBuilder.country);
+        assertNotNull(actualDetailsBuilder.language);
     }
 
     @Test

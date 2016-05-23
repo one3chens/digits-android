@@ -52,6 +52,7 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
     DigitsEventCollector digitsEventCollector;
     RelativeLayout.LayoutParams layoutParams;
     TosFormatHelper tosFormatHelper;
+    ArgumentCaptor<DigitsEventDetails> detailsArgumentCaptor;
 
     @Override
     public void setUp() throws Exception {
@@ -71,6 +72,7 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
         timerText = mock(TextView.class);
         layoutParams = mock(RelativeLayout.LayoutParams.class);
         tosFormatHelper = mock(TosFormatHelper.class);
+        detailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
     }
 
     public abstract T getDelegate();
