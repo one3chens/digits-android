@@ -52,8 +52,8 @@ public class DigitsClient {
     private final Digits digits;
     private final SessionManager<DigitsSession> sessionManager;
 
-    DigitsClient() {
-        this(Digits.getInstance(), Digits.getSessionManager(), new DigitsApiClientManager(),
+    DigitsClient(DigitsApiClientManager apiClientManager) {
+        this(Digits.getInstance(), Digits.getSessionManager(), apiClientManager,
                 null, Digits.getInstance().getDigitsEventCollector());
     }
 
@@ -75,16 +75,12 @@ public class DigitsClient {
         this.digitsEventCollector = digitsEventCollector;
     }
 
-    DigitsApiClientManager getApiClientManager(){
-        return apiClientManager;
-    }
-
     protected DigitsAuthRequestQueue createAuthRequestQueue(SessionManager sessionManager) {
         final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>(1);
         sessionManagers.add(sessionManager);
         final DigitsGuestSessionProvider sessionProvider =
                 new DigitsGuestSessionProvider(sessionManager, sessionManagers);
-        return new DigitsAuthRequestQueue(this, sessionProvider);
+        return new DigitsAuthRequestQueue(apiClientManager, sessionProvider);
     }
 
     protected void startSignUp(DigitsAuthConfig digitsAuthConfig) {

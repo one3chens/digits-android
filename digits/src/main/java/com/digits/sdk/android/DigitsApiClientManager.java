@@ -22,9 +22,6 @@ import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.concurrent.ExecutorService;
 
-import io.fabric.sdk.android.Fabric;
-
-
 public class DigitsApiClientManager {
     private final SessionManager<DigitsSession> sessionManager;
     private final TwitterCore twitterCore;
@@ -35,9 +32,9 @@ public class DigitsApiClientManager {
 
     private DigitsApiClient digitsApiClient;
 
-    DigitsApiClientManager() {
+    DigitsApiClientManager(SessionManager<DigitsSession> sessionManager) {
         this(new DigitsUserAgent(), TwitterCore.getInstance(),
-                Digits.getInstance().getExecutorService(), Digits.getSessionManager(), null,
+                Digits.getInstance().getExecutorService(), sessionManager, null,
                 new DigitsRequestInterceptor(new DigitsUserAgent()));
     }
 
@@ -101,12 +98,10 @@ public class DigitsApiClientManager {
 
     protected DigitsApiClient createNewClient(){
         if (sandboxEnabled) {
-            Fabric.getLogger().i(Digits.TAG, "Sandbox is enabled");
             return new DigitsApiClient(sessionManager.getActiveSession(), twitterCore,
                     twitterCore.getSSLSocketFactory(),
                     executorService, interceptor, mockInterface);
         } else {
-            Fabric.getLogger().i(Digits.TAG, "Sandbox is disabled");
             return new DigitsApiClient(sessionManager.getActiveSession(), twitterCore,
                     twitterCore.getSSLSocketFactory(),
                     executorService, interceptor);

@@ -19,7 +19,6 @@ package com.digits.sdk.android;
 
 import android.content.Context;
 import android.content.Intent;
-
 import com.twitter.sdk.android.core.Callback;
 import retrofit.client.Response;
 
@@ -29,8 +28,10 @@ public class ContactsClient {
     private final DigitsApiClientManager apiClientManager;
     private final Digits digits;
 
-    ContactsClient() {
-        this(Digits.getInstance(), new DigitsApiClientManager(), new ContactsPreferenceManager(),
+    ContactsClient(DigitsApiClientManager apiManager) {
+        this(Digits.getInstance(),
+                apiManager,
+                new ContactsPreferenceManager(),
                 new ActivityClassManagerFactory());
     }
 

@@ -53,6 +53,7 @@ public class Digits extends Kit<Void> {
 
     private final DigitsScribeClient digitsScribeClient;
     private final DigitsEventCollector digitsEventCollector;
+    private volatile DigitsApiClientManager apiClientManager;
     private volatile DigitsClient digitsClient;
     private volatile ContactsClient contactsClient;
     private SessionManager<DigitsSession> sessionManager;
@@ -197,7 +198,8 @@ public class Digits extends Kit<Void> {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static void enableSandbox() {
-        getInstance().getDigitsClient().getApiClientManager().enableSandbox();
+        Fabric.getLogger().i(Digits.TAG, "Sandbox is enabled");
+        getInstance().getApiClientManager().enableSandbox();
     }
 
     /**
@@ -205,7 +207,8 @@ public class Digits extends Kit<Void> {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static void disableSandbox() {
-        getInstance().getDigitsClient().getApiClientManager().disableSandbox();
+        Fabric.getLogger().i(Digits.TAG, "Sandbox is disabled");
+        getInstance().getApiClientManager().disableSandbox();
     }
 
     /**
@@ -213,7 +216,7 @@ public class Digits extends Kit<Void> {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static void setSandbox(ApiInterface sandbox) {
-        getInstance().getDigitsClient().getApiClientManager().setSandboxClient(sandbox);
+        getInstance().getApiClientManager().setSandboxClient(sandbox);
     }
 
     @Override
@@ -250,6 +253,7 @@ public class Digits extends Kit<Void> {
         sessionManager.getActiveSession();
         createTwitterScribeClient(sessionManager, getIdManager());
         digitsScribeClient.setTwitterScribeClient(twitterScribeClient);
+        createApiClientManager();
         createDigitsClient();
         createContactsClient();
         userSessionMonitor = new SessionMonitor<>(getSessionManager(), getExecutorService(),
@@ -280,6 +284,13 @@ public class Digits extends Kit<Void> {
         return BuildConfig.GROUP + ":" + BuildConfig.ARTIFACT_ID;
     }
 
+    DigitsApiClientManager getApiClientManager(){
+        if (apiClientManager == null) {
+            createApiClientManager();
+        }
+        return apiClientManager;
+    }
+
     DigitsClient getDigitsClient() {
         if (digitsClient == null) {
             createDigitsClient();
@@ -298,15 +309,21 @@ public class Digits extends Kit<Void> {
         return digitsEventCollector;
     }
 
+    private synchronized void createApiClientManager(){
+        if (apiClientManager == null) {
+            apiClientManager = new DigitsApiClientManager(getSessionManager());
+        }
+    }
+
     private synchronized void createDigitsClient() {
         if (digitsClient == null) {
-            digitsClient = new DigitsClient();
+            digitsClient = new DigitsClient(getApiClientManager());
         }
     }
 
     private synchronized void createContactsClient() {
         if (contactsClient == null) {
-            contactsClient = new ContactsClient();
+            contactsClient = new ContactsClient(getApiClientManager());
         }
     }
 

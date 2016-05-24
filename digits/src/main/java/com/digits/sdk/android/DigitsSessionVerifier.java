@@ -47,8 +47,7 @@ class DigitsSessionVerifier implements SessionVerifier {
     }
 
     ApiInterface getAccountService() {
-        return Digits.getInstance().getDigitsClient()
-                .getApiClientManager().getApiClient().getService();
+        return Digits.getInstance().getApiClientManager().getApiClient().getService();
     }
 
     public void addSessionListener(SessionListener sessionListener) {

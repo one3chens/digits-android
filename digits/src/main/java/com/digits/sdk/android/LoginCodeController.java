@@ -192,8 +192,7 @@ class LoginCodeController extends DigitsControllerImpl {
     }
 
     ApiInterface getAccountService() {
-        return Digits.getInstance().getDigitsClient()
-                .getApiClientManager().getApiClient().getService();
+        return Digits.getInstance().getApiClientManager().getApiClient().getService();
     }
 
 }

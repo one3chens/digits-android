@@ -88,8 +88,8 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                             digitsEventCollector.signupSuccess(digitsEventDetailsBuilder.build());
                             final DigitsSession session =
                                     DigitsSession.create(result, phoneNumber);
+                            sessionManager.setActiveSession(session);
                             if (isEmailCollection) {
-                                sessionManager.setActiveSession(session);
                                 startEmailRequest(context, phoneNumber);
                             } else {
                                 loginSuccess(context, session, phoneNumber);

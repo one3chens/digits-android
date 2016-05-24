@@ -18,8 +18,13 @@ package com.digits.sdk.android;
 
 import com.google.gson.Gson;
 import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthToken;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit.client.Header;
 import retrofit.client.Response;
@@ -30,7 +35,16 @@ import retrofit.mime.TypedByteArray;
 
 public class MockApiInterface implements ApiInterface {
 
-    static final long MOCK_USER_ID = 1;
+    static final long USER_ID = 1;
+    static final String STATE = "state";
+    static final String TOKEN = "token";
+    static final String DEVICE_ID = "device_id";
+    static final String SECRET = "secret";
+    static final String EMAIL_ADDRESS = "mock@digits.com";
+    static final boolean IS_VERIFIED = true;
+    static final String PHONE_NUMBER = "+15556787676";
+    static final TwitterAuthToken AUTH_TOKEN = new TwitterAuthToken(TOKEN, SECRET);
+    static final Email EMAIL = new Email(EMAIL_ADDRESS, IS_VERIFIED);
 
 
     @Override
@@ -61,10 +75,7 @@ public class MockApiInterface implements ApiInterface {
                       @Field("login_verification_user_id") long userId,
                       @Field("login_verification_challenge_response") String code,
                       Callback<DigitsSessionResponse> cb) {
-        final DigitsSessionResponse data = new DigitsSessionResponse();
-        data.secret = "secret";
-        data.token = "token";
-        data.userId = MOCK_USER_ID;
+        final DigitsSessionResponse data = createSessionResponse();
         final Response response = new Response("/auth/1/xauth_challenge.json", 200, "ok",
                 Collections.<Header>emptyList(), new TypedByteArray("application/json",
                 new Gson().toJson(data).getBytes()));
@@ -75,15 +86,30 @@ public class MockApiInterface implements ApiInterface {
     public void verifyPin(@Field("login_verification_request_id") String requestId,
                           @Field("login_verification_user_id") long userId,
                           @Field("pin") String pin, Callback<DigitsSessionResponse> cb) {
+        final DigitsSessionResponse data = createSessionResponse();
+        final Response response = new Response("/auth/1/xauth_pin.json", 200, "ok",
+                Collections.<Header>emptyList(), new TypedByteArray("application/json",
+                new Gson().toJson(data).getBytes()));
+        cb.success(data, response);
     }
 
     @Override
     public void email(@Field("email_address") String email, Callback<DigitsSessionResponse> cb) {
+        final DigitsSessionResponse data = createSessionResponse();
+        final Response response = new Response("/1.1/sdk/account.json", 200, "ok",
+                Collections.<Header>emptyList(), new TypedByteArray("application/json",
+                new Gson().toJson(data).getBytes()));
+        cb.success(data, response);
     }
 
     @Override
     public void verifyAccount(Callback<VerifyAccountResponse> cb) {
-    }
+        final VerifyAccountResponse data = createVerifyAccountResponse();
+        final Response response = new Response("/1.1/sdk/account.json", 200, "ok",
+                Collections.<Header>emptyList(), new TypedByteArray("application/json",
+                new Gson().toJson(data).getBytes()));
+        cb.success(data, response);
+        }
 
     @Override
     public void register(@Field("raw_phone_number") String rawPhoneNumber,
@@ -92,19 +118,88 @@ public class MockApiInterface implements ApiInterface {
                          @Field("lang") String lang, @Field("client_identifier_string") String id,
                          @Field("verification_type") String verificationType,
                          Callback<DeviceRegistrationResponse> cb) {
+        final DeviceRegistrationResponse data = createDeviceRegistrationResponse();
+        final Response response = new Response("/1.1/device/register.json", 200, "ok",
+                Collections.<Header>emptyList(), new TypedByteArray("application/json",
+                new Gson().toJson(data).getBytes()));
+        cb.success(data, response);
     }
 
     @Override
     public UploadResponse upload(@Body Vcards vcards) {
-        return null;
+        return new UploadResponse(new ArrayList<UploadError>());
     }
 
     @Override
     public void deleteAll(Callback<Response> cb) {
+        final Response response = new Response("/1.1/contacts/destroy/all.json", 200, "ok",
+                Collections.<Header>emptyList(), new TypedByteArray("application/json",
+        new Gson().toJson("response").getBytes()));
+        final Result data = new Result(null, response);
+        cb.success(data);
     }
 
     @Override
     public void usersAndUploadedBy(@Query("next_cursor") String nextCursor,
                                    @Query("count") Integer count, Callback<Contacts> cb) {
+        final Contacts data;
+
+        if (nextCursor == null) {
+            // First page:
+            data = getContactsPages().get("");
+        } else {
+            // Subsequent pages
+            data = getContactsPages().get(nextCursor);
+        }
+
+        final Response response = new Response("/1.1/contacts/users_and_uploaded_by.json", 200,
+                "ok", Collections.<Header>emptyList(), new TypedByteArray("application/json",
+                new Gson().toJson(data).getBytes()));
+        cb.success(data, response);
+
+    }
+
+    DigitsSessionResponse createSessionResponse(){
+        final DigitsSessionResponse data = new DigitsSessionResponse();
+        data.secret = TOKEN;
+        data.token = SECRET;
+        data.userId = USER_ID;
+        return data;
+    }
+
+    VerifyAccountResponse createVerifyAccountResponse(){
+        final VerifyAccountResponse data = new VerifyAccountResponse();
+        data.token = AUTH_TOKEN;
+        data.userId = USER_ID;
+        data.email = EMAIL;
+        data.phoneNumber = PHONE_NUMBER;
+        return data;
+    }
+
+    DeviceRegistrationResponse createDeviceRegistrationResponse(){
+        final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
+        data.deviceId = DEVICE_ID;
+        data.state = STATE;
+        data.authConfig = new AuthConfig();
+        data.authConfig.isEmailEnabled = true;
+        data.authConfig.isVoiceEnabled = true;
+        data.authConfig.tosUpdate = false;
+        data.normalizedPhoneNumber = PHONE_NUMBER;
+        return data;
+    }
+
+    Contacts createContacts(String cursor, long friendId){
+        final Contacts contacts = new Contacts();
+        contacts.nextCursor = cursor;
+        contacts.users = new ArrayList<>();
+        contacts.users.add(new DigitsUser(friendId, String.valueOf(friendId)));
+        return contacts;
+    }
+
+    Map<String, Contacts> getContactsPages(){
+        final Map<String, Contacts> map = new HashMap<>();
+        map.put("", createContacts("cursor", 2L));
+        map.put("cursor", createContacts(null, 3L));
+        return map;
     }
 }

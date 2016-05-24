@@ -63,8 +63,7 @@ public class ContactsUploadService extends IntentService {
     public ContactsUploadService() {
         super(THREAD_NAME);
 
-        init(Digits.getInstance().getDigitsClient()
-                        .getApiClientManager(),
+        init(Digits.getInstance().getApiClientManager(),
                 new ContactsHelper(this),
                 new ContactsPreferenceManager(),
                 new RetryThreadPoolExecutor(CORE_THREAD_POOL_SIZE,
@@ -109,7 +108,6 @@ public class ContactsUploadService extends IntentService {
             final AtomicInteger successCount = new AtomicInteger(0);
             final List<Exception> retrofitErrors = Collections.synchronizedList(
                     new ArrayList<Exception>());
-
             for (int i = 0; i < pages; i++) {
                 final int startIndex = i * MAX_PAGE_SIZE;
                 final int endIndex = Math.min(totalCount, startIndex +
@@ -134,7 +132,11 @@ public class ContactsUploadService extends IntentService {
             executor.shutdown();
             final boolean success = executor.awaitTermination(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
 
-            if (!success) {
+            if (totalCount == 0) {
+                sendFailureBroadcast(
+                        new ContactsUploadFailureResult(
+                                ContactsUploadFailureResult.Summary.NO_CONTACTS_FOUND));
+            } else if (!success) {
                 executor.shutdownNow();
                 sendFailureBroadcast(ContactsUploadFailureResult.create(retrofitErrors));
             } else if (successCount.get() == 0) {

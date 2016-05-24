@@ -84,8 +84,7 @@ public class EmailRequestController extends DigitsControllerImpl {
     }
 
     ApiInterface getSdkService() {
-        return Digits.getInstance().getDigitsClient()
-                .getApiClientManager().getApiClient().getService();
+        return Digits.getInstance().getApiClientManager().getApiClient().getService();
     }
 
     @Override

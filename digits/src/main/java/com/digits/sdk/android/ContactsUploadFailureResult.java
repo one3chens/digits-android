@@ -53,6 +53,8 @@ public class ContactsUploadFailureResult implements Parcelable {
         TIMESTAMP_OUT_OF_BOUNDS,
         /** Contact upload batch is too large */
         ENTITY_TOO_LARGE,
+        /** No contacts found on device */
+        NO_CONTACTS_FOUND,
         /** Too many upload requests --> Back off; If you only need to fetch, call GET endpoint */
         RATE_LIMIT,
         /** Internal server error */
