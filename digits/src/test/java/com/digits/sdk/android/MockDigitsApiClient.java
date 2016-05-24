@@ -17,7 +17,6 @@
 
 package com.digits.sdk.android;
 
-import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.concurrent.ExecutorService;
@@ -25,9 +24,9 @@ import java.util.concurrent.ExecutorService;
 import javax.net.ssl.SSLSocketFactory;
 
 public class MockDigitsApiClient extends DigitsApiClient {
-    Session activeSession;
+    DigitsSession activeSession;
 
-    public MockDigitsApiClient(Session session, TwitterCore twitterCore,
+    public MockDigitsApiClient(DigitsSession session, TwitterCore twitterCore,
                          SSLSocketFactory sslFactory, ExecutorService executorService,
                          DigitsUserAgent userAgent){
         super(session, twitterCore,
@@ -37,7 +36,7 @@ public class MockDigitsApiClient extends DigitsApiClient {
     }
 
     @Override
-    public Session getSession() {
+    public DigitsSession getSession() {
         return activeSession;
     }
 }

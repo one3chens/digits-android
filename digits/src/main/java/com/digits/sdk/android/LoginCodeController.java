@@ -92,14 +92,15 @@ class LoginCodeController extends DigitsControllerImpl {
                                     .loginCodeSuccess(digitsEventDetailsBuilder.build());
                             if (result.data.isEmpty()) {
                                 startPinCodeActivity(context);
-                            } else if (emailCollection) {
-                                final DigitsSession session =
-                                        DigitsSession.create(result.data, phoneNumber);
-                                emailRequest(context, session);
                             } else {
                                 final DigitsSession session =
                                         DigitsSession.create(result.data, phoneNumber);
-                                loginSuccess(context, session, phoneNumber);
+                                sessionManager.setActiveSession(session);
+                                if (emailCollection) {
+                                    emailRequest(context, session);
+                                } else {
+                                    loginSuccess(context, session, phoneNumber);
+                                }
                             }
                         }
                     });
@@ -153,14 +154,13 @@ class LoginCodeController extends DigitsControllerImpl {
     }
 
     private void emailRequest(final Context context, final DigitsSession session) {
-        getAccountService(session).verifyAccount
+        getAccountService().verifyAccount
                 (new DigitsCallback<VerifyAccountResponse>(context, this) {
                     @Override
                     public void success(Result<VerifyAccountResponse> result) {
                         final DigitsSession newSession =
                                 DigitsSession.create(result.data);
                         if (canRequestEmail(newSession, session)) {
-                            sessionManager.setActiveSession(newSession);
                             startEmailRequest(context, phoneNumber);
                         } else {
                             loginSuccess(context, newSession, phoneNumber);
@@ -191,8 +191,9 @@ class LoginCodeController extends DigitsControllerImpl {
                 && newSession.getId() == session.getId();
     }
 
-    ApiInterface getAccountService(DigitsSession session) {
-        return Digits.getInstance().getDigitsClient().getApiClient().getService();
+    ApiInterface getAccountService() {
+        return Digits.getInstance().getDigitsClient()
+                .getApiClientManager().getApiClient().getService();
     }
 
 }

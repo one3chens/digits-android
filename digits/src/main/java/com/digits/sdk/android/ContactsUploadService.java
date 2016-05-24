@@ -63,7 +63,8 @@ public class ContactsUploadService extends IntentService {
     public ContactsUploadService() {
         super(THREAD_NAME);
 
-        init(Digits.getInstance().getDigitsClient().getApiClient().getService(),
+        init(Digits.getInstance().getDigitsClient()
+                        .getApiClientManager().getApiClient().getService(),
                 new ContactsHelper(this),
                 new ContactsPreferenceManager(),
                 new RetryThreadPoolExecutor(CORE_THREAD_POOL_SIZE,

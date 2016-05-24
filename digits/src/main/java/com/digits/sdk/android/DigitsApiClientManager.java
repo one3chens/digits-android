@@ -52,9 +52,6 @@ public class DigitsApiClientManager {
         if (sessionManager == null) {
             throw new IllegalArgumentException("sessionManager must not be null");
         }
-        if (executorService == null) {
-            throw new IllegalArgumentException("executorService must not be null");
-        }
 
         this.twitterCore = twitterCore;
         this.digits = digits;
@@ -68,15 +65,16 @@ public class DigitsApiClientManager {
         }
     }
 
-    DigitsApiClient getApiClient() {
-        if (!digitsApiClient.getSession().equals(sessionManager.getActiveSession())) {
+    DigitsApiClient getApiClient(){
+        if (sessionManager.getActiveSession() == null ||
+                !sessionManager.getActiveSession().equals(digitsApiClient.getSession())) {
             this.digitsApiClient = createNewClient();
         }
         return digitsApiClient;
     }
 
     ApiInterface getService(){
-       return getApiClient().getService();
+          return getApiClient().getService();
     }
 
     protected DigitsApiClient createNewClient(){

@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -62,7 +61,7 @@ public class ConfirmationCodeControllerTests extends
         verify(digitsEventCollector).signupSuccess(digitsEventDetailsArgumentCaptor.capture());
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
-        verify(sessionManager).setActiveSession(any(DigitsSession.class));
+        assertEquals(sessionManager.isSet(), true);
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
                 (Runnable.class);
@@ -94,7 +93,7 @@ public class ConfirmationCodeControllerTests extends
         verify(digitsEventCollector).signupSuccess(digitsEventDetailsArgumentCaptor.capture());
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
-        verify(sessionManager).setActiveSession(any(DigitsSession.class));
+        assertEquals(sessionManager.isSet(), true);
         verify(sendButton).showFinish();
         verify(context).startActivityForResult(intentCaptor.capture(),
                 eq(DigitsActivity.REQUEST_CODE));

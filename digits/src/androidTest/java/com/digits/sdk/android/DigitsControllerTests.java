@@ -27,7 +27,6 @@ import android.os.ResultReceiver;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
 import com.twitter.sdk.android.core.TwitterException;
 
@@ -63,7 +62,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     ArgumentCaptor<Bundle> bundleCaptor;
     ResultReceiver resultReceiver;
     ErrorCodes errors;
-    SessionManager<DigitsSession> sessionManager;
+    DummySessionManager sessionManager;
     Activity context;
     DigitsEventCollector digitsEventCollector;
     CountDownTimer countDownTimer;
@@ -84,7 +83,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         digitsClient = mock(DigitsClient.class);
         context = mock(Activity.class);
         resultReceiver = mock(ResultReceiver.class);
-        sessionManager = mock(SessionManager.class);
+        sessionManager = new DummySessionManager(mock(DigitsSession.class));
         errors = mock(ErrorCodes.class);
         digitsEventCollector = mock(DummyDigitsEventCollector.class);
         countDownTimer = mock(CountDownTimer.class);

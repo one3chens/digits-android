@@ -56,7 +56,8 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final Result<DigitsSessionResponse> result = new Result(response, null);
         callback.success(result);
         verify(digitsEventCollector).twoFactorPinVerificationSuccess();
-        verify(sessionManager).setActiveSession(DigitsSession.create(response,
+        assertEquals(sessionManager.isSet, true);
+        assertEquals(sessionManager.getActiveSession(), DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
@@ -115,7 +116,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
-        verify(controller.getAccountService(null)).verifyAccount(callbackArgumentCaptor.capture());
+        verify(controller.getAccountService()).verifyAccount(callbackArgumentCaptor.capture());
         final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
                 .getValue();
         emailRequestCallback.success(resultEmailRequest);
@@ -136,7 +137,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
 
-        verify(controller.getAccountService(null)).verifyAccount(callbackArgumentCaptor.capture());
+        verify(controller.getAccountService()).verifyAccount(callbackArgumentCaptor.capture());
         final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
                 .getValue();
         emailRequestCallback.failure(TestConstants.ANY_EXCEPTION);
@@ -158,13 +159,13 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
 
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
         callback.success(result);
-        verify(controller.getAccountService(null)).verifyAccount(callbackArgumentCaptor.capture());
+        verify(controller.getAccountService()).verifyAccount(callbackArgumentCaptor.capture());
         final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
                 .getValue();
         emailRequestCallback.success(resultEmailRequest);
         final DigitsSession session = DigitsSession.create(
-                TestConstants.getVerifyAccountResponseNoEmail());
-        verify(sessionManager).setActiveSession(session);
+                response, PHONE_WITH_COUNTRY_CODE);
+        assertEquals(sessionManager.getActiveSession(), session);
         verify(context).startActivityForResult(intentArgumentCaptor.capture(), eq(DigitsActivity
                 .REQUEST_CODE));
         final Intent intent = intentArgumentCaptor.getValue();
@@ -175,7 +176,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
     }
 
     private void verifyEmailRequest(DigitsSession session) {
-        verify(sessionManager).setActiveSession(session);
+        assertEquals(sessionManager.getActiveSession(), session);
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
                 (Runnable.class);

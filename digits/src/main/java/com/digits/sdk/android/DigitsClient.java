@@ -75,8 +75,8 @@ public class DigitsClient {
         this.digitsEventCollector = digitsEventCollector;
     }
 
-    public DigitsApiClient getApiClient(){
-        return apiClientManager.getApiClient();
+    public DigitsApiClientManager getApiClientManager(){
+        return apiClientManager;
     }
 
     protected DigitsAuthRequestQueue createAuthRequestQueue(SessionManager sessionManager) {

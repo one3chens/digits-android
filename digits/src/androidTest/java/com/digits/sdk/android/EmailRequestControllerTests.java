@@ -40,6 +40,8 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
     public void setUp() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
+        sessionManager = new DummySessionManager(
+                DigitsSession.create(TestConstants.DIGITS_USER, PHONE_WITH_COUNTRY_CODE));
         controller = new DummyEmailRequestController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, new ActivityClassManagerImp(), digitsClient,
                 PHONE_WITH_COUNTRY_CODE, digitsEventCollector, errors);
@@ -49,12 +51,10 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
     DigitsCallback executeRequest() {
         when(phoneEditText.getText()).thenReturn(
                 Editable.Factory.getInstance().newEditable(TestConstants.VALID_EMAIL));
-        when(sessionManager.getActiveSession()).thenReturn(
-                DigitsSession.create(TestConstants.DIGITS_USER, PHONE_WITH_COUNTRY_CODE));
 
         mainRequest();
 
-        final ApiInterface sdkService = controller.getSdkService(null);
+        final ApiInterface sdkService = controller.getSdkService();
         verify(sdkService).email(eq(TestConstants.VALID_EMAIL), callbackCaptor.capture());
         return callbackCaptor.getValue();
     }
@@ -65,7 +65,6 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
         verify(digitsEventCollector).submitClickOnEmailScreen();
         verify(sendButton).showProgress();
         verify(phoneEditText, times(2)).getText();
-        verify(sessionManager).getActiveSession();
         verifyNoInteractions(digitsClient);
     }
 
@@ -77,7 +76,8 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
         callback.success(result);
 
         verify(digitsEventCollector).submitEmailSuccess();
-        verify(sessionManager).setActiveSession(DigitsSession.create(response,
+        assertEquals(sessionManager.isSet(), true);
+        assertEquals(sessionManager.getActiveSession(), DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
@@ -96,7 +96,7 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
     public void testExecuteRequest_logoutSession() throws Exception {
         when(phoneEditText.getText()).thenReturn(
                 Editable.Factory.getInstance().newEditable(TestConstants.VALID_EMAIL));
-        when(sessionManager.getActiveSession()).thenReturn(
+        sessionManager.setActiveSession(
                 DigitsSession.create(TestConstants.LOGGED_OUT_USER, PHONE));
         mainRequest();
         verifyUnrecoverableException();

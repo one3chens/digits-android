@@ -42,7 +42,7 @@ public class DummyPinCodeController extends PinCodeController {
     }
 
     @Override
-    ApiInterface getAccountService(DigitsSession session) {
+    ApiInterface getAccountService() {
         return accountService;
     }
 }

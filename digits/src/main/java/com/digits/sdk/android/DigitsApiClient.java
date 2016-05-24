@@ -17,10 +17,7 @@
 
 package com.digits.sdk.android;
 
-import android.util.Log;
-
 import com.twitter.sdk.android.core.AuthenticatedClient;
-import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.concurrent.ExecutorService;
@@ -32,28 +29,25 @@ import retrofit.android.MainThreadExecutor;
 
 class DigitsApiClient {
     private final ApiInterface service;
-    private final Session session;
+    private final DigitsSession session;
     private static final String NULL_SESSION_ERROR_LOG =
             "Attempting to connect to Digits API with null session. " +
                     "Please re-authenticate and try again";
 
-    DigitsApiClient(Session session) {
+    DigitsApiClient(DigitsSession session) {
         this(session, TwitterCore.getInstance(), TwitterCore.getInstance().getSSLSocketFactory(),
                 Digits.getInstance()
                         .getExecutorService());
     }
 
-    DigitsApiClient(Session session, TwitterCore twitterCore, SSLSocketFactory sslFactory,
+    DigitsApiClient(DigitsSession session, TwitterCore twitterCore, SSLSocketFactory sslFactory,
                     ExecutorService executorService) {
         this(session, twitterCore, sslFactory, executorService, new DigitsUserAgent());
     }
 
-    DigitsApiClient(Session session, TwitterCore twitterCore,
+    DigitsApiClient(DigitsSession session, TwitterCore twitterCore,
                     SSLSocketFactory sslFactory, ExecutorService executorService,
                     DigitsUserAgent userAgent) {
-        if (session == null) {
-            Log.e(Digits.TAG, NULL_SESSION_ERROR_LOG);
-        }
         this.session = session;
 
         final RestAdapter restAdapter = new RestAdapter.Builder()
@@ -67,7 +61,7 @@ class DigitsApiClient {
 
     }
 
-    public Session getSession() {
+    public DigitsSession getSession() {
         return session;
     }
 

@@ -41,7 +41,7 @@ public class DummyEmailRequestController extends EmailRequestController {
     }
 
     @Override
-    ApiInterface getSdkService(DigitsSession session) {
+    ApiInterface getSdkService() {
         return sdkService;
     }
 }

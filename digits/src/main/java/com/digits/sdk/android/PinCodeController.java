@@ -87,6 +87,7 @@ class PinCodeController extends DigitsControllerImpl {
                             digitsEventCollector.twoFactorPinVerificationSuccess();
                             final DigitsSession session = DigitsSession.create(result.data,
                                     phoneNumber);
+                            sessionManager.setActiveSession(session);
                             if (isEmailCollection) {
                                 emailRequest(context, session);
                             } else {
@@ -103,7 +104,7 @@ class PinCodeController extends DigitsControllerImpl {
     }
 
     private void emailRequest(final Context context, final DigitsSession session) {
-        getAccountService(session).verifyAccount
+        getAccountService().verifyAccount
                 (new DigitsCallback<VerifyAccountResponse>(context, this) {
                     @Override
                     public void success(Result<VerifyAccountResponse>
@@ -111,7 +112,6 @@ class PinCodeController extends DigitsControllerImpl {
                         final DigitsSession newSession =
                                 DigitsSession.create(result.data);
                         if (canRequestEmail(newSession, session)) {
-                            sessionManager.setActiveSession(newSession);
                             startEmailRequest(context, phoneNumber);
                         } else {
                             loginSuccess(context, newSession, phoneNumber);
@@ -120,8 +120,8 @@ class PinCodeController extends DigitsControllerImpl {
                 });
     }
 
-    ApiInterface getAccountService(DigitsSession session) {
-        return Digits.getInstance().getDigitsClient().getApiClient().getService();
+    ApiInterface getAccountService() {
+        return Digits.getInstance().getDigitsClient().getApiClientManager().getService();
     }
 
 }

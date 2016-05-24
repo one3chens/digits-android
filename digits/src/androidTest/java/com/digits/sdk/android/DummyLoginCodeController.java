@@ -45,7 +45,7 @@ public class DummyLoginCodeController extends LoginCodeController {
     }
 
     @Override
-    ApiInterface getAccountService(DigitsSession session) {
+    ApiInterface getAccountService() {
         return accountService;
     }
 
