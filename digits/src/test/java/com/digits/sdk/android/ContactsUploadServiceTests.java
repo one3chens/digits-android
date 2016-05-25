@@ -63,6 +63,8 @@ public class ContactsUploadServiceTests {
     private ContactsHelper helper;
     private RetryThreadPoolExecutor executor;
     private ApiInterface sdkService;
+    private DigitsApiClientManager clientManager;
+    private DigitsApiClient apiClient;
     private ContactsPreferenceManager perfManager;
     private ArrayList<String> cradList;
     private ContactsUploadService service;
@@ -74,6 +76,10 @@ public class ContactsUploadServiceTests {
         executor = mock(RetryThreadPoolExecutor.class);
         perfManager = mock(MockContactsPreferenceManager.class);
         sdkService = mock(ApiInterface.class);
+        apiClient = mock(DigitsApiClient.class);
+        clientManager = mock(DigitsApiClientManager.class);
+        when(clientManager.getApiClient()).thenReturn(apiClient);
+        when(apiClient.getService()).thenReturn(sdkService);
         logger = mock(Logger.class);
         cursor = ContactsHelperTests.createCursor();
         cradList = ContactsHelperTests.createCardList();
@@ -82,7 +88,7 @@ public class ContactsUploadServiceTests {
         when(helper.getContactsCursor()).thenReturn(cursor);
         when(helper.createContactList(cursor)).thenReturn(cradList);
 
-        service = spy(new ContactsUploadService(sdkService, helper, perfManager, executor,
+        service = spy(new ContactsUploadService(clientManager, helper, perfManager, executor,
                 logger, Locale.JAPANESE));
     }
 

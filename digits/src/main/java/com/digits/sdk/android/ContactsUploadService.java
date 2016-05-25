@@ -53,7 +53,7 @@ public class ContactsUploadService extends IntentService {
     private static final int CORE_THREAD_POOL_SIZE = 2;
     private static final int INITIAL_BACKOFF_MS = 1000;
     private static final int MAX_PAGE_SIZE = 100;
-    private ApiInterface sdkService;
+    private DigitsApiClientManager clientManager;
     private ContactsHelper helper;
     private ContactsPreferenceManager prefManager;
     private RetryThreadPoolExecutor executor;
@@ -64,7 +64,7 @@ public class ContactsUploadService extends IntentService {
         super(THREAD_NAME);
 
         init(Digits.getInstance().getDigitsClient()
-                        .getApiClientManager().getApiClient().getService(),
+                        .getApiClientManager(),
                 new ContactsHelper(this),
                 new ContactsPreferenceManager(),
                 new RetryThreadPoolExecutor(CORE_THREAD_POOL_SIZE,
@@ -76,18 +76,18 @@ public class ContactsUploadService extends IntentService {
     /*
      * Testing only
      */
-    ContactsUploadService(ApiInterface sdkService, ContactsHelper helper,
+    ContactsUploadService(DigitsApiClientManager clientManager, ContactsHelper helper,
                           ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
                           Logger logger, Locale locale) {
         super(THREAD_NAME);
 
-        init(sdkService, helper, prefManager, executor, logger, locale);
+        init(clientManager, helper, prefManager, executor, logger, locale);
     }
 
-    private void init(ApiInterface sdkService, ContactsHelper helper,
+    private void init(DigitsApiClientManager clientManager, ContactsHelper helper,
               ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
                       Logger logger, Locale locale) {
-        this.sdkService = sdkService;
+        this.clientManager = clientManager;
         this.helper = helper;
         this.prefManager = prefManager;
         this.executor = executor;
@@ -121,7 +121,7 @@ public class ContactsUploadService extends IntentService {
                     @Override
                     public void run() {
                         try {
-                            sdkService.upload(vCards);
+                            clientManager.getApiClient().getService().upload(vCards);
                             successCount.addAndGet(vCards.vcards.size());
                         } catch (RetrofitError retrofitError) {
                             log(retrofitError);
