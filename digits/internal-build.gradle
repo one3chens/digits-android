@@ -160,7 +160,7 @@ fabricKitRelease {
     minBuild = 0
     maxBuild = Integer.MAX_VALUE
     minPlatformVersion {
-        apiVersion "8"
+        apiVersion "9"
     }
     docsUrl = "https://docs.fabric.io/javadocs/digits/${project.version}/index.html"
     twitterHandle = "@digits"
