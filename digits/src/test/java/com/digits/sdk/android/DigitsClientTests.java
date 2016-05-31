@@ -65,6 +65,7 @@ public class DigitsClientTests {
     private static int TEST_NEW_TASK_INTENT_FLAGS =
             (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
     private static int TEST_NO_INTENT_FLAGS = 0;
+    private final SandboxConfig sandboxConfig = new SandboxConfig();
 
     private DigitsClient digitsClient;
     private Intent capturedIntent;
@@ -136,7 +137,7 @@ public class DigitsClientTests {
         when(apiClientManager.getApiClient()).thenReturn(digitsApiClient);
 
         digitsClient = new DigitsClient(digits, sessionManager, apiClientManager,
-                authRequestQueue, digitsEventCollector) {
+                authRequestQueue, digitsEventCollector, sandboxConfig) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
                 return loginResultReceiver;
@@ -222,7 +223,7 @@ public class DigitsClientTests {
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
-        verify(callback).success(userSession, null);
+        verify(callback).success(userSession, TestConstants.PHONE);
     }
 
     @Test
@@ -237,7 +238,7 @@ public class DigitsClientTests {
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
-        verify(callback).success(userSession, null);
+        verify(callback).success(userSession, TestConstants.PHONE);
     }
 
     @Test
@@ -539,7 +540,7 @@ public class DigitsClientTests {
                                 DigitsEventCollector digitsEventCollector) {
             super(digits, sessionManager, apiClientManager,
                     authRequestQueue,
-                    digitsEventCollector);
+                    digitsEventCollector, sandboxConfig);
             this.loginOrSignupComposer = mock(DummyLoginOrSignupComposer.class);
         }
 

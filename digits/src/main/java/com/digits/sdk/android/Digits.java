@@ -53,6 +53,7 @@ public class Digits extends Kit<Void> {
 
     private final DigitsScribeClient digitsScribeClient;
     private final DigitsEventCollector digitsEventCollector;
+    private final SandboxConfig sandboxConfig;
     private volatile DigitsApiClientManager apiClientManager;
     private volatile DigitsClient digitsClient;
     private volatile ContactsClient contactsClient;
@@ -71,10 +72,15 @@ public class Digits extends Kit<Void> {
         defaultAnswersLogger = new DefaultAnswersLogger();
         digitsScribeClient = new DigitsScribeClient();
         digitsEventCollector = new DigitsEventCollector(digitsScribeClient, defaultAnswersLogger);
+        this.sandboxConfig = new SandboxConfig();
     }
 
     public static Digits getInstance() {
         return Fabric.getKit(Digits.class);
+    }
+
+    protected SandboxConfig getSandboxConfig() {
+        return sandboxConfig;
     }
 
 
@@ -199,7 +205,8 @@ public class Digits extends Kit<Void> {
     @SuppressWarnings("UnusedDeclaration")
     public static void enableSandbox() {
         Fabric.getLogger().i(Digits.TAG, "Sandbox is enabled");
-        getInstance().getApiClientManager().enableSandbox();
+        getInstance().getSandboxConfig().enable();
+        getInstance().getApiClientManager().createNewClient();
     }
 
     /**
@@ -208,15 +215,23 @@ public class Digits extends Kit<Void> {
     @SuppressWarnings("UnusedDeclaration")
     public static void disableSandbox() {
         Fabric.getLogger().i(Digits.TAG, "Sandbox is disabled");
-        getInstance().getApiClientManager().disableSandbox();
+        getInstance().getSandboxConfig().disable();
+        getInstance().getApiClientManager().createNewClient();
     }
 
     /**
-     * Set sandbox
+     * Set sandbox config for testing. Only necessary for custom interface in
+     * Sandbox.Mode.Advanced
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static void setSandbox(ApiInterface sandbox) {
-        getInstance().getApiClientManager().setSandboxClient(sandbox);
+    public static void setSandboxConfig(SandboxConfig sandboxConfig) {
+        getInstance().getSandboxConfig().setMock(sandboxConfig.getMock());
+        getInstance().getSandboxConfig().setMode(sandboxConfig.getMode());
+        if (sandboxConfig.isEnabled()) {
+            enableSandbox();
+        } else {
+            disableSandbox();
+        }
     }
 
     @Override
@@ -251,6 +266,7 @@ public class Digits extends Kit<Void> {
 
         // Trigger restoration of session
         sessionManager.getActiveSession();
+
         createTwitterScribeClient(sessionManager, getIdManager());
         digitsScribeClient.setTwitterScribeClient(twitterScribeClient);
         createApiClientManager();

@@ -159,7 +159,7 @@ public class MockApiInterface implements ApiInterface {
 
     }
 
-    DigitsSessionResponse createSessionResponse(){
+    static DigitsSessionResponse createSessionResponse(){
         final DigitsSessionResponse data = new DigitsSessionResponse();
         data.secret = TOKEN;
         data.token = SECRET;
@@ -167,7 +167,7 @@ public class MockApiInterface implements ApiInterface {
         return data;
     }
 
-    VerifyAccountResponse createVerifyAccountResponse(){
+    static VerifyAccountResponse createVerifyAccountResponse(){
         final VerifyAccountResponse data = new VerifyAccountResponse();
         data.token = AUTH_TOKEN;
         data.userId = USER_ID;
@@ -176,7 +176,7 @@ public class MockApiInterface implements ApiInterface {
         return data;
     }
 
-    DeviceRegistrationResponse createDeviceRegistrationResponse(){
+    static DeviceRegistrationResponse createDeviceRegistrationResponse(){
         final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
         data.deviceId = DEVICE_ID;
         data.state = STATE;
@@ -188,7 +188,7 @@ public class MockApiInterface implements ApiInterface {
         return data;
     }
 
-    Contacts createContacts(String cursor, long friendId){
+    static Contacts createContacts(String cursor, long friendId){
         final Contacts contacts = new Contacts();
         contacts.nextCursor = cursor;
         contacts.users = new ArrayList<>();
@@ -196,10 +196,27 @@ public class MockApiInterface implements ApiInterface {
         return contacts;
     }
 
-    Map<String, Contacts> getContactsPages(){
+    static void createAllContacts(Callback<Contacts> cb){
+        final Contacts contacts = new Contacts();
+        contacts.nextCursor = null;
+        contacts.users = new ArrayList<>();
+        contacts.users.add(new DigitsUser(2L, String.valueOf(2L)));
+        contacts.users.add(new DigitsUser(3L, String.valueOf(3L)));
+
+        final Response response = new Response("/1.1/contacts/users_and_uploaded_by.json", 200,
+                "ok", Collections.<Header>emptyList(), new TypedByteArray("application/json",
+                new Gson().toJson(contacts).getBytes()));
+        cb.success(contacts, response);
+    }
+
+    static Map<String, Contacts> getContactsPages(){
         final Map<String, Contacts> map = new HashMap<>();
         map.put("", createContacts("cursor", 2L));
         map.put("cursor", createContacts(null, 3L));
         return map;
+    }
+
+    static DigitsSession createDigitsSession(){
+        return new DigitsSession(AUTH_TOKEN, USER_ID, PHONE_NUMBER, EMAIL);
     }
 }

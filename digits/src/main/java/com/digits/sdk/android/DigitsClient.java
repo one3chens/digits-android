@@ -49,22 +49,26 @@ public class DigitsClient {
     private final DigitsAuthRequestQueue authRequestQueue;
     private final DigitsEventCollector digitsEventCollector;
     private final DigitsApiClientManager apiClientManager;
+    private SandboxConfig sandboxConfig;
     private final Digits digits;
     private final SessionManager<DigitsSession> sessionManager;
 
     DigitsClient(DigitsApiClientManager apiClientManager) {
         this(Digits.getInstance(), Digits.getSessionManager(), apiClientManager,
-                null, Digits.getInstance().getDigitsEventCollector());
+                null, Digits.getInstance().getDigitsEventCollector(),
+                Digits.getInstance().getSandboxConfig());
     }
 
     DigitsClient(Digits digits, SessionManager<DigitsSession> sessionManager,
                  DigitsApiClientManager apiClientManager,
                  DigitsAuthRequestQueue authRequestQueue,
-                 DigitsEventCollector digitsEventCollector) {
+                 DigitsEventCollector digitsEventCollector,
+                 SandboxConfig sandboxConfig) {
 
         this.apiClientManager = apiClientManager;
         this.digits = digits;
         this.sessionManager = sessionManager;
+        this.sandboxConfig = sandboxConfig;
 
         if (authRequestQueue == null) {
             this.authRequestQueue = createAuthRequestQueue(sessionManager);
@@ -95,7 +99,11 @@ public class DigitsClient {
         digitsEventCollector.authImpression(details.build());
 
         if (session != null && !session.isLoggedOutUser()) {
-            digitsAuthConfig.authCallback.success(session, null);
+            digitsAuthConfig.authCallback.success(session, session.getPhoneNumber());
+        } else if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
+            final DigitsSession blackboxSession = MockApiInterface.createDigitsSession();
+            digitsAuthConfig.authCallback.success(blackboxSession,
+                    blackboxSession.getPhoneNumber());
         } else if (isCustomPhoneUI && isAuthorizedPartner) {
             sendConfirmationCode(digitsAuthConfig, details);
         } else if (isCustomPhoneUI) {

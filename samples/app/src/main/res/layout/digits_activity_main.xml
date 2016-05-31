@@ -60,6 +60,17 @@
         android:layout_height="wrap_content"
         android:text="@string/enable_sandbox"/>
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="@string/sandboxMode_header"
+        android:layout_marginBottom="5dp"
+        />
+    <Spinner
+        android:id="@+id/sandboxmode_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/custom_login_button"

@@ -27,21 +27,25 @@ public class ContactsClient {
     private ActivityClassManagerFactory activityClassManagerFactory;
     private final DigitsApiClientManager apiClientManager;
     private final Digits digits;
+    private SandboxConfig sandboxConfig;
 
     ContactsClient(DigitsApiClientManager apiManager) {
         this(Digits.getInstance(),
                 apiManager,
                 new ContactsPreferenceManager(),
-                new ActivityClassManagerFactory());
+                new ActivityClassManagerFactory(),
+                Digits.getInstance().getSandboxConfig());
     }
 
     ContactsClient(Digits digits, DigitsApiClientManager apiManager,
                    ContactsPreferenceManager prefManager,
-                   ActivityClassManagerFactory activityClassManagerFactory) {
+                   ActivityClassManagerFactory activityClassManagerFactory,
+                   SandboxConfig sandboxConfig) {
         this.digits = digits;
         this.apiClientManager = apiManager;
         this.prefManager = prefManager;
         this.activityClassManagerFactory = activityClassManagerFactory;
+        this.sandboxConfig = sandboxConfig;
     }
 
     /**
@@ -50,7 +54,14 @@ public class ContactsClient {
      * background service to upload contacts. Otherwise, do nothing.
      */
     public void startContactsUpload() {
-        startContactsUpload(R.style.Digits_default);
+        if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
+            final Intent intent = new Intent(ContactsUploadService.UPLOAD_COMPLETE);
+            intent.putExtra(ContactsUploadService.UPLOAD_COMPLETE_EXTRA,
+                    new ContactsUploadResult(2, 2));
+            digits.getContext().sendBroadcast(intent);
+        } else {
+            startContactsUpload(R.style.Digits_default);
+        }
     }
 
     /**
@@ -114,7 +125,11 @@ public class ContactsClient {
      * @param callback   to be executed on UI thread with matched users.
      */
     public void lookupContactMatchesStart(final Callback<Contacts> callback) {
-        lookupContactMatches(null, 100, callback);
+        if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
+            MockApiInterface.createAllContacts(callback);
+        } else {
+            lookupContactMatches(null, 100, callback);
+        }
     }
 
     /**

@@ -43,6 +43,8 @@ public class ContactsClientTests {
     private ComponentName activityComponent;
     private ComponentName serviceComponent;
     private ContactsCallback callback;
+
+    final SandboxConfig sandboxConfig = new SandboxConfig();
     final Digits digits = mock(Digits.class);
     final DigitsUserAgent userAgent = new DigitsUserAgent("digitsVersion", "androidVersion",
             "appName");
@@ -68,7 +70,7 @@ public class ContactsClientTests {
         when(apiClientManager.getService()).thenReturn(sdkService);
 
         contactsClient = new ContactsClient(digits, apiClientManager, prefManager,
-                activityClassManagerFactory);
+                activityClassManagerFactory, sandboxConfig);
 
         activityComponent = new ComponentName(context, ContactsActivity.class.getName());
         serviceComponent = new ComponentName(context, ContactsUploadService.class.getName());

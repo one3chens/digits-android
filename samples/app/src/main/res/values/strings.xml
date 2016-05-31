@@ -29,6 +29,7 @@
     <string name="contact_lookup">Lookup friend matches</string>
     <string name="enable_sandbox">Enable sandbox</string>
     <string name="disable_sandbox">Disable sandbox</string>
+    <string name="sandboxMode_header">Sandbox Mode:</string>
     <string name="custom_phone_login">Custom Phone Login (Beta)</string>
     <string name="beta_notice">Currently in closed beta. Contact support for more information.</string>
     <string name="send_confirmation_code">Send Confirmation Code</string>

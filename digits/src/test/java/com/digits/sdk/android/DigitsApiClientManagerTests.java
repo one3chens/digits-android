@@ -46,6 +46,7 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class DigitsApiClientManagerTests {
 
+    final SandboxConfig sandboxConfig = new SandboxConfig();
     private MockDigitsApiClientManager digitsClient;
     private DigitsUserAgent digitsUserAgent;
     private TwitterCore twitterCore;
@@ -159,7 +160,7 @@ public class DigitsApiClientManagerTests {
                                           DigitsApiClient apiClient,
                                           DigitsRequestInterceptor interceptor) {
             super(digitsUserAgent, twitterCore,
-                    executorService, sessionManager, apiClient, interceptor);
+                    executorService, sessionManager, apiClient, interceptor, sandboxConfig);
         }
 
 
@@ -169,7 +170,7 @@ public class DigitsApiClientManagerTests {
                                     SessionManager<DigitsSession> sessionManager,
                                           DigitsApiClient apiClient) {
             super(digitsUserAgent, twitterCore,
-                    executorService, sessionManager, apiClient, interceptor);
+                    executorService, sessionManager, apiClient, interceptor, sandboxConfig);
         }
 
         @Override

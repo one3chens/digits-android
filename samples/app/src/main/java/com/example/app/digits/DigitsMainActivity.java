@@ -21,7 +21,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,8 @@ import com.digits.sdk.android.DigitsAuthConfig;
 import com.digits.sdk.android.DigitsEventLogger;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
+import com.digits.sdk.android.MockApiInterface;
+import com.digits.sdk.android.SandboxConfig;
 import com.digits.sdk.android.SessionListener;
 import com.example.app.R;
 import com.twitter.sdk.android.core.Callback;
@@ -166,7 +172,7 @@ public class DigitsMainActivity extends Activity {
             }
         });
 
-        Button toggleSandboxButton = (Button) findViewById(R.id.toggle_sandbox_button);
+        final Button toggleSandboxButton = (Button) findViewById(R.id.toggle_sandbox_button);
         toggleSandboxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,6 +186,31 @@ public class DigitsMainActivity extends Activity {
                 }
                 button.setText(isEnabled ? R.string.enable_sandbox : R.string.disable_sandbox);
                 button.setTag(R.id.is_sandbox_enabled_tag, !isEnabled);
+            }
+        });
+
+        Spinner sandboxmodeSpinner = (Spinner) findViewById(R.id.sandboxmode_spinner);
+
+        String[] items = new String[] {"Default", "Advanced"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, items);
+
+        sandboxmodeSpinner.setAdapter(adapter);
+        sandboxmodeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+
+                Digits.getInstance().setSandboxConfig(
+                        new SandboxConfig(toggleSandboxButton.isEnabled(),
+                        SandboxConfig.Mode.values()[position], new MockApiInterface()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing here
             }
         });
 
