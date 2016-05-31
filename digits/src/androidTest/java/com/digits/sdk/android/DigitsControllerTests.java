@@ -171,7 +171,17 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     public void testAfterTextChanged() throws Exception {
         controller.onTextChanged(null, 0, 0, 0);
         verify(phoneEditText).setError(null);
-        verifyNoInteractions(sendButton, digitsClient);
+        verify(sendButton).setEnabled(false);
+    }
+
+    public void testAfterTextChangedValidEntry() throws Exception {
+        if (controller.validateInput("123456")) {
+            controller.onTextChanged("123456", 0, 0, 0);
+        } else if (controller.validateInput("user@domain.com")) {
+            controller.onTextChanged("user@domain.com", 0, 0, 0);
+        }
+        verify(phoneEditText).setError(null);
+        verify(sendButton).setEnabled(true);
     }
 
     public void testExecuteRequest_failure() throws Exception {

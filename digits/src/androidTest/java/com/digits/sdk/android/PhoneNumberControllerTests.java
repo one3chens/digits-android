@@ -255,7 +255,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
         assertFalse(controller.resendState);
         assertFalse(controller.voiceEnabled);
-        verifyNoInteractions(sendButton);
+        verify(sendButton).setEnabled(true);
         verifyNoInteractions(tosView);
     }
 

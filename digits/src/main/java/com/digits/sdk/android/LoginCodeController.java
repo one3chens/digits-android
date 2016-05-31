@@ -185,6 +185,12 @@ class LoginCodeController extends DigitsControllerImpl {
     }
 
     @Override
+    public boolean validateInput(CharSequence text) {
+        return super.validateInput(text) &&
+                text.length() >= DigitsConstants.MIN_CONFIRMATION_CODE_LENGTH;
+    }
+
+    @Override
     Uri getTosUri() {
         return DigitsConstants.TWITTER_TOS;
     }

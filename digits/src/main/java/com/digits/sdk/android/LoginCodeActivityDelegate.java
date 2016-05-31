@@ -92,6 +92,10 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         stateButton.setStatesText(R.string.dgts__continue, R.string.dgts__sending,
                 R.string.dgts__done);
         stateButton.showStart();
+
+        // Start with send button disabled until minimum number of confirmation code digits entered
+        stateButton.setEnabled(false);
+
         super.setUpSendButton(activity, controller, stateButton);
     }
 

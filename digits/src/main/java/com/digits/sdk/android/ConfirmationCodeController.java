@@ -144,4 +144,11 @@ class ConfirmationCodeController extends DigitsControllerImpl {
     Uri getTosUri() {
         return DigitsConstants.TWITTER_TOS;
     }
+
+    @Override
+    public boolean validateInput(CharSequence text) {
+        return super.validateInput(text) &&
+                text.length() >= DigitsConstants.MIN_CONFIRMATION_CODE_LENGTH;
+    }
+
 }
