@@ -26,13 +26,23 @@ import java.util.Set;
 class DigitsEventCollector {
     private final DigitsScribeClient digitsScribeClient;
     private final Set<DigitsEventLogger> eventLoggers;
+    private final FailFastEventDetailsChecker failFastEventDetailsChecker;
 
-    DigitsEventCollector(DigitsScribeClient digitsScribeClient, DigitsEventLogger... loggers){
+    DigitsEventCollector(DigitsScribeClient digitsScribeClient,
+                         FailFastEventDetailsChecker failFastEventDetailsChecker,
+                         DigitsEventLogger... loggers){
+
         if (digitsScribeClient == null) {
             throw new IllegalArgumentException("digits scribe client must not be null");
         }
 
+        if (failFastEventDetailsChecker == null) {
+            throw new IllegalArgumentException("failFastEventDetailsChecker must not be null");
+        }
+
         this.digitsScribeClient = digitsScribeClient;
+        this.failFastEventDetailsChecker = failFastEventDetailsChecker;
+
         eventLoggers = new HashSet<>();
 
         for (DigitsEventLogger logger: loggers) {
@@ -46,6 +56,8 @@ class DigitsEventCollector {
 
     //Auth/External API events
     public void authImpression(DigitsEventDetails details) {
+        failFastEventDetailsChecker.loginBegin(details);
+
         digitsScribeClient.impression(Component.EMPTY);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.loginBegin(details);
@@ -53,6 +65,8 @@ class DigitsEventCollector {
     }
 
     public void authSuccess(DigitsEventDetails details) {
+        failFastEventDetailsChecker.loginSuccess(details);
+
         digitsScribeClient.loginSuccess();
         for (DigitsEventLogger logger: eventLoggers) {
             logger.loginSuccess(details);
@@ -60,6 +74,8 @@ class DigitsEventCollector {
     }
 
     public void authFailure(DigitsEventDetails details) {
+        failFastEventDetailsChecker.loginFailure(details);
+
         digitsScribeClient.failure(Component.EMPTY);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.loginFailure(details);
@@ -68,6 +84,8 @@ class DigitsEventCollector {
 
     //Phone screen events
     public void phoneScreenImpression(DigitsEventDetails details) {
+        failFastEventDetailsChecker.phoneNumberImpression(details);
+
         digitsScribeClient.impression(Component.AUTH);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.phoneNumberImpression(details);
@@ -78,6 +96,8 @@ class DigitsEventCollector {
     }
 
     public void submitClickOnPhoneScreen(DigitsEventDetails details) {
+        failFastEventDetailsChecker.phoneNumberSubmit(details);
+
         digitsScribeClient.click(Component.AUTH, Element.SUBMIT);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.phoneNumberSubmit(details);
@@ -85,6 +105,8 @@ class DigitsEventCollector {
     }
 
     public void retryClickOnPhoneScreen(DigitsEventDetails details) {
+        failFastEventDetailsChecker.phoneNumberSubmit(details);
+
         digitsScribeClient.click(Component.AUTH, Element.RETRY);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.phoneNumberSubmit(details);
@@ -92,6 +114,8 @@ class DigitsEventCollector {
     }
 
     public void submitPhoneSuccess(DigitsEventDetails details) {
+        failFastEventDetailsChecker.phoneNumberSuccess(details);
+
         digitsScribeClient.success(Component.AUTH);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.phoneNumberSuccess(details);
@@ -108,6 +132,8 @@ class DigitsEventCollector {
 
     //Login screen events
     public void loginScreenImpression(DigitsEventDetails details) {
+        failFastEventDetailsChecker.confirmationCodeImpression(details);
+
         digitsScribeClient.impression(Component.LOGIN);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.confirmationCodeImpression(details);
@@ -115,6 +141,8 @@ class DigitsEventCollector {
     }
 
     public void submitClickOnLoginScreen(DigitsEventDetails details) {
+        failFastEventDetailsChecker.confirmationCodeSubmit(details);
+
         digitsScribeClient.click(Component.LOGIN, Element.SUBMIT);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.confirmationCodeSubmit(details);
@@ -130,6 +158,8 @@ class DigitsEventCollector {
     }
 
     public void loginCodeSuccess(DigitsEventDetails details) {
+        failFastEventDetailsChecker.confirmationCodeSuccess(details);
+
         digitsScribeClient.success(Component.LOGIN);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.confirmationCodeSuccess(details);
@@ -146,6 +176,8 @@ class DigitsEventCollector {
 
     //Signup screen events
     public void signupScreenImpression(DigitsEventDetails details) {
+        failFastEventDetailsChecker.confirmationCodeImpression(details);
+
         digitsScribeClient.impression(Component.SIGNUP);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.confirmationCodeImpression(details);
@@ -153,6 +185,8 @@ class DigitsEventCollector {
     }
 
     public void submitClickOnSignupScreen(DigitsEventDetails details) {
+        failFastEventDetailsChecker.confirmationCodeSubmit(details);
+
         digitsScribeClient.click(Component.SIGNUP, Element.SUBMIT);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.confirmationCodeSubmit(details);
@@ -168,6 +202,8 @@ class DigitsEventCollector {
     }
 
     public void signupSuccess(DigitsEventDetails details) {
+        failFastEventDetailsChecker.confirmationCodeSuccess(details);
+
         digitsScribeClient.success(Component.SIGNUP);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.confirmationCodeSuccess(details);
@@ -184,6 +220,8 @@ class DigitsEventCollector {
 
     //Pin screen events
     public void pinScreenImpression(DigitsEventDetails details) {
+        failFastEventDetailsChecker.twoFactorPinImpression(details);
+
         digitsScribeClient.impression(Component.PIN);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.twoFactorPinImpression(details);
@@ -191,6 +229,8 @@ class DigitsEventCollector {
     }
 
     public void submitClickOnPinScreen(DigitsEventDetails details) {
+        failFastEventDetailsChecker.twoFactorPinSubmit(details);
+
         digitsScribeClient.click(Component.PIN, Element.SUBMIT);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.twoFactorPinSubmit(details);
@@ -198,6 +238,8 @@ class DigitsEventCollector {
     }
 
     public void twoFactorPinVerificationSuccess(DigitsEventDetails details) {
+        failFastEventDetailsChecker.twoFactorPinSuccess(details);
+
         digitsScribeClient.success(Component.PIN);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.twoFactorPinSuccess(details);
@@ -214,6 +256,8 @@ class DigitsEventCollector {
 
     //Email screen events
     public void emailScreenImpression(DigitsEventDetails details) {
+        failFastEventDetailsChecker.emailImpression(details);
+
         digitsScribeClient.impression(Component.EMAIL);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.emailImpression(details);
@@ -221,6 +265,8 @@ class DigitsEventCollector {
     }
 
     public void submitClickOnEmailScreen(DigitsEventDetails details) {
+        failFastEventDetailsChecker.emailSubmit(details);
+
         digitsScribeClient.click(Component.EMAIL, Element.SUBMIT);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.emailSubmit(details);
@@ -228,6 +274,8 @@ class DigitsEventCollector {
     }
 
     public void submitEmailSuccess(DigitsEventDetails details) {
+        failFastEventDetailsChecker.emailSuccess(details);
+
         digitsScribeClient.success(Component.EMAIL);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.emailSuccess(details);
@@ -257,6 +305,8 @@ class DigitsEventCollector {
 
     //Failure screen events
     public void failureScreenImpression(DigitsEventDetails details) {
+        failFastEventDetailsChecker.failureImpression(details);
+
         digitsScribeClient.impression(Component.FAILURE);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.failureImpression(details);
@@ -264,6 +314,8 @@ class DigitsEventCollector {
     }
 
     public void retryClickOnFailureScreen(DigitsEventDetails details) {
+        failFastEventDetailsChecker.failureRetryClick(details);
+
         digitsScribeClient.click(Component.FAILURE, Element.RETRY);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.failureRetryClick(details);
@@ -271,6 +323,8 @@ class DigitsEventCollector {
     }
 
     public void dismissClickOnFailureScreen(DigitsEventDetails details) {
+        failFastEventDetailsChecker.failureDismissClick(details);
+
         digitsScribeClient.click(Component.FAILURE, Element.DISMISS);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.failureDismissClick(details);

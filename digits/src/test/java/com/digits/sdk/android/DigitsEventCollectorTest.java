@@ -39,8 +39,10 @@ public class DigitsEventCollectorTest {
     @Captor
     private ArgumentCaptor<EventNamespace> eventNamespaceArgumentCaptor;
     private final DigitsScribeClient digitsScribeClient = mock(DigitsScribeClient.class);
+    private final FailFastEventDetailsChecker failFastEventDetailsChecker =
+            mock(FailFastEventDetailsChecker.class);
     private DigitsEventCollector digitsEventCollector =
-            new DigitsEventCollector(digitsScribeClient);
+            new DigitsEventCollector(digitsScribeClient, failFastEventDetailsChecker);
     private final DigitsException exception = new DigitsException("exception");
     private final DigitsEventDetails details = new DigitsEventDetailsBuilder()
             .withAuthStartTime(System.currentTimeMillis())
@@ -52,13 +54,15 @@ public class DigitsEventCollectorTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        digitsEventCollector = new DigitsEventCollector(digitsScribeClient, digitsEventLogger1);
+        digitsEventCollector = new DigitsEventCollector(digitsScribeClient,
+                failFastEventDetailsChecker, digitsEventLogger1);
     }
 
     @Test
     public void testAuthImpression() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.authImpression(details);
+        verify(failFastEventDetailsChecker).loginBegin(details);
         verify(digitsScribeClient).impression(Component.EMPTY);
         verify(digitsEventLogger1).loginBegin(details);
         verify(digitsEventLogger2).loginBegin(details);
@@ -68,6 +72,7 @@ public class DigitsEventCollectorTest {
     public void testAuthSuccess() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.authSuccess(details);
+        verify(failFastEventDetailsChecker).loginSuccess(details);
         verify(digitsScribeClient).loginSuccess();
         verify(digitsEventLogger1).loginSuccess(details);
         verify(digitsEventLogger2).loginSuccess(details);
@@ -77,6 +82,7 @@ public class DigitsEventCollectorTest {
     public void testAuthFailure() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.authFailure(details);
+        verify(failFastEventDetailsChecker).loginFailure(details);
         verify(digitsScribeClient).failure(Component.EMPTY);
         verify(digitsEventLogger1).loginFailure(details);
         verify(digitsEventLogger2).loginFailure(details);
@@ -87,6 +93,7 @@ public class DigitsEventCollectorTest {
     public void testPhoneScreenImpression() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.phoneScreenImpression(details);
+        verify(failFastEventDetailsChecker).phoneNumberImpression(details);
         verify(digitsScribeClient).impression(Component.AUTH);
         verify(digitsEventLogger1).phoneNumberImpression(details);
         verify(digitsEventLogger2).phoneNumberImpression(details);
@@ -103,6 +110,7 @@ public class DigitsEventCollectorTest {
     public void testSubmitClickOnPhoneScreen() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitClickOnPhoneScreen(details);
+        verify(failFastEventDetailsChecker).phoneNumberSubmit(details);
         verify(digitsScribeClient).click(Component.AUTH, DigitsScribeConstants.Element.SUBMIT);
         verify(digitsEventLogger1).phoneNumberSubmit(details);
         verify(digitsEventLogger2).phoneNumberSubmit(details);
@@ -112,6 +120,7 @@ public class DigitsEventCollectorTest {
     public void testRetryClickOnPhoneScreen() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.retryClickOnPhoneScreen(details);
+        verify(failFastEventDetailsChecker).phoneNumberSubmit(details);
         verify(digitsScribeClient).click(Component.AUTH, DigitsScribeConstants.Element.RETRY);
         verify(digitsEventLogger1).phoneNumberSubmit(details);
         verify(digitsEventLogger2).phoneNumberSubmit(details); }
@@ -120,6 +129,7 @@ public class DigitsEventCollectorTest {
     public void testSubmitPhoneSuccess() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitPhoneSuccess(details);
+        verify(failFastEventDetailsChecker).phoneNumberSuccess(details);
         verify(digitsScribeClient).success(Component.AUTH);
         verify(digitsEventLogger1).phoneNumberSuccess(details);
         verify(digitsEventLogger2).phoneNumberSuccess(details);
@@ -142,6 +152,7 @@ public class DigitsEventCollectorTest {
     public void testLoginScreenImpression() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.loginScreenImpression(details);
+        verify(failFastEventDetailsChecker).confirmationCodeImpression(details);
         verify(digitsScribeClient).impression(Component.LOGIN);
         verify(digitsEventLogger1).confirmationCodeImpression(details);
         verify(digitsEventLogger2).confirmationCodeImpression(details);
@@ -151,6 +162,7 @@ public class DigitsEventCollectorTest {
     public void testSubmitClickOnLoginScreen() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitClickOnLoginScreen(details);
+        verify(failFastEventDetailsChecker).confirmationCodeSubmit(details);
         verify(digitsScribeClient).click(Component.LOGIN, DigitsScribeConstants.Element.SUBMIT);
         verify(digitsEventLogger1).confirmationCodeSubmit(details);
         verify(digitsEventLogger2).confirmationCodeSubmit(details);
@@ -172,6 +184,7 @@ public class DigitsEventCollectorTest {
     public void testLoginCodeSuccess() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.loginCodeSuccess(details);
+        verify(failFastEventDetailsChecker).confirmationCodeSuccess(details);
         verify(digitsScribeClient).success(Component.LOGIN);
         verify(digitsEventLogger1).confirmationCodeSuccess(details);
         verify(digitsEventLogger2).confirmationCodeSuccess(details);
@@ -194,6 +207,7 @@ public class DigitsEventCollectorTest {
     public void testConfirmationScreenImpression() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.signupScreenImpression(details);
+        verify(failFastEventDetailsChecker).confirmationCodeImpression(details);
         verify(digitsScribeClient).impression(Component.SIGNUP);
         verify(digitsEventLogger1).confirmationCodeImpression(details);
         verify(digitsEventLogger2).confirmationCodeImpression(details);
@@ -203,6 +217,7 @@ public class DigitsEventCollectorTest {
     public void testSubmitClickOnSignupScreen() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitClickOnSignupScreen(details);
+        verify(failFastEventDetailsChecker).confirmationCodeSubmit(details);
         verify(digitsScribeClient).click(Component.SIGNUP, DigitsScribeConstants.Element.SUBMIT);
         verify(digitsEventLogger1).confirmationCodeSubmit(details);
         verify(digitsEventLogger2).confirmationCodeSubmit(details);
@@ -224,6 +239,7 @@ public class DigitsEventCollectorTest {
     public void testSignupSuccess() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.signupSuccess(details);
+        verify(failFastEventDetailsChecker).confirmationCodeSuccess(details);
         verify(digitsScribeClient).success(Component.SIGNUP);
         verify(digitsEventLogger1).confirmationCodeSuccess(details);
         verify(digitsEventLogger2).confirmationCodeSuccess(details);
@@ -246,6 +262,7 @@ public class DigitsEventCollectorTest {
     public void testPinScreenImpression() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.pinScreenImpression(details);
+        verify(failFastEventDetailsChecker).twoFactorPinImpression(details);
         verify(digitsScribeClient).impression(Component.PIN);
         verify(digitsEventLogger1).twoFactorPinImpression(details);
         verify(digitsEventLogger2).twoFactorPinImpression(details);
@@ -255,6 +272,7 @@ public class DigitsEventCollectorTest {
     public void testSubmitClickOnPinScreen() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitClickOnPinScreen(details);
+        verify(failFastEventDetailsChecker).twoFactorPinSubmit(details);
         verify(digitsScribeClient).click(Component.PIN, DigitsScribeConstants.Element.SUBMIT);
         verify(digitsEventLogger1).twoFactorPinSubmit(details);
         verify(digitsEventLogger2).twoFactorPinSubmit(details);
@@ -264,6 +282,7 @@ public class DigitsEventCollectorTest {
     public void testTwoFactorPinVerificationSuccess() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.twoFactorPinVerificationSuccess(details);
+        verify(failFastEventDetailsChecker).twoFactorPinSuccess(details);
         verify(digitsScribeClient).success(Component.PIN);
         verify(digitsEventLogger1).twoFactorPinSuccess(details);
         verify(digitsEventLogger2).twoFactorPinSuccess(details);
@@ -286,6 +305,7 @@ public class DigitsEventCollectorTest {
     public void testEmailScreenImpression() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.emailScreenImpression(details);
+        verify(failFastEventDetailsChecker).emailImpression(details);
         verify(digitsScribeClient).impression(Component.EMAIL);
         verify(digitsEventLogger1).emailImpression(details);
         verify(digitsEventLogger2).emailImpression(details);
@@ -295,6 +315,7 @@ public class DigitsEventCollectorTest {
     public void testSubmitClickOnEmailScreen() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitClickOnEmailScreen(details);
+        verify(failFastEventDetailsChecker).emailSubmit(details);
         verify(digitsScribeClient).click(Component.EMAIL, DigitsScribeConstants.Element.SUBMIT);
         verify(digitsEventLogger1).emailSubmit(details);
         verify(digitsEventLogger2).emailSubmit(details);
@@ -304,6 +325,7 @@ public class DigitsEventCollectorTest {
     public void testSubmitEmailSuccess() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.submitEmailSuccess(details);
+        verify(failFastEventDetailsChecker).emailSuccess(details);
         verify(digitsScribeClient).success(Component.EMAIL);
         verify(digitsEventLogger1).emailSuccess(details);
         verify(digitsEventLogger2).emailSuccess(details);
@@ -344,6 +366,7 @@ public class DigitsEventCollectorTest {
     public void testFailureScreenImpression() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.failureScreenImpression(details);
+        verify(failFastEventDetailsChecker).failureImpression(details);
         verify(digitsScribeClient).impression(Component.FAILURE);
         verify(digitsEventLogger1).failureImpression(details);
         verify(digitsEventLogger2).failureImpression(details);
@@ -353,6 +376,7 @@ public class DigitsEventCollectorTest {
     public void testRetryClickOnFailureScreen() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.retryClickOnFailureScreen(details);
+        verify(failFastEventDetailsChecker).failureRetryClick(details);
         verify(digitsScribeClient).click(Component.FAILURE, DigitsScribeConstants.Element.RETRY);
         verify(digitsEventLogger1).failureRetryClick(details);
         verify(digitsEventLogger2).failureRetryClick(details);
@@ -362,6 +386,7 @@ public class DigitsEventCollectorTest {
     public void testDismissClickOnFailureScreen() {
         digitsEventCollector.addDigitsEventLogger(digitsEventLogger2);
         digitsEventCollector.dismissClickOnFailureScreen(details);
+        verify(failFastEventDetailsChecker).failureDismissClick(details);
         verify(digitsScribeClient).click(Component.FAILURE, DigitsScribeConstants.Element.DISMISS);
         verify(digitsEventLogger1).failureDismissClick(details);
         verify(digitsEventLogger2).failureDismissClick(details);

@@ -19,7 +19,8 @@ package com.digits.sdk.android;
 //Required since Mockito otherwise throws
 //cannot proxy inaccessible class class com.digits.sdk.android.DigitsEventCollector
 public class DummyDigitsEventCollector extends DigitsEventCollector{
-    public DummyDigitsEventCollector(DigitsScribeClient digitsScribeClient) {
-        super(digitsScribeClient);
+    public DummyDigitsEventCollector(DigitsScribeClient digitsScribeClient,
+                                     FailFastEventDetailsChecker failFastEventDetailsChecker) {
+        super(digitsScribeClient, failFastEventDetailsChecker);
     }
 }

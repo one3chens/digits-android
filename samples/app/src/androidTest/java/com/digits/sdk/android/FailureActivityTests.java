@@ -62,7 +62,7 @@ public class FailureActivityTests extends
                 new LoginResultReceiver((WeakAuthCallback) null, sessionManager, null);
         final Bundle bundle = new Bundle();
         final DigitsEventDetailsBuilder details = new DigitsEventDetailsBuilder()
-                .withAuthStartTime(1L);
+                .withAuthStartTime(1L).withCurrentTime(2L).withLanguage("en");
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         bundle.putSerializable(DigitsClient.EXTRA_FALLBACK_REASON, new DigitsException("",
                 TwitterApiErrorConstants.DEVICE_REGISTRATION_INVALID_INPUT, new AuthConfig()));

@@ -71,7 +71,8 @@ public class Digits extends Kit<Void> {
         //all expensive api clients are created in the background
         defaultAnswersLogger = new DefaultAnswersLogger();
         digitsScribeClient = new DigitsScribeClient();
-        digitsEventCollector = new DigitsEventCollector(digitsScribeClient, defaultAnswersLogger);
+        digitsEventCollector = new DigitsEventCollector(digitsScribeClient,
+                FailFastEventDetailsChecker.instance, defaultAnswersLogger);
         this.sandboxConfig = new SandboxConfig();
     }
 
