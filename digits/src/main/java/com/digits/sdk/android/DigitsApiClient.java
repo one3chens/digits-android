@@ -35,12 +35,6 @@ class DigitsApiClient {
             "Attempting to connect to Digits API with null session. " +
                     "Please re-authenticate and try again";
 
-    DigitsApiClient(DigitsSession session) {
-        this(session, TwitterCore.getInstance(), TwitterCore.getInstance().getSSLSocketFactory(),
-                Digits.getInstance().getExecutorService(),
-                new DigitsRequestInterceptor(new DigitsUserAgent()));
-    }
-
     DigitsApiClient(DigitsSession session, TwitterCore twitterCore, SSLSocketFactory sslFactory,
                     ExecutorService executorService, DigitsRequestInterceptor interceptor) {
         this.session = session;

@@ -22,26 +22,22 @@ import android.os.Build;
 class DigitsUserAgent {
     private final String digitsVersion;
     private final String androidVersion;
-    private final String appName;
+    private final String consumerKey;
 
-    DigitsUserAgent(){
-        this(Digits.getInstance().getVersion(), Build.VERSION.RELEASE,
-                Digits.getInstance().getContext().getApplicationContext()
-                        .getApplicationInfo().loadLabel(
-                        Digits.getInstance()
-                                .getContext()
-                                .getApplicationContext()
-                                .getPackageManager()).toString());
+    public static DigitsUserAgent create() {
+        final Digits digits = Digits.getInstance();
+        return new DigitsUserAgent(digits.getVersion(),
+                Build.VERSION.RELEASE, digits.getAuthConfig().getConsumerKey());
     }
 
-    DigitsUserAgent(String digitsVersion, String androidVersion, String appName) {
+    DigitsUserAgent(String digitsVersion, String androidVersion, String consumerKey) {
         this.digitsVersion = digitsVersion;
-        this.appName = appName;
+        this.consumerKey = consumerKey;
         this.androidVersion = androidVersion;
     }
 
     public String toString() {
-        return "Digits/" + digitsVersion + " ( " + appName + "; Android " + androidVersion + ")";
+        return "Digits/" + digitsVersion + " ( " + consumerKey
+                + "; Android " + androidVersion + ")";
     }
-
 }

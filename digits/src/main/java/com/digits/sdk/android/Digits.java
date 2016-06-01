@@ -328,7 +328,10 @@ public class Digits extends Kit<Void> {
 
     private synchronized void createApiClientManager(){
         if (apiClientManager == null) {
-            apiClientManager = new DigitsApiClientManager(getSessionManager());
+            apiClientManager = new DigitsApiClientManager(TwitterCore.getInstance(),
+                    getExecutorService(), getSessionManager(), null,
+                    new DigitsRequestInterceptor(DigitsUserAgent.create()),
+                    getSandboxConfig());
         }
     }
 
@@ -351,11 +354,10 @@ public class Digits extends Kit<Void> {
     private synchronized void createTwitterScribeClient(SessionManager sessionManager,
                                                         IdManager idManager) {
         if (twitterScribeClient == null) {
-            final DigitsUserAgent userAgent = new DigitsUserAgent();
             final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>();
             sessionManagers.add(sessionManager);
 
-            twitterScribeClient = new DefaultScribeClient(this, userAgent.toString(),
+            twitterScribeClient = new DefaultScribeClient(this, DigitsUserAgent.create().toString(),
                     sessionManagers, idManager);
         }
     }

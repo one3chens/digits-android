@@ -28,17 +28,9 @@ public class DigitsApiClientManager {
     private final ExecutorService executorService;
     private final DigitsRequestInterceptor interceptor;
     private SandboxConfig sandboxConfig;
-
     private DigitsApiClient digitsApiClient;
 
-    DigitsApiClientManager(SessionManager<DigitsSession> sessionManager) {
-        this(new DigitsUserAgent(), TwitterCore.getInstance(),
-                Digits.getInstance().getExecutorService(), sessionManager, null,
-                new DigitsRequestInterceptor(new DigitsUserAgent()),
-                Digits.getInstance().getSandboxConfig());
-    }
-
-    DigitsApiClientManager(DigitsUserAgent userAgent, TwitterCore twitterCore,
+    DigitsApiClientManager(TwitterCore twitterCore,
                            ExecutorService executorService,
                            SessionManager<DigitsSession> sessionManager,
                            DigitsApiClient apiClient,
@@ -46,9 +38,6 @@ public class DigitsApiClientManager {
                            SandboxConfig sandboxConfig) {
         if (twitterCore == null) {
             throw new IllegalArgumentException("twitter must not be null");
-        }
-        if (userAgent == null) {
-            throw new IllegalArgumentException("userAgent must not be null");
         }
         if (sessionManager == null) {
             throw new IllegalArgumentException("sessionManager must not be null");
@@ -70,7 +59,7 @@ public class DigitsApiClientManager {
     DigitsApiClient getApiClient(){
         if (sessionManager.getActiveSession() == null ||
                 !sessionManager.getActiveSession().equals(digitsApiClient.getSession())) {
-            this.digitsApiClient = createNewClient();
+            digitsApiClient = createNewClient();
         }
         return digitsApiClient;
     }
