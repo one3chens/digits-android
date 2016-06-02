@@ -87,9 +87,9 @@ public class FailureActivityDelegateImplTests {
                 .withCountry("US")
                 .withAuthStartTime(1L);
 
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
-        bundle.putSerializable(DigitsClient.EXTRA_FALLBACK_REASON, exception);
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, resultReceiver);
+        bundle.putSerializable(AuthClient.EXTRA_FALLBACK_REASON, exception);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
         when(intent.getExtras()).thenReturn(bundle);
         when(activity.getIntent()).thenReturn(intent);
     }

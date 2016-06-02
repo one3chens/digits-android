@@ -55,7 +55,7 @@ public class Digits extends Kit<Void> {
     private final DigitsEventCollector digitsEventCollector;
     private final SandboxConfig sandboxConfig;
     private volatile DigitsApiClientManager apiClientManager;
-    private volatile DigitsClient digitsClient;
+    private volatile AuthClient authClient;
     private volatile ContactsClient contactsClient;
     private SessionManager<DigitsSession> sessionManager;
     private SessionMonitor<DigitsSession> userSessionMonitor;
@@ -165,7 +165,7 @@ public class Digits extends Kit<Void> {
     public static void authenticate(DigitsAuthConfig digitsAuthConfig) {
         getInstance().setTheme(digitsAuthConfig.themeResId);
         getInstance().setExternalLogger(digitsAuthConfig.digitsEventLogger);
-        getInstance().getDigitsClient().startSignUp(digitsAuthConfig);
+        getInstance().getAuthClient().startSignUp(digitsAuthConfig);
     }
 
     public static SessionManager<DigitsSession> getSessionManager() {
@@ -271,7 +271,7 @@ public class Digits extends Kit<Void> {
         createTwitterScribeClient(sessionManager, getIdManager());
         digitsScribeClient.setTwitterScribeClient(twitterScribeClient);
         createApiClientManager();
-        createDigitsClient();
+        createAuthClient();
         createContactsClient();
         userSessionMonitor = new SessionMonitor<>(getSessionManager(), getExecutorService(),
                 digitsSessionVerifier);
@@ -308,11 +308,22 @@ public class Digits extends Kit<Void> {
         return apiClientManager;
     }
 
-    DigitsClient getDigitsClient() {
-        if (digitsClient == null) {
-            createDigitsClient();
+    /**
+     * @deprecated replaced by {@link #getAuthClient()} method
+     */
+    @Deprecated
+    AuthClient getDigitsClient() {
+        if (authClient == null) {
+            createAuthClient();
         }
-        return digitsClient;
+        return authClient;
+    }
+
+    AuthClient getAuthClient() {
+        if (authClient == null) {
+            createAuthClient();
+        }
+        return authClient;
     }
 
     public ContactsClient getContactsClient() {
@@ -335,9 +346,9 @@ public class Digits extends Kit<Void> {
         }
     }
 
-    private synchronized void createDigitsClient() {
-        if (digitsClient == null) {
-            digitsClient = new DigitsClient(getApiClientManager());
+    private synchronized void createAuthClient() {
+        if (authClient == null) {
+            authClient = new AuthClient(getApiClientManager());
         }
     }
 

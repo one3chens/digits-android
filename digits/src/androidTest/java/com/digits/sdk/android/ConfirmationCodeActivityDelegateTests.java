@@ -47,25 +47,25 @@ public class ConfirmationCodeActivityDelegateTests extends
 
     public void testIsValid() {
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(DigitsClient.EXTRA_PHONE, "");
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(AuthClient.EXTRA_PHONE, "");
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
 
         assertTrue(delegate.isValid(bundle));
     }
 
     public void testIsValid_missingResultReceiver() {
         final Bundle bundle = new Bundle();
-        bundle.putString(DigitsClient.EXTRA_PHONE, "");
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
+        bundle.putString(AuthClient.EXTRA_PHONE, "");
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
 
         assertFalse(delegate.isValid(bundle));
     }
 
     public void testIsValid_missingPhoneNumber() {
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, completeDetails);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -76,9 +76,9 @@ public class ConfirmationCodeActivityDelegateTests extends
                         .withLanguage(LANG)
                         .withCountry(US_ISO2);
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(DigitsClient.EXTRA_PHONE, "");
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(AuthClient.EXTRA_PHONE, "");
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -89,9 +89,9 @@ public class ConfirmationCodeActivityDelegateTests extends
                         .withAuthStartTime(ANY_LONG)
                         .withCountry(US_ISO2);
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(DigitsClient.EXTRA_PHONE, "");
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(AuthClient.EXTRA_PHONE, "");
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -102,9 +102,9 @@ public class ConfirmationCodeActivityDelegateTests extends
                         .withAuthStartTime(ANY_LONG)
                         .withLanguage(LANG);
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(DigitsClient.EXTRA_PHONE, "");
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(AuthClient.EXTRA_PHONE, "");
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }

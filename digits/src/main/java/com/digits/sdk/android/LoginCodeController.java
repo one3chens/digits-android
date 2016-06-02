@@ -46,7 +46,7 @@ class LoginCodeController extends DigitsControllerImpl {
                         DigitsEventCollector digitsEventCollector, Boolean emailCollection,
                         TextView timerText, DigitsEventDetailsBuilder details) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText,
-                Digits.getSessionManager(), Digits.getInstance().getDigitsClient(), requestId,
+                Digits.getSessionManager(), Digits.getInstance().getAuthClient(), requestId,
                 userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), digitsEventCollector,
@@ -56,7 +56,7 @@ class LoginCodeController extends DigitsControllerImpl {
     LoginCodeController(ResultReceiver resultReceiver,
                         StateButton stateButton, InvertedStateButton resendButton,
                         InvertedStateButton callMeButton, EditText loginEditText,
-                        SessionManager<DigitsSession> sessionManager, DigitsClient client,
+                        SessionManager<DigitsSession> sessionManager, AuthClient client,
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
                         ActivityClassManager activityClassManager,
                         DigitsEventCollector digitsEventCollector, Boolean emailCollection,
@@ -83,7 +83,7 @@ class LoginCodeController extends DigitsControllerImpl {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
             final String code = editText.getText().toString();
-            digitsClient.loginDevice(requestId, userId, code,
+            authClient.loginDevice(requestId, userId, code,
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         public void success(Result<DigitsSessionResponse> result) {
                             digitsEventCollector.loginCodeSuccess(
@@ -112,7 +112,7 @@ class LoginCodeController extends DigitsControllerImpl {
     public void resendCode(final Context context, final InvertedStateButton activeButton,
                            final Verification verificationType) {
         activeButton.showProgress();
-        digitsClient.authDevice(phoneNumber, verificationType,
+        authClient.authDevice(phoneNumber, verificationType,
                 new DigitsCallback<AuthResponse>(context, this) {
                     @Override
                     public void success(final Result<AuthResponse> result) {
@@ -123,9 +123,9 @@ class LoginCodeController extends DigitsControllerImpl {
                             public void run() {
                                 activeButton.showStart();
                                 timerText.setText(
-                                        String.valueOf(
-                                            DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
-                                        TextView.BufferType.NORMAL);
+                                  String.valueOf(
+                                    DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
+                                  TextView.BufferType.NORMAL);
                                 resendButton.setEnabled(false);
                                 callMeButton.setEnabled(false);
                                 startTimer();
@@ -175,10 +175,10 @@ class LoginCodeController extends DigitsControllerImpl {
     private void startPinCodeActivity(Context context) {
         final Intent intent = new Intent(context, activityClassManager.getPinCodeActivity());
         final Bundle bundle = getBundle(phoneNumber, eventDetailsBuilder);
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
-        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, requestId);
-        bundle.putLong(DigitsClient.EXTRA_USER_ID, userId);
-        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, resultReceiver);
+        bundle.putString(AuthClient.EXTRA_REQUEST_ID, requestId);
+        bundle.putLong(AuthClient.EXTRA_USER_ID, userId);
+        bundle.putBoolean(AuthClient.EXTRA_EMAIL, emailCollection);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
         finishActivity(context);

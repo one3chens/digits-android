@@ -57,7 +57,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class DigitsClientTests {
+public class AuthClientTests {
     private static final String TYPE = "typetoken";
     private static final String ANY_REQUEST_ID = "1";
     private static final String ANY_CODE = "1";
@@ -67,7 +67,7 @@ public class DigitsClientTests {
     private static int TEST_NO_INTENT_FLAGS = 0;
     private final SandboxConfig sandboxConfig = new SandboxConfig();
 
-    private DigitsClient digitsClient;
+    private AuthClient authClient;
     private Intent capturedIntent;
     private MockContext context;
     private Digits digits;
@@ -137,7 +137,7 @@ public class DigitsClientTests {
         when(apiClientManager.getService()).thenReturn(service);
         when(apiClientManager.getApiClient()).thenReturn(digitsApiClient);
 
-        digitsClient = new DigitsClient(digits, sessionManager, apiClientManager,
+        authClient = new AuthClient(digits, sessionManager, apiClientManager,
                 authRequestQueue, digitsEventCollector, sandboxConfig) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
@@ -219,7 +219,7 @@ public class DigitsClientTests {
                 .withPhoneNumber(TestConstants.PHONE)
                 .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
-        digitsClient.startSignUp(configWithCallback);
+        authClient.startSignUp(configWithCallback);
         verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
         DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
@@ -240,7 +240,7 @@ public class DigitsClientTests {
                 .withEmailCollection(TestConstants.ANY_BOOLEAN)
                 .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
-        digitsClient.startSignUp(configWithPhone);
+        authClient.startSignUp(configWithPhone);
         verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
         DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
@@ -300,7 +300,7 @@ public class DigitsClientTests {
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
         final LoginOrSignupComposer loginOrSignupComposer =
-                digitsClient.createCompositeCallback(digitsAuthConfig, digitsEventDetailsBuilder);
+                authClient.createCompositeCallback(digitsAuthConfig, digitsEventDetailsBuilder);
         final Intent intent  = mock(Intent.class);
 
         loginOrSignupComposer.success(intent);
@@ -321,7 +321,7 @@ public class DigitsClientTests {
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
         final LoginOrSignupComposer loginOrSignupComposer =
-                digitsClient.createCompositeCallback(digitsAuthConfig, digitsEventDetailsBuilder);
+                authClient.createCompositeCallback(digitsAuthConfig, digitsEventDetailsBuilder);
         final Intent intent  = mock(Intent.class);
         loginOrSignupComposer.failure(TestConstants.ANY_EXCEPTION);
         verify(digitsEventCollector).submitPhoneFailure();
@@ -332,7 +332,7 @@ public class DigitsClientTests {
     @Test
     public void testAuthDevice_withSmsVerification() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.authDevice(TestConstants.PHONE, Verification.sms, listener);
+        authClient.authDevice(TestConstants.PHONE, Verification.sms, listener);
 
         verify(service).auth(eq(TestConstants.PHONE), eq(Verification.sms.name()),
                 eq(Locale.getDefault().getLanguage()), eq(listener));
@@ -341,7 +341,7 @@ public class DigitsClientTests {
     @Test
     public void testAuthDevice_withVoiceVerification() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.authDevice(TestConstants.PHONE, Verification.voicecall, listener);
+        authClient.authDevice(TestConstants.PHONE, Verification.voicecall, listener);
 
         verify(service).auth(eq(TestConstants.PHONE), eq(Verification.voicecall.name()),
                 eq(Locale.getDefault().getLanguage()), eq(listener));
@@ -350,25 +350,25 @@ public class DigitsClientTests {
     @Test
     public void testRegisterDevice_withSmsVerification() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.registerDevice(TestConstants.PHONE, Verification.sms, listener);
+        authClient.registerDevice(TestConstants.PHONE, Verification.sms, listener);
         verify(service).register(TestConstants.PHONE,
-                DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
-                DigitsClient.CLIENT_IDENTIFIER, Verification.sms.name(), listener);
+                AuthClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
+                AuthClient.CLIENT_IDENTIFIER, Verification.sms.name(), listener);
     }
 
     @Test
     public void testRegisterDevice_withVoiceVerification() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.registerDevice(TestConstants.PHONE, Verification.voicecall, listener);
+        authClient.registerDevice(TestConstants.PHONE, Verification.voicecall, listener);
         verify(service).register(TestConstants.PHONE,
-                DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
-                DigitsClient.CLIENT_IDENTIFIER, Verification.voicecall.name(), listener);
+                AuthClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
+                AuthClient.CLIENT_IDENTIFIER, Verification.voicecall.name(), listener);
     }
 
     @Test
     public void testLoginDevice() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.loginDevice(ANY_REQUEST_ID, TestConstants.USER_ID, ANY_CODE, listener);
+        authClient.loginDevice(ANY_REQUEST_ID, TestConstants.USER_ID, ANY_CODE, listener);
         verify(service).login(eq(ANY_REQUEST_ID), eq(TestConstants.USER_ID), eq(ANY_CODE),
                 eq(listener));
     }
@@ -376,13 +376,13 @@ public class DigitsClientTests {
     @Test
     public void testVerifyPin() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.verifyPin(ANY_REQUEST_ID, TestConstants.USER_ID, ANY_CODE, listener);
+        authClient.verifyPin(ANY_REQUEST_ID, TestConstants.USER_ID, ANY_CODE, listener);
         verify(service).verifyPin(eq(ANY_REQUEST_ID), eq(TestConstants.USER_ID), eq(ANY_CODE),
                 eq(listener));
     }
 
     private void verifyCallbackInReceiver(AuthCallback expected) {
-        final LoginResultReceiver receiver = capturedIntent.getParcelableExtra(DigitsClient
+        final LoginResultReceiver receiver = capturedIntent.getParcelableExtra(AuthClient
                 .EXTRA_RESULT_RECEIVER);
         assertEquals(expected, receiver.callback.getCallback());
     }
@@ -393,7 +393,7 @@ public class DigitsClientTests {
                 .build();
         final Bundle expectedBundle = createBundle(loginResultReceiver, "", false);
 
-        digitsClient.startSignUp(configWithCallback);
+        authClient.startSignUp(configWithCallback);
         verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
         final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
@@ -408,7 +408,7 @@ public class DigitsClientTests {
         assertBundleEquals(expectedBundle, capturedIntent.getExtras());
         final DigitsEventDetails actualDigitsEventDetails =
                 ((DigitsEventDetailsBuilder) capturedIntent
-                        .getParcelableExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER)).build();
+                        .getParcelableExtra(AuthClient.EXTRA_EVENT_DETAILS_BUILDER)).build();
         assertNotNull(actualDigitsEventDetails.elapsedTimeInMillis);
         assertNotNull(actualDigitsEventDetails.language);
     }
@@ -423,7 +423,7 @@ public class DigitsClientTests {
 
         final Bundle expectedBundle = createBundle(loginResultReceiver, phone, emailCollection);
 
-        digitsClient.startSignUp(digitsAuthConfig);
+        authClient.startSignUp(digitsAuthConfig);
         verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
         final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
@@ -438,7 +438,7 @@ public class DigitsClientTests {
         assertBundleEquals(expectedBundle, capturedIntent.getExtras());
         final DigitsEventDetails actualDigitsEventDetails =
                 ((DigitsEventDetailsBuilder) capturedIntent
-                        .getParcelableExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER)).build();
+                        .getParcelableExtra(AuthClient.EXTRA_EVENT_DETAILS_BUILDER)).build();
         assertNotNull(actualDigitsEventDetails.elapsedTimeInMillis);
         assertNotNull(actualDigitsEventDetails.language);
     }
@@ -457,7 +457,7 @@ public class DigitsClientTests {
                 .withPartnerKey("bad_key")
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
-        final MockDigitsClient digitsClient = new MockDigitsClient(digits, sessionManager,
+        final MockAuthClient authClient = new MockAuthClient(digits, sessionManager,
                 apiClientManager,
                 authRequestQueue,
                 digitsEventCollector) {
@@ -467,13 +467,13 @@ public class DigitsClientTests {
             }
         };
 
-        digitsClient.startSignUp(digitsAuthConfig);
+        authClient.startSignUp(digitsAuthConfig);
         verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
         final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verifyNoMoreInteractions(digitsEventCollector);
-        verifyNoMoreInteractions(digitsClient.loginOrSignupComposer);
+        verifyNoMoreInteractions(authClient.loginOrSignupComposer);
     }
 
     private void verifySignUpWithCustomPhoneUIAndPartnerKey(Context context, AuthCallback callback,
@@ -489,7 +489,7 @@ public class DigitsClientTests {
                 .withPartnerKey(TestConstants.PARTNER_KEY)
                 .withCustomPhoneNumberScreen(confirmationCodeCallback).build();
 
-        final MockDigitsClient digitsClient = new MockDigitsClient(digits, sessionManager,
+        final MockAuthClient authClient = new MockAuthClient(digits, sessionManager,
                 apiClientManager,
                 authRequestQueue, digitsEventCollector) {
             @Override
@@ -498,7 +498,7 @@ public class DigitsClientTests {
             }
         };
 
-        digitsClient.startSignUp(digitsAuthConfig);
+        authClient.startSignUp(digitsAuthConfig);
         verify(digitsEventCollector).authImpression(detailsArgumentCaptor.capture());
         final DigitsEventDetails digitsEventDetails = detailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.language);
@@ -506,7 +506,7 @@ public class DigitsClientTests {
         verify(digitsEventCollector)
                 .submitClickOnPhoneScreen(detailsArgumentCaptor.capture());
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
-        verify(digitsClient.loginOrSignupComposer).start();
+        verify(authClient.loginOrSignupComposer).start();
     }
 
     private DigitsAuthRequestQueue createRequestQueue() {
@@ -528,26 +528,26 @@ public class DigitsClientTests {
                                 String defaultPhone, Boolean emailRequired){
         final Bundle bundle = new Bundle();
 
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, loginResultReceiver);
-        bundle.putString(DigitsClient.EXTRA_PHONE, defaultPhone == null ? "": defaultPhone);
-        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailRequired);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, loginResultReceiver);
+        bundle.putString(AuthClient.EXTRA_PHONE, defaultPhone == null ? "": defaultPhone);
+        bundle.putBoolean(AuthClient.EXTRA_EMAIL, emailRequired);
 
         return bundle;
     }
 
     private void assertBundleEquals(Bundle expectedBundle, Bundle actualBundle){
-        assertEquals(expectedBundle.get(DigitsClient.EXTRA_RESULT_RECEIVER),
-                actualBundle.get(DigitsClient.EXTRA_RESULT_RECEIVER));
-        assertEquals(expectedBundle.get(DigitsClient.EXTRA_PHONE),
-                actualBundle.get(DigitsClient.EXTRA_PHONE));
-        assertEquals(expectedBundle.get(DigitsClient.EXTRA_EMAIL),
-                actualBundle.get(DigitsClient.EXTRA_EMAIL));
+        assertEquals(expectedBundle.get(AuthClient.EXTRA_RESULT_RECEIVER),
+                actualBundle.get(AuthClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(expectedBundle.get(AuthClient.EXTRA_PHONE),
+                actualBundle.get(AuthClient.EXTRA_PHONE));
+        assertEquals(expectedBundle.get(AuthClient.EXTRA_EMAIL),
+                actualBundle.get(AuthClient.EXTRA_EMAIL));
     }
 
-    public class MockDigitsClient extends DigitsClient{
+    public class MockAuthClient extends AuthClient {
         LoginOrSignupComposer loginOrSignupComposer;
 
-        public MockDigitsClient(Digits digits, SessionManager<DigitsSession> sessionManager,
+        public MockAuthClient(Digits digits, SessionManager<DigitsSession> sessionManager,
                                 DigitsApiClientManager apiClientManager,
                                 DigitsAuthRequestQueue authRequestQueue,
                                 DigitsEventCollector digitsEventCollector) {
@@ -565,12 +565,12 @@ public class DigitsClientTests {
         }
 
         protected abstract class DummyLoginOrSignupComposer extends LoginOrSignupComposer {
-            DummyLoginOrSignupComposer(Context context, DigitsClient digitsClient,
+            DummyLoginOrSignupComposer(Context context, AuthClient authClient,
                                        String phoneNumber, Verification verificationType,
                                        boolean emailCollection, ResultReceiver resultReceiver,
                                        ActivityClassManager activityClassManager,
                                        DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
-                super(context, digitsClient, phoneNumber, verificationType, emailCollection,
+                super(context, authClient, phoneNumber, verificationType, emailCollection,
                         resultReceiver, activityClassManager, digitsEventDetailsBuilder);
             }
         }

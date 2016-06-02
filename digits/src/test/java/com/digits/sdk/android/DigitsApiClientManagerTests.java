@@ -47,7 +47,7 @@ import static org.mockito.Mockito.when;
 public class DigitsApiClientManagerTests {
 
     final SandboxConfig sandboxConfig = new SandboxConfig();
-    private MockDigitsApiClientManager digitsClient;
+    private MockDigitsApiClientManager authClient;
     private DigitsUserAgent digitsUserAgent;
     private TwitterCore twitterCore;
     private TwitterAuthConfig twitterAuthConfig;
@@ -88,7 +88,7 @@ public class DigitsApiClientManagerTests {
         when(controller.getErrors()).thenReturn(mock(ErrorCodes.class));
 
 
-        digitsClient = new MockDigitsApiClientManager(
+        authClient = new MockDigitsApiClientManager(
                 twitterCore, executorService, mockSessionManager, activeClient, interceptor);
     }
 
@@ -120,11 +120,11 @@ public class DigitsApiClientManagerTests {
                 new MockDigitsApiClientManager(
                         twitterCore, executorService, mockSessionManager, activeClient);
         // Want to ensure it returns same client
-        final DigitsApiClient activeClient = digitsClient.getApiClient();
+        final DigitsApiClient activeClient = authClient.getApiClient();
 
         final Session active = activeClient.getSession();
         assertEquals(activeSession, active);
-        assertEquals(activeClient, digitsClient.getApiClient());
+        assertEquals(activeClient, authClient.getApiClient());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class DigitsApiClientManagerTests {
                 new MockDigitsApiClientManager(twitterCore, executorService, mockSessionManager,
                         activeClient, interceptor);
         // Want to ensure it returns different client
-        final DigitsApiClient firstClient = digitsClient.getApiClient();
+        final DigitsApiClient firstClient = authClient.getApiClient();
         final Session active = firstClient.getSession();
         assertEquals(active, mockSessionManager.getActiveSession());
         assertEquals(activeClient, firstClient);
@@ -145,7 +145,7 @@ public class DigitsApiClientManagerTests {
         when(activeClient.getSession()).thenReturn(session2);
         assertNotSame(activeClient, firstClient);
 
-        final DigitsApiClient newClient = digitsClient.getApiClient();
+        final DigitsApiClient newClient = authClient.getApiClient();
         final Session newActive = newClient.getSession();
         assertEquals(newActive, mockSessionManager.getActiveSession());
     }

@@ -34,7 +34,7 @@ import android.widget.Button;
  * When the button is clicked the auth flows will start
  */
 public class DigitsAuthButton extends Button implements View.OnClickListener {
-    volatile DigitsClient digitsClient;
+    volatile AuthClient authClient;
     private OnClickListener onClickListener;
     private DigitsAuthConfig.Builder digitsAuthConfigBuilder;
 
@@ -70,7 +70,7 @@ public class DigitsAuthButton extends Button implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         final DigitsAuthConfig digitsAuthConfig = digitsAuthConfigBuilder.build();
-        getDigitsClient().startSignUp(digitsAuthConfig);
+        getAuthClient().startSignUp(digitsAuthConfig);
 
         if (onClickListener != null) {
             onClickListener.onClick(v);
@@ -97,15 +97,15 @@ public class DigitsAuthButton extends Button implements View.OnClickListener {
         onClickListener = l;
     }
 
-    protected DigitsClient getDigitsClient() {
-        if (digitsClient == null) {
-            synchronized (DigitsClient.class) {
-                if (digitsClient == null) {
-                    digitsClient = getDigits().getDigitsClient();
+    protected AuthClient getAuthClient() {
+        if (authClient == null) {
+            synchronized (AuthClient.class) {
+                if (authClient == null) {
+                    authClient = getDigits().getAuthClient();
                 }
             }
         }
-        return digitsClient;
+        return authClient;
     }
 
     protected Digits getDigits() {

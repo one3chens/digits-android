@@ -37,7 +37,7 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     public static final int MAX_ERRORS = 5;
     static final long POST_DELAY_MS = 1500L;
-    final DigitsClient digitsClient;
+    final AuthClient authClient;
     final ActivityClassManager activityClassManager;
     final ErrorCodes errors;
     final ResultReceiver resultReceiver;
@@ -50,13 +50,13 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     CountDownTimer countDownTimer;
 
     DigitsControllerImpl(ResultReceiver resultReceiver, StateButton stateButton, EditText editText,
-                         DigitsClient client, ErrorCodes errors,
+                         AuthClient client, ErrorCodes errors,
                          ActivityClassManager activityClassManager,
                          SessionManager<DigitsSession> sessionManager,
                          DigitsEventCollector digitsEventCollector,
                          DigitsEventDetailsBuilder eventDetailsBuilder) {
         this.resultReceiver = resultReceiver;
-        this.digitsClient = client;
+        this.authClient = client;
         this.activityClassManager = activityClassManager;
         this.sendButton = stateButton;
         this.editText = editText;
@@ -95,9 +95,9 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     @Override
     public void startFallback(Context context, ResultReceiver receiver, DigitsException reason) {
         final Intent intent = new Intent(context, activityClassManager.getFailureActivity());
-        intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, receiver);
-        intent.putExtra(DigitsClient.EXTRA_FALLBACK_REASON, reason);
-        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        intent.putExtra(AuthClient.EXTRA_RESULT_RECEIVER, receiver);
+        intent.putExtra(AuthClient.EXTRA_FALLBACK_REASON, reason);
+        intent.putExtra(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         context.startActivity(intent);
         finishActivity(context);
     }
@@ -162,8 +162,8 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
 
     Bundle getBundle(String phoneNumber, DigitsEventDetailsBuilder detailsBuilder) {
         final Bundle bundle = new Bundle();
-        bundle.putString(DigitsClient.EXTRA_PHONE, phoneNumber);
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, detailsBuilder);
+        bundle.putString(AuthClient.EXTRA_PHONE, phoneNumber);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, detailsBuilder);
         return bundle;
     }
 
@@ -187,7 +187,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         sendButton.showFinish();
         final Intent intent = new Intent(context, activityClassManager.getEmailRequestActivity());
         final Bundle bundle = getBundle(phoneNumber, digitsEventDetailsBuilder);
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
         finishActivity(context);

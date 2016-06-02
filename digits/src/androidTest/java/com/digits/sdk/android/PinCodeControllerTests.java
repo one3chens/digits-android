@@ -50,7 +50,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
                 .withLanguage("en");
 
         controller = new PinCodeController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE,
+                sessionManager, authClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE,
                 errors, new ActivityClassManagerImp(), digitsEventCollector, false,
                 digitsEventDetailsBuilder);
     }
@@ -81,7 +81,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         verify(resultReceiver).send(eq(LoginResultReceiver.RESULT_OK),
                 bundleArgumentCaptor.capture());
         assertEquals(PHONE_WITH_COUNTRY_CODE, bundleArgumentCaptor.getValue().getString
-                (DigitsClient.EXTRA_PHONE));
+                (AuthClient.EXTRA_PHONE));
     }
 
     @Override
@@ -97,7 +97,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         assertNotNull(digitsEventDetails.country);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sendButton).showProgress();
-        verify(digitsClient).verifyPin(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
+        verify(authClient).verifyPin(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
                 callbackArgumentCaptor.capture());
         return callbackArgumentCaptor.getValue();
     }
@@ -126,7 +126,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final Result<VerifyAccountResponse> resultEmailRequest = new Result(
                 TestConstants.getVerifyAccountResponse(), null);
         controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
+                sessionManager, authClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
                 new ActivityClassManagerImp(), digitsEventCollector, true,
                 digitsEventDetailsBuilder);
 
@@ -152,7 +152,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         final Result<DigitsSessionResponse> result = new Result(response, null);
         controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
+                sessionManager, authClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
                 new ActivityClassManagerImp(), digitsEventCollector, true,
                 digitsEventDetailsBuilder);
 
@@ -176,7 +176,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final ComponentName emailRequestComponent = new ComponentName(context,
                 controller.activityClassManager.getEmailRequestActivity());
         controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
+                sessionManager, authClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
                 new ActivityClassManagerImp(), digitsEventCollector, true,
                 digitsEventDetailsBuilder);
 
@@ -194,8 +194,8 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final Intent intent = intentArgumentCaptor.getValue();
         assertEquals(emailRequestComponent, intent.getComponent());
         final Bundle bundle = intent.getExtras();
-        assertTrue(BundleManager.assertContains(bundle, DigitsClient.EXTRA_PHONE,
-                DigitsClient.EXTRA_RESULT_RECEIVER));
+        assertTrue(BundleManager.assertContains(bundle, AuthClient.EXTRA_PHONE,
+                AuthClient.EXTRA_RESULT_RECEIVER));
     }
 
     private void verifyEmailRequest(DigitsSession session) {
@@ -212,6 +212,6 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         verify(resultReceiver).send(eq(LoginResultReceiver.RESULT_OK),
                 bundleArgumentCaptor.capture());
         assertEquals(PHONE_WITH_COUNTRY_CODE, bundleArgumentCaptor.getValue().getString
-                (DigitsClient.EXTRA_PHONE));
+                (AuthClient.EXTRA_PHONE));
     }
 }

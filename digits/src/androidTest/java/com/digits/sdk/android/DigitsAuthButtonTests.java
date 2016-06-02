@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
 public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
     private static final int ANY_THEME = 80884;
     private DigitsAuthButton button;
-    private DigitsClient client;
+    private AuthClient client;
     private AuthCallback callback;
     private OnClickListener clickListener;
     private Digits digits;
@@ -45,7 +45,7 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        client = mock(DigitsClient.class);
+        client = mock(AuthClient.class);
         digits = mock(Digits.class);
         button = new DigitsAuthMock(getContext());
         callback = mock(AuthCallback.class);
@@ -106,7 +106,7 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
         }
     }
 
-    public void testOnClick_getDigitsClientCalled() throws Exception {
+    public void testOnClick_getAuthClientCalled() throws Exception {
         final ArgumentCaptor<DigitsAuthConfig> digitsAuthConfigArg =
             ArgumentCaptor.forClass(DigitsAuthConfig.class);
         button.setCallback(callback);
@@ -115,7 +115,7 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
         assetDigitsAuthConfigEquals(digitsAuthConfig, digitsAuthConfigArg.getValue());
     }
 
-    public void testGetDigitsClient() throws Exception {
+    public void testGetAuthClient() throws Exception {
         try {
             final Fabric fabric = new Fabric.Builder(getContext())
                     .kits(new Digits(), new TwitterCore(new TwitterAuthConfig("", "")))
@@ -123,10 +123,10 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
             FabricTestUtils.with(fabric);
 
             final DigitsAuthButton authButton = new DigitsAuthButton(getContext());
-            assertNull(authButton.digitsClient);
+            assertNull(authButton.authClient);
             authButton.setCallback(callback);
-            authButton.getDigitsClient();
-            assertNotNull(authButton.digitsClient);
+            authButton.getAuthClient();
+            assertNotNull(authButton.authClient);
         } finally {
             FabricTestUtils.resetFabric();
         }
@@ -151,7 +151,7 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
         }
 
         @Override
-        protected DigitsClient getDigitsClient() {
+        protected AuthClient getAuthClient() {
             return client;
         }
 

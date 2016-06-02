@@ -46,7 +46,7 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
                 .withCountry("US")
                 .withLanguage("en");
         controller = new DummyEmailRequestController(resultReceiver, sendButton, phoneEditText,
-                sessionManager, new ActivityClassManagerImp(), digitsClient,
+                sessionManager, new ActivityClassManagerImp(), authClient,
                 PHONE_WITH_COUNTRY_CODE, digitsEventCollector, errors, digitsEventDetailsBuilder);
     }
 
@@ -74,7 +74,7 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
 
         verify(sendButton).showProgress();
         verify(phoneEditText, times(2)).getText();
-        verifyNoInteractions(digitsClient);
+        verifyNoInteractions(authClient);
     }
 
     public void testExecuteRequest_success() throws Exception {
@@ -103,7 +103,7 @@ public class EmailRequestControllerTests extends DigitsControllerTests<EmailRequ
         verify(resultReceiver).send(eq(LoginResultReceiver.RESULT_OK),
                 bundleArgumentCaptor.capture());
         assertEquals(PHONE_WITH_COUNTRY_CODE, bundleArgumentCaptor.getValue().getString
-                (DigitsClient.EXTRA_PHONE));
+                (AuthClient.EXTRA_PHONE));
     }
 
     public void testExecuteRequest_logoutSession() throws Exception {

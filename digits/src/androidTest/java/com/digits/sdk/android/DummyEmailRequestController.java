@@ -31,11 +31,11 @@ public class DummyEmailRequestController extends EmailRequestController {
                                        EditText phoneEditText,
                                        SessionManager<DigitsSession> sessionManager,
                                        ActivityClassManagerImp activityClassManagerImp,
-                                       DigitsClient digitsClient, String phoneWithCountryCode,
+                                       AuthClient authClient, String phoneWithCountryCode,
                                        DigitsEventCollector digitsEventCollector,
                                        ErrorCodes errors, DigitsEventDetailsBuilder details) {
         super(resultReceiver, sendButton, phoneEditText, sessionManager,
-                activityClassManagerImp, digitsClient, phoneWithCountryCode, digitsEventCollector,
+                activityClassManagerImp, authClient, phoneWithCountryCode, digitsEventCollector,
                 errors, details);
         sdkService = mock(ApiInterface.class);
     }

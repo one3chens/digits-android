@@ -42,9 +42,9 @@ public class EmailRequestActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(DigitsClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(AuthClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         assertTrue(delegate.isValid(bundle));
     }
 
@@ -55,8 +55,8 @@ public class EmailRequestActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putString(DigitsClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(AuthClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         assertFalse(delegate.isValid(bundle));
     }
 
@@ -67,8 +67,8 @@ public class EmailRequestActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         assertFalse(delegate.isValid(bundle));
     }
 
@@ -78,9 +78,9 @@ public class EmailRequestActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(DigitsClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(AuthClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         assertFalse(delegate.isValid(bundle));
     }
 
@@ -90,9 +90,9 @@ public class EmailRequestActivityDelegateTests extends
                         .withAuthStartTime(1L)
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(DigitsClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(AuthClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         assertFalse(delegate.isValid(bundle));
     }
 
@@ -102,9 +102,9 @@ public class EmailRequestActivityDelegateTests extends
                         .withAuthStartTime(1L)
                         .withLanguage("lang");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(DigitsClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(AuthClient.EXTRA_PHONE, TestConstants.ANY_PHONE);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         assertFalse(delegate.isValid(bundle));
     }
 

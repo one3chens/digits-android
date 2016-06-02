@@ -30,12 +30,12 @@ public class DummyPinCodeController extends PinCodeController {
     DummyPinCodeController(ResultReceiver resultReceiver, StateButton sendButton,
                            EditText phoneEditText,
                            SessionManager<DigitsSession> sessionManager,
-                           DigitsClient digitsClient, String requestId,
+                           AuthClient authClient, String requestId,
                            long userId, String phoneWithCountryCode, ErrorCodes errors,
                            ActivityClassManagerImp activityClassManagerImp,
                            DigitsEventCollector digitsEventCollector, boolean emailCollection,
                            DigitsEventDetailsBuilder details) {
-        super(resultReceiver, sendButton, phoneEditText, sessionManager, digitsClient, requestId,
+        super(resultReceiver, sendButton, phoneEditText, sessionManager, authClient, requestId,
                 userId, phoneWithCountryCode, errors, activityClassManagerImp, digitsEventCollector,
                 emailCollection, details);
         accountService = mock(ApiInterface.class);

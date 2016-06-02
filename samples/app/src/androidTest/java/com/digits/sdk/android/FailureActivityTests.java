@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.digits.sdk.android.WeakAuthCallback;
 import com.squareup.spoon.Spoon;
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
@@ -63,10 +62,10 @@ public class FailureActivityTests extends
         final Bundle bundle = new Bundle();
         final DigitsEventDetailsBuilder details = new DigitsEventDetailsBuilder()
                 .withAuthStartTime(1L).withCurrentTime(2L).withLanguage("en");
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
-        bundle.putSerializable(DigitsClient.EXTRA_FALLBACK_REASON, new DigitsException("",
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, resultReceiver);
+        bundle.putSerializable(AuthClient.EXTRA_FALLBACK_REASON, new DigitsException("",
                 TwitterApiErrorConstants.DEVICE_REGISTRATION_INVALID_INPUT, new AuthConfig()));
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, details);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, details);
 
         return bundle;
     }

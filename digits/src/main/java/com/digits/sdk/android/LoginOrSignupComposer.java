@@ -33,7 +33,7 @@ abstract class LoginOrSignupComposer {
     final private Context context;
     protected final Callback<DeviceRegistrationResponse> deviceRegCallback;
     protected final Callback<AuthResponse> loginCallback;
-    final DigitsClient digitsClient;
+    final AuthClient authClient;
     final String phoneNumber;
     final Verification verificationType;
     final boolean emailCollection;
@@ -41,13 +41,13 @@ abstract class LoginOrSignupComposer {
     final ActivityClassManager activityClassManager;
     final DigitsEventDetailsBuilder eventDetailsBuilder;
 
-    LoginOrSignupComposer(final Context context, final DigitsClient digitsClient,
+    LoginOrSignupComposer(final Context context, final AuthClient authClient,
                           final String phoneNumber, final Verification verificationType,
                           boolean emailCollection, ResultReceiver resultReceiver,
                           ActivityClassManager activityClassManager,
                           DigitsEventDetailsBuilder eventDetailsBuilder) {
         this.context = context;
-        this.digitsClient = digitsClient;
+        this.authClient = authClient;
         this.phoneNumber = phoneNumber;
         this.verificationType = verificationType;
         this.emailCollection = emailCollection;
@@ -101,11 +101,11 @@ abstract class LoginOrSignupComposer {
     }
 
     private void beginRegistration() {
-        digitsClient.registerDevice(phoneNumber, verificationType, this.deviceRegCallback);
+        authClient.registerDevice(phoneNumber, verificationType, this.deviceRegCallback);
     }
 
     private void beginLogin() {
-        digitsClient.authDevice(phoneNumber, verificationType, this.loginCallback);
+        authClient.authDevice(phoneNumber, verificationType, this.loginCallback);
     }
 
     private Intent createIntentToSignup(DeviceRegistrationResponse response) {
@@ -117,8 +117,8 @@ abstract class LoginOrSignupComposer {
     private Intent createIntentToLogin(AuthResponse response) {
         final Intent intent = createBundle(response.authConfig, response.normalizedPhoneNumber,
                 activityClassManager.getLoginCodeActivity());
-        intent.putExtra(DigitsClient.EXTRA_REQUEST_ID, response.requestId);
-        intent.putExtra(DigitsClient.EXTRA_USER_ID, response.userId);
+        intent.putExtra(AuthClient.EXTRA_REQUEST_ID, response.requestId);
+        intent.putExtra(AuthClient.EXTRA_USER_ID, response.userId);
 
         return intent;
     }
@@ -131,11 +131,11 @@ abstract class LoginOrSignupComposer {
                 normalizedPhoneNumber;
         final Intent intent = new Intent(context, activityClass);
 
-        intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
-        intent.putExtra(DigitsClient.EXTRA_PHONE, phoneNumber);
-        intent.putExtra(DigitsClient.EXTRA_AUTH_CONFIG, (Parcelable) config);
-        intent.putExtra(DigitsClient.EXTRA_EMAIL, emailCollection);
-        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        intent.putExtra(AuthClient.EXTRA_RESULT_RECEIVER, resultReceiver);
+        intent.putExtra(AuthClient.EXTRA_PHONE, phoneNumber);
+        intent.putExtra(AuthClient.EXTRA_AUTH_CONFIG, (Parcelable) config);
+        intent.putExtra(AuthClient.EXTRA_EMAIL, emailCollection);
+        intent.putExtra(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         return intent;
     }

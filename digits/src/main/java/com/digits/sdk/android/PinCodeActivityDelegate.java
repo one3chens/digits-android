@@ -43,7 +43,7 @@ class PinCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void init(Activity activity, Bundle bundle) {
-        eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+        eventDetailsBuilder = bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
@@ -59,23 +59,23 @@ class PinCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
         DigitsController initController(Bundle bundle) {
             return new PinCodeController(bundle
-                    .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
-                    stateButton, editText, bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
-                    bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
+                    .<ResultReceiver>getParcelable(AuthClient.EXTRA_RESULT_RECEIVER),
+                    stateButton, editText, bundle.getString(AuthClient.EXTRA_REQUEST_ID),
+                    bundle.getLong(AuthClient.EXTRA_USER_ID), bundle.getString(AuthClient
                     .EXTRA_PHONE), digitsEventCollector,
-                    bundle.getBoolean(DigitsClient.EXTRA_EMAIL), eventDetailsBuilder);
+                    bundle.getBoolean(AuthClient.EXTRA_EMAIL), eventDetailsBuilder);
     }
 
     @Override
     public boolean isValid(Bundle bundle) {
         final boolean isValidBundle =
-                BundleManager.assertContains(bundle, DigitsClient.EXTRA_RESULT_RECEIVER,
-                DigitsClient.EXTRA_PHONE, DigitsClient.EXTRA_REQUEST_ID,
-                DigitsClient.EXTRA_USER_ID);
+                BundleManager.assertContains(bundle, AuthClient.EXTRA_RESULT_RECEIVER,
+                AuthClient.EXTRA_PHONE, AuthClient.EXTRA_REQUEST_ID,
+                AuthClient.EXTRA_USER_ID);
 
         if (isValidBundle){
             final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
-                    bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+                    bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
 
             return (digitsEventDetailsBuilder.authStartTime != null)
                     && (digitsEventDetailsBuilder.language != null)

@@ -51,7 +51,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         digitsEventDetailsBuilder = new DigitsEventDetailsBuilder().withAuthStartTime(1L)
                 .withLanguage("lang");
         controller = new PhoneNumberController(resultReceiver,
-                sendButton, phoneEditText, countrySpinner, digitsClient, errors,
+                sendButton, phoneEditText, countrySpinner, authClient, errors,
                 new ActivityClassManagerImp(), sessionManager, tosView, digitsEventCollector,
                 false, digitsEventDetailsBuilder);
 
@@ -70,7 +70,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
                 (PHONE));
         final DummyPhoneNumberController dummyPhoneNumberController =
                 new DummyPhoneNumberController(resultReceiver,
-                        sendButton, phoneEditText, countrySpinner, digitsClient, errors,
+                        sendButton, phoneEditText, countrySpinner, authClient, errors,
                         new ActivityClassManagerImp(), sessionManager, tosView,
                         digitsEventCollector, false, digitsEventDetailsBuilder);
 
@@ -127,7 +127,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(resultReceiver, intent.getExtras().get(AuthClient.EXTRA_RESULT_RECEIVER));
         verify(context, times(0)).finish();
     }
 
@@ -146,10 +146,10 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(resultReceiver, intent.getExtras().get(AuthClient.EXTRA_RESULT_RECEIVER));
 
         final DigitsEventDetailsBuilder details = intent.getExtras()
-                .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+                .getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
         assertNotNull(details.country);
         assertNotNull(details.language);
         assertNotNull(details.authStartTime);
@@ -159,7 +159,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
     @Override
     DigitsCallback<AuthResponse> executeRequest() {
-        verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(getVerification())
+        verify(authClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(getVerification())
                 , callbackCaptor.capture());
         assertNotNull(callbackCaptor.getValue());
         return callbackCaptor.getValue();

@@ -31,14 +31,14 @@ public class DummyLoginCodeController extends LoginCodeController {
                                     InvertedStateButton resendButton,
                                     InvertedStateButton callMeButton, EditText phoneEditText,
                                     SessionManager<DigitsSession> sessionManager,
-                                    DigitsClient digitsClient, String requestId,
+                                    AuthClient authClient, String requestId,
                                     long userId, String phoneWithCountryCode, ErrorCodes errors,
                                     ActivityClassManagerImp activityClassManagerImp,
                                     DigitsEventCollector digitsEventCollector,
                                     boolean emailCollection, TextView timerTextView,
                                     DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         super(resultReceiver, sendButton, resendButton, callMeButton, phoneEditText,
-                sessionManager, digitsClient, requestId, userId, phoneWithCountryCode, errors,
+                sessionManager, authClient, requestId, userId, phoneWithCountryCode, errors,
                 activityClassManagerImp, digitsEventCollector, emailCollection, timerTextView,
                 digitsEventDetailsBuilder);
         accountService = mock(ApiInterface.class);

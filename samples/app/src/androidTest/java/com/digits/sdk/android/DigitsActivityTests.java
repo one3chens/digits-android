@@ -40,8 +40,8 @@ public class DigitsActivityTests<T extends Activity> extends ActivityInstrumenta
         final LoginResultReceiver resultReceiver =
                 new LoginResultReceiver((WeakAuthCallback) null, sessionManager, null);
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
-        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, resultReceiver);
+        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
 
         return bundle;
     }

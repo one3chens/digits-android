@@ -48,7 +48,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     @Override
     public void init(final Activity activity, Bundle bundle) {
         this.activity = activity;
-        eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+        eventDetailsBuilder = bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         resendButton =  (InvertedStateButton) activity
@@ -58,7 +58,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 .findViewById(R.id.dgts__editPhoneNumber);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
         timerText = (TextView) activity.findViewById(R.id.dgts__countdownTimer);
-        config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
+        config = bundle.getParcelable(AuthClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
         tosFormatHelper = new TosFormatHelper(activity);
@@ -69,7 +69,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         setupCallMeButton(activity, controller, digitsEventCollector, callMeButton, config);
         setupCountDownTimer(controller, timerText, config);
         setUpEditPhoneNumberLink(activity, editPhoneNumberLinkTextView,
-                bundle.getString(DigitsClient.EXTRA_PHONE));
+                bundle.getString(AuthClient.EXTRA_PHONE));
         setUpTermsText(activity, controller, termsText);
         setUpSmsIntercept(activity, editText);
 
@@ -78,11 +78,11 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     DigitsController initController(Bundle bundle) {
         return new LoginCodeController(bundle
-                .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
+                .<ResultReceiver>getParcelable(AuthClient.EXTRA_RESULT_RECEIVER),
                 stateButton, resendButton, callMeButton, editText,
-                bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
-                bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
-                .EXTRA_PHONE), digitsEventCollector, bundle.getBoolean(DigitsClient.EXTRA_EMAIL),
+                bundle.getString(AuthClient.EXTRA_REQUEST_ID),
+                bundle.getLong(AuthClient.EXTRA_USER_ID), bundle.getString(AuthClient
+                .EXTRA_PHONE), digitsEventCollector, bundle.getBoolean(AuthClient.EXTRA_EMAIL),
                 timerText, eventDetailsBuilder);
     }
 
@@ -118,13 +118,13 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     public boolean isValid(Bundle bundle) {
 
         final boolean isValidBundle = BundleManager.assertContains(bundle,
-                DigitsClient.EXTRA_RESULT_RECEIVER, DigitsClient.EXTRA_PHONE,
-                DigitsClient.EXTRA_REQUEST_ID, DigitsClient.EXTRA_USER_ID,
-                DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+                AuthClient.EXTRA_RESULT_RECEIVER, AuthClient.EXTRA_PHONE,
+                AuthClient.EXTRA_REQUEST_ID, AuthClient.EXTRA_USER_ID,
+                AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
 
         if (isValidBundle) {
             final DigitsEventDetailsBuilder eventDetailsBuilder =
-                    bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+                    bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
 
             return eventDetailsBuilder.authStartTime != null
                     && eventDetailsBuilder.language != null

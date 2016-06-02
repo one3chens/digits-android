@@ -41,7 +41,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                                TextView timerText,
                                DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText, phoneNumber,
-                Digits.getSessionManager(), Digits.getInstance().getDigitsClient(),
+                Digits.getSessionManager(), Digits.getInstance().getAuthClient(),
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), digitsEventCollector,
                 isEmailCollection, timerText, digitsEventDetailsBuilder);
@@ -53,7 +53,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
     ConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                                InvertedStateButton resendButton, InvertedStateButton callMeButton,
                                EditText phoneEditText, String phoneNumber,
-                               SessionManager<DigitsSession> sessionManager, DigitsClient client,
+                               SessionManager<DigitsSession> sessionManager, AuthClient client,
                                ErrorCodes errors, ActivityClassManager activityClassManager,
                                DigitsEventCollector digitsEventCollector, boolean isEmailCollection,
                                TextView timerText,
@@ -78,7 +78,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
             final String code = editText.getText().toString();
-            digitsClient.createAccount(code, phoneNumber,
+            authClient.createAccount(code, phoneNumber,
                     new DigitsCallback<DigitsUser>(context, this) {
                         @Override
                         public void success(Result<DigitsUser> result) {
@@ -102,25 +102,26 @@ class ConfirmationCodeController extends DigitsControllerImpl {
     public void resendCode(final Context context, final InvertedStateButton activeButton,
                            final Verification verificationType) {
         activeButton.showProgress();
-        digitsClient.registerDevice(phoneNumber, verificationType,
-            new DigitsCallback<DeviceRegistrationResponse>(context, this) {
-                @Override
-                public void success(Result<DeviceRegistrationResponse> result) {
-                    activeButton.showFinish();
-                    activeButton.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            activeButton.showStart();
-                            timerText.setText(String.valueOf(
-                                            DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
-                                    TextView.BufferType.NORMAL);
-                            resendButton.setEnabled(false);
-                            callMeButton.setEnabled(false);
-                            startTimer();
-                        }
-                    }, POST_DELAY_MS);
-                }
-            });
+        authClient.registerDevice(phoneNumber, verificationType,
+                new DigitsCallback<DeviceRegistrationResponse>(context, this) {
+                    @Override
+                    public void success(Result<DeviceRegistrationResponse> result) {
+                        activeButton.showFinish();
+                        activeButton.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                activeButton.showStart();
+                                timerText.setText(
+                                  String.valueOf(
+                                     DigitsConstants.RESEND_TIMER_DURATION_MILLIS / 1000),
+                                  TextView.BufferType.NORMAL);
+                                resendButton.setEnabled(false);
+                                callMeButton.setEnabled(false);
+                                startTimer();
+                            }
+                        }, POST_DELAY_MS);
+                    }
+                });
     }
 
     @Override
