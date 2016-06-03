@@ -36,6 +36,7 @@ import java.util.Locale;
 
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -171,17 +172,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     public void testAfterTextChanged() throws Exception {
         controller.onTextChanged(null, 0, 0, 0);
         verify(phoneEditText).setError(null);
-        verify(sendButton).setEnabled(false);
-    }
-
-    public void testAfterTextChangedValidEntry() throws Exception {
-        if (controller.validateInput("123456")) {
-            controller.onTextChanged("123456", 0, 0, 0);
-        } else if (controller.validateInput("user@domain.com")) {
-            controller.onTextChanged("user@domain.com", 0, 0, 0);
-        }
-        verify(phoneEditText).setError(null);
-        verify(sendButton).setEnabled(true);
+        verifyNoInteractions(sendButton);
     }
 
     public void testExecuteRequest_failure() throws Exception {
@@ -193,8 +184,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     }
 
     public void testExecuteRequest_noInput() throws Exception {
-        controller.executeRequest(context);
-        verifyNoInteractions(sendButton);
+        executeRequest();
         verifyNoInteractions(authClient);
     }
 

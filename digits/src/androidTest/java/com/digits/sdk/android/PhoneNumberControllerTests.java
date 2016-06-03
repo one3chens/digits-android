@@ -22,7 +22,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.Editable;
 
+import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
+import com.twitter.sdk.android.core.TwitterException;
 
 import org.mockito.ArgumentCaptor;
 
@@ -159,10 +161,26 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
     @Override
     DigitsCallback<AuthResponse> executeRequest() {
-        verify(authClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(getVerification())
-                , callbackCaptor.capture());
-        assertNotNull(callbackCaptor.getValue());
-        return callbackCaptor.getValue();
+        controller.executeRequest(context);
+        if (controller.validateInput(phoneEditText.getText())) {
+            verify(authClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(getVerification()),
+                    callbackCaptor.capture());
+            assertNotNull(callbackCaptor.getValue());
+            return callbackCaptor.getValue();
+        } else {
+            return new DigitsCallback<AuthResponse>(context, controller) {
+                @Override
+                public void success(Result<AuthResponse> result) {
+                    // If it was a success, we should have valid input
+                    throw new IllegalStateException();
+                }
+
+                @Override
+                public void failure(TwitterException twitterException) {
+                    // No op
+                }
+            };
+        }
     }
 
     @Override
@@ -255,7 +273,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
         assertFalse(controller.resendState);
         assertFalse(controller.voiceEnabled);
-        verify(sendButton).setEnabled(true);
+        verifyNoInteractions(sendButton);
         verifyNoInteractions(tosView);
     }
 

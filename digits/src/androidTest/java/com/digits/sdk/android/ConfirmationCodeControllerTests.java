@@ -120,6 +120,21 @@ public class ConfirmationCodeControllerTests extends
         verify(sendButton).showError();
     }
 
+    public void testExecuteRequest_verifyfailure() throws Exception {
+        controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
+                authClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
+                timerTextView, digitsEventDetailsBuilder);
+
+        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
+                ("123"));
+        controller.executeRequest(context);
+        verify(callMeButton).showError();
+        verify(resendButton).showError();
+
+        verify(sendButton).showError();
+    }
+
     public void testResendCode_success() throws Exception {
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
                 (Runnable.class);

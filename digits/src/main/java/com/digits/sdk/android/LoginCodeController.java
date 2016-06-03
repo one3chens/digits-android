@@ -105,6 +105,10 @@ class LoginCodeController extends DigitsControllerImpl {
                             }
                         }
                     });
+        } else {
+            handleError(context,
+              new DigitsException(
+                errors.getMessage(DigitsApiErrorConstants.CLIENT_SIDE_VALIDATION_FAILED)));
         }
     }
 

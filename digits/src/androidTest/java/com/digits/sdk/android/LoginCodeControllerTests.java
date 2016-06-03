@@ -129,6 +129,27 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         verify(sendButton).showError();
     }
 
+    public void testExecuteRequest_failureNotValidInput() throws Exception {
+        final DigitsSessionResponse response = TestConstants.DIGITS_USER;
+        controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
+                callMeButton, phoneEditText, sessionManager, authClient, REQUEST_ID, USER_ID,
+                PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
+                digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
+
+        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable("123"));
+        final ArgumentCaptor<DigitsCallback> callbackArgumentCaptor = ArgumentCaptor.forClass
+                (DigitsCallback.class);
+        controller.executeRequest(context);
+        verify(digitsEventCollector)
+                .submitClickOnLoginScreen(digitsEventDetailsArgumentCaptor.capture());
+        final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
+        assertNotNull(digitsEventDetails.language);
+        assertNotNull(digitsEventDetails.country);
+        assertNotNull(digitsEventDetails.elapsedTimeInMillis);
+        verify(sendButton).showError();
+        verifyNoInteractions(authClient);
+    }
+
     public void testExecuteRequest_successWithEmailRequestSessionNoEmail() throws Exception {
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         final Result<DigitsSessionResponse> result = new Result(response, null);

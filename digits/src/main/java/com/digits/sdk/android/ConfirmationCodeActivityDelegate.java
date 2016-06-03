@@ -110,10 +110,6 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
         stateButton.setStatesText(R.string.dgts__create_account, R.string.dgts__sending,
                 R.string.dgts__done);
         stateButton.showStart();
-
-        // Start with send button disabled until minimum number of confirmation code digits entered
-        stateButton.setEnabled(false);
-
         super.setUpSendButton(activity, controller, stateButton);
     }
 

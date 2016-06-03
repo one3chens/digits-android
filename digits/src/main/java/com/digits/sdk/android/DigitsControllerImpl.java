@@ -140,11 +140,6 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         clearError();
-        if (validateInput(s)) {
-            sendButton.setEnabled(true);
-        } else {
-            sendButton.setEnabled(false);
-        }
     }
 
     @Override
