@@ -83,7 +83,7 @@ public class FailureControllerImplTests {
         final Bundle bundle = bundleArgumentCaptor.getValue();
         assertEquals(RANDOM_ERROR_MSG, bundle.getString(LoginResultReceiver.KEY_ERROR));
         final DigitsEventDetailsBuilder actualDetailsBuilder = bundle
-                .getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+                .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
         assertNotNull(actualDetailsBuilder.authStartTime);
         assertNotNull(actualDetailsBuilder.country);
         assertNotNull(actualDetailsBuilder.language);

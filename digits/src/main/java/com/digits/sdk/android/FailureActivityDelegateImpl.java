@@ -49,7 +49,7 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
         if (isBundleValid(bundle)) {
             setContentView();
             setUpViews();
-            eventDetailsBuilder = bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+            eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
 
             digitsEventCollector.failureScreenImpression(eventDetailsBuilder
                     .withCurrentTime(System.currentTimeMillis()).build());
@@ -59,7 +59,7 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
     }
 
     protected boolean isBundleValid(Bundle bundle) {
-        return BundleManager.assertContains(bundle, AuthClient.EXTRA_RESULT_RECEIVER);
+        return BundleManager.assertContains(bundle, DigitsClient.EXTRA_RESULT_RECEIVER);
     }
 
     protected void setContentView() {
@@ -102,11 +102,11 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
 
     private ResultReceiver getBundleResultReceiver() {
         final Bundle bundle = activity.getIntent().getExtras();
-        return bundle.getParcelable(AuthClient.EXTRA_RESULT_RECEIVER);
+        return bundle.getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER);
     }
 
     private DigitsException getBundleException() {
         final Bundle bundle = activity.getIntent().getExtras();
-        return (DigitsException) bundle.getSerializable(AuthClient.EXTRA_FALLBACK_REASON);
+        return (DigitsException) bundle.getSerializable(DigitsClient.EXTRA_FALLBACK_REASON);
     }
 }

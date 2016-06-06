@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class AuthClient {
+public class DigitsClient {
     public static final String EXTRA_PHONE = "phone_number";
     public static final String EXTRA_RESULT_RECEIVER = "receiver";
     public static final String EXTRA_REQUEST_ID = "request_id";
@@ -53,17 +53,17 @@ public class AuthClient {
     private final Digits digits;
     private final SessionManager<DigitsSession> sessionManager;
 
-    AuthClient(DigitsApiClientManager apiClientManager) {
+    DigitsClient(DigitsApiClientManager apiClientManager) {
         this(Digits.getInstance(), Digits.getSessionManager(), apiClientManager,
                 null, Digits.getInstance().getDigitsEventCollector(),
                 Digits.getInstance().getSandboxConfig());
     }
 
-    AuthClient(Digits digits, SessionManager<DigitsSession> sessionManager,
-               DigitsApiClientManager apiClientManager,
-               DigitsAuthRequestQueue authRequestQueue,
-               DigitsEventCollector digitsEventCollector,
-               SandboxConfig sandboxConfig) {
+    DigitsClient(Digits digits, SessionManager<DigitsSession> sessionManager,
+                 DigitsApiClientManager apiClientManager,
+                 DigitsAuthRequestQueue authRequestQueue,
+                 DigitsEventCollector digitsEventCollector,
+                 SandboxConfig sandboxConfig) {
 
         this.apiClientManager = apiClientManager;
         this.digits = digits;
@@ -135,11 +135,11 @@ public class AuthClient {
                                            DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         final Bundle bundle = new Bundle();
 
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER,
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER,
                 createResultReceiver(digitsAuthConfig.authCallback));
-        bundle.putString(AuthClient.EXTRA_PHONE, digitsAuthConfig.phoneNumber);
-        bundle.putBoolean(AuthClient.EXTRA_EMAIL, digitsAuthConfig.isEmailRequired);
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, digitsAuthConfig.phoneNumber);
+        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, digitsAuthConfig.isEmailRequired);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
         return bundle;
     }
 

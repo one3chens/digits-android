@@ -67,7 +67,7 @@ public class LoginResultReceiverTests {
         callback = mock(WeakAuthCallback.class);
         bundle = new Bundle();
         bundle.putString(LoginResultReceiver.KEY_ERROR, ERROR);
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, details);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, details);
         digitsErrorCaptor = ArgumentCaptor.forClass(DigitsException.class);
         sessionCaptor = ArgumentCaptor.forClass(DigitsSession.class);
         detailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
@@ -101,7 +101,7 @@ public class LoginResultReceiverTests {
     @Test
     public void testOnReceiveResult_successResultCode() throws Exception {
         receiver = new LoginResultReceiver(callback, mockSessionManager, collector);
-        bundle.putString(AuthClient.EXTRA_PHONE, PHONE);
+        bundle.putString(DigitsClient.EXTRA_PHONE, PHONE);
         receiver.onReceiveResult(LoginResultReceiver.RESULT_OK, bundle);
         Mockito.verify(callback).success(sessionCaptor.capture(), eq(PHONE));
         assertEquals(session, sessionCaptor.getValue());

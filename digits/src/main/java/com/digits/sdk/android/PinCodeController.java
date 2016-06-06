@@ -38,7 +38,7 @@ class PinCodeController extends DigitsControllerImpl {
                       String phoneNumber, DigitsEventCollector digitsEventCollector,
                       Boolean isEmailCollection, DigitsEventDetailsBuilder details) {
         this(resultReceiver, stateButton, phoneEditText, Digits.getSessionManager(),
-                Digits.getInstance().getAuthClient(), requestId, userId, phoneNumber,
+                Digits.getInstance().getDigitsClient(), requestId, userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), digitsEventCollector,
                 isEmailCollection, details);
@@ -46,12 +46,12 @@ class PinCodeController extends DigitsControllerImpl {
 
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                       EditText phoneEditText, SessionManager<DigitsSession> sessionManager,
-                      AuthClient authClient, String requestId, long userId,
+                      DigitsClient digitsClient, String requestId, long userId,
                       String phoneNumber, ErrorCodes errors,
                       ActivityClassManager activityClassManager,
                       DigitsEventCollector digitsEventCollector, Boolean isEmailCollection,
                       DigitsEventDetailsBuilder details) {
-        super(resultReceiver, stateButton, phoneEditText, authClient, errors,
+        super(resultReceiver, stateButton, phoneEditText, digitsClient, errors,
                 activityClassManager, sessionManager, digitsEventCollector, details);
         this.requestId = requestId;
         this.userId = userId;
@@ -82,7 +82,7 @@ class PinCodeController extends DigitsControllerImpl {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
             final String code = editText.getText().toString();
-            authClient.verifyPin(requestId, userId, code,
+            digitsClient.verifyPin(requestId, userId, code,
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         @Override
                         public void success(Result<DigitsSessionResponse> result) {

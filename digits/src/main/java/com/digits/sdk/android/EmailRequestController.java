@@ -39,14 +39,14 @@ public class EmailRequestController extends DigitsControllerImpl {
                            DigitsEventDetailsBuilder details) {
         this(resultReceiver, stateButton, editText, Digits.getSessionManager(),
                 Digits.getInstance().getActivityClassManager(),
-                Digits.getInstance().getAuthClient(), phoneNumber,
+                Digits.getInstance().getDigitsClient(), phoneNumber,
                 digitsEventCollector, new EmailErrorCodes(stateButton.getContext().getResources()),
                 details);
     }
 
     EmailRequestController(ResultReceiver resultReceiver, StateButton stateButton,
                            EditText editText, SessionManager<DigitsSession> sessionManager,
-                           ActivityClassManager activityClassManager, AuthClient client,
+                           ActivityClassManager activityClassManager, DigitsClient client,
                            String phoneNumber, DigitsEventCollector digitsEventCollector,
                            ErrorCodes emailErrorCodes,
                            DigitsEventDetailsBuilder details) {

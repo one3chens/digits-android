@@ -48,7 +48,7 @@ public class ConfirmationCodeControllerTests extends
                 .withLanguage("lang").withCountry("US");
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton,
                 resendButton, callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                authClient, errors, new ActivityClassManagerImp(), digitsEventCollector, false,
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, false,
                 timerTextView, digitsEventDetailsBuilder);
     }
 
@@ -74,13 +74,13 @@ public class ConfirmationCodeControllerTests extends
         verify(resultReceiver).send(eq(LoginResultReceiver.RESULT_OK),
                 bundleArgumentCaptor.capture());
         assertEquals(PHONE_WITH_COUNTRY_CODE, bundleArgumentCaptor.getValue().getString
-                (AuthClient.EXTRA_PHONE));
+                (DigitsClient.EXTRA_PHONE));
     }
 
     public void testExecuteRequest_successAndMailRequestEnabled() throws Exception {
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                authClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
                 timerTextView, digitsEventDetailsBuilder);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
@@ -99,14 +99,14 @@ public class ConfirmationCodeControllerTests extends
                 eq(DigitsActivity.REQUEST_CODE));
         final Intent intent = intentCaptor.getValue();
         assertEquals(resultReceiver,
-                intent.getParcelableExtra(AuthClient.EXTRA_RESULT_RECEIVER));
-        assertEquals(PHONE_WITH_COUNTRY_CODE, intent.getStringExtra(AuthClient.EXTRA_PHONE));
+                intent.getParcelableExtra(DigitsClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(PHONE_WITH_COUNTRY_CODE, intent.getStringExtra(DigitsClient.EXTRA_PHONE));
     }
 
     public void testExecuteRequest_failure() throws Exception {
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                authClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
                 timerTextView, digitsEventDetailsBuilder);
 
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
@@ -123,7 +123,7 @@ public class ConfirmationCodeControllerTests extends
     public void testExecuteRequest_verifyfailure() throws Exception {
         controller = new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                authClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
                 timerTextView, digitsEventDetailsBuilder);
 
         when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
@@ -142,15 +142,15 @@ public class ConfirmationCodeControllerTests extends
         final DummyConfirmationCodeController dcc =
                 new DummyConfirmationCodeController(resultReceiver, sendButton, resendButton,
                 callMeButton, phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager,
-                        authClient, errors, new ActivityClassManagerImp(),
-                        digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
+                digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
+                        timerTextView, digitsEventDetailsBuilder);
         controller = dcc;
 
         final CountDownTimer timer = dcc.getCountDownTimer();
 
         controller.resendCode(context, resendButton, Verification.sms);
         verify(resendButton).showProgress();
-        verify(authClient).registerDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
+        verify(digitsClient).registerDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
                 callbackCaptor.capture());
 
         final DigitsCallback<DeviceRegistrationResponse> callback = callbackCaptor.getValue();
@@ -191,7 +191,7 @@ public class ConfirmationCodeControllerTests extends
         verify(sendButton).showProgress();
         final ArgumentCaptor<DigitsCallback> argumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
-        verify(authClient).createAccount(eq(CODE), eq(PHONE_WITH_COUNTRY_CODE),
+        verify(digitsClient).createAccount(eq(CODE), eq(PHONE_WITH_COUNTRY_CODE),
                 argumentCaptor.capture());
         assertNotNull(argumentCaptor.getValue());
         return argumentCaptor.getValue();

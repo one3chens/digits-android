@@ -44,8 +44,8 @@ public class ConfirmationCodeActivityTests extends DigitsActivityTests<Confirmat
         super.setUp();
 
         final Bundle bundle = getBundle();
-        bundle.putString(AuthClient.EXTRA_PHONE, PHONE);
-        bundle.putParcelable(AuthClient.EXTRA_AUTH_CONFIG, config);
+        bundle.putString(DigitsClient.EXTRA_PHONE, PHONE);
+        bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, config);
 
         final Intent launchIntent = new Intent(getInstrumentation().getContext(),
                 ConfirmationCodeActivity.class);

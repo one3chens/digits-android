@@ -48,11 +48,11 @@ public class LoginCodeActivityDelegateTests extends
                         .withAuthStartTime(1L)
                         .withLanguage("lang")
                         .withCountry("US");
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertTrue(delegate.isValid(bundle));
     }
@@ -64,10 +64,10 @@ public class LoginCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -79,10 +79,10 @@ public class LoginCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -94,10 +94,10 @@ public class LoginCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -109,10 +109,10 @@ public class LoginCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -123,11 +123,11 @@ public class LoginCodeActivityDelegateTests extends
                 new DigitsEventDetailsBuilder()
                         .withLanguage("lang")
                         .withCountry("US");
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -138,11 +138,11 @@ public class LoginCodeActivityDelegateTests extends
                 new DigitsEventDetailsBuilder()
                         .withAuthStartTime(1L)
                         .withCountry("US");
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -153,11 +153,11 @@ public class LoginCodeActivityDelegateTests extends
                 new DigitsEventDetailsBuilder()
                         .withAuthStartTime(1L)
                         .withLanguage("lang");
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }

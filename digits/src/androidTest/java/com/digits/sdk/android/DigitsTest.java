@@ -42,25 +42,25 @@ public class DigitsTest extends DigitsAndroidTestCase {
     public void testGetDigitClients_multipleThreads() throws Exception {
         try {
             Fabric.with(getContext(), new TwitterCore(new TwitterAuthConfig("", "")), new Digits());
-            final List<AuthClientCallable> callables = Arrays.asList(
-                    new AuthClientCallable(),
-                    new AuthClientCallable());
+            final List<DigitsClientCallable> callables = Arrays.asList(
+                    new DigitsClientCallable(),
+                    new DigitsClientCallable());
             final ExecutorService executorService = Executors.newFixedThreadPool(callables.size());
-            final List<Future<AuthClient>> authClients = executorService.invokeAll(callables);
+            final List<Future<DigitsClient>> digitsClients = executorService.invokeAll(callables);
 
-            assertNotNull(authClients.get(0).get());
-            assertNotNull(authClients.get(1).get());
-            assertSame(authClients.get(0).get(), authClients.get(1).get());
+            assertNotNull(digitsClients.get(0).get());
+            assertNotNull(digitsClients.get(1).get());
+            assertSame(digitsClients.get(0).get(), digitsClients.get(1).get());
         } finally {
             FabricTestUtils.resetFabric();
         }
     }
 
-    private static class AuthClientCallable implements Callable<AuthClient> {
+    private static class DigitsClientCallable implements Callable<DigitsClient> {
         @Override
-        public AuthClient call() {
+        public DigitsClient call() {
             final Digits digits = Fabric.getKit(Digits.class);
-            return digits.getAuthClient();
+            return digits.getDigitsClient();
         }
     }
 

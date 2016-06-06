@@ -57,7 +57,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     EditText phoneEditText;
     StateButton sendButton;
     InvertedStateButton resendButton, callMeButton;
-    AuthClient authClient;
+    DigitsClient digitsClient;
     ArgumentCaptor<Intent> intentCaptor;
     ArgumentCaptor<DigitsCallback> callbackCaptor;
     ArgumentCaptor<Bundle> bundleCaptor;
@@ -81,7 +81,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         sendButton = mock(StateButton.class);
         resendButton = mock(InvertedStateButton.class);
         callMeButton = mock(InvertedStateButton.class);
-        authClient = mock(AuthClient.class);
+        digitsClient = mock(DigitsClient.class);
         context = mock(Activity.class);
         resultReceiver = mock(ResultReceiver.class);
         sessionManager = new DummySessionManager(mock(DigitsSession.class));
@@ -118,10 +118,10 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(AuthClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
 
         final DigitsEventDetailsBuilder details = intent.getExtras()
-                .getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+                .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
         assertNotNull(details.country);
         assertNotNull(details.language);
         assertNotNull(details.authStartTime);
@@ -140,7 +140,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(AuthClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
         verify(context).finish();
     }
 
@@ -150,9 +150,9 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
-        assertEquals(resultReceiver, intent.getExtras().get(AuthClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
 
-        final DigitsException reason = (DigitsException) intent.getExtras().get(AuthClient
+        final DigitsException reason = (DigitsException) intent.getExtras().get(DigitsClient
                 .EXTRA_FALLBACK_REASON);
         assertEquals(TwitterApiErrorConstants.USER_IS_NOT_SDK_USER, reason.getErrorCode());
     }
@@ -166,7 +166,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     public void testClearError() throws Exception {
         controller.clearError();
         verify(phoneEditText).setError(null);
-        verifyNoInteractions(sendButton, authClient);
+        verifyNoInteractions(sendButton, digitsClient);
     }
 
     public void testAfterTextChanged() throws Exception {
@@ -185,7 +185,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
 
     public void testExecuteRequest_noInput() throws Exception {
         executeRequest();
-        verifyNoInteractions(authClient);
+        verifyNoInteractions(digitsClient);
     }
 
     abstract DigitsCallback executeRequest();

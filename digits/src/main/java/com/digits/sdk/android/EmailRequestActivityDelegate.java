@@ -51,12 +51,12 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     @Override
     public boolean isValid(Bundle bundle) {
         final boolean isValidBundle =
-                BundleManager.assertContains(bundle, AuthClient.EXTRA_RESULT_RECEIVER,
-                AuthClient.EXTRA_PHONE);
+                BundleManager.assertContains(bundle, DigitsClient.EXTRA_RESULT_RECEIVER,
+                DigitsClient.EXTRA_PHONE);
 
         if (isValidBundle){
             final DigitsEventDetailsBuilder digitsEventDetailsBuilder =
-                    bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+                    bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
 
             return (digitsEventDetailsBuilder.authStartTime != null)
                     && (digitsEventDetailsBuilder.language != null)
@@ -68,7 +68,7 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     @Override
     public void init(Activity activity, Bundle bundle) {
         this.activity = activity;
-        eventDetailsBuilder = bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+        eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
         titleText = (TextView) activity.findViewById(R.id.dgts__titleText);
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
@@ -78,7 +78,7 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         editPhoneNumberLink = (LinkTextView) activity.findViewById(R.id.dgts__editPhoneNumber);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
         timerText = (TextView) activity.findViewById(R.id.dgts__countdownTimer);
-        final AuthConfig config = bundle.getParcelable(AuthClient.EXTRA_AUTH_CONFIG);
+        final AuthConfig config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
         tosFormatHelper = new TosFormatHelper(activity);
@@ -92,7 +92,7 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         setupCallMeButton(callMeButton);
         setupCountDownTimer(controller, timerText, config);
         setUpEditPhoneNumberLink(activity, editPhoneNumberLink,
-                bundle.getString(AuthClient.EXTRA_PHONE));
+                bundle.getString(DigitsClient.EXTRA_PHONE));
         setUpTermsText(activity, controller, termsText);
 
         CommonUtils.openKeyboard(activity, editText);
@@ -144,8 +144,8 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
 
     private DigitsController initController(Bundle bundle) {
         return new EmailRequestController(stateButton, editText,
-                bundle.<ResultReceiver>getParcelable(AuthClient.EXTRA_RESULT_RECEIVER),
-                bundle.getString(AuthClient.EXTRA_PHONE), digitsEventCollector,
+                bundle.<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
+                bundle.getString(DigitsClient.EXTRA_PHONE), digitsEventCollector,
                 eventDetailsBuilder);
     }
 

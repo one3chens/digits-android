@@ -38,11 +38,11 @@ public class PinCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
 
         assertTrue(delegate.isValid(bundle));
     }
@@ -54,10 +54,10 @@ public class PinCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -69,10 +69,10 @@ public class PinCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -84,9 +84,9 @@ public class PinCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -98,10 +98,10 @@ public class PinCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -112,11 +112,11 @@ public class PinCodeActivityDelegateTests extends
                         .withLanguage("lang")
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -127,11 +127,11 @@ public class PinCodeActivityDelegateTests extends
                         .withAuthStartTime(1L)
                         .withCountry("US");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -142,11 +142,11 @@ public class PinCodeActivityDelegateTests extends
                         .withAuthStartTime(1L)
                         .withLanguage("lang");
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
-        bundle.putString(AuthClient.EXTRA_PHONE, "");
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, "");
-        bundle.putString(AuthClient.EXTRA_USER_ID, "");
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
+        bundle.putString(DigitsClient.EXTRA_PHONE, "");
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, "");
+        bundle.putString(DigitsClient.EXTRA_USER_ID, "");
 
         assertFalse(delegate.isValid(bundle));
     }

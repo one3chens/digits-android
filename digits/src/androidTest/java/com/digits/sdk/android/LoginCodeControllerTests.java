@@ -52,7 +52,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         digitsEventDetailsBuilder = new DigitsEventDetailsBuilder().withAuthStartTime(1L)
                 .withLanguage("lang").withCountry("US");
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
-                callMeButton, phoneEditText, sessionManager, authClient, REQUEST_ID, USER_ID,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
                 digitsEventCollector, false, timerTextView, digitsEventDetailsBuilder);
     }
@@ -80,7 +80,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         verify(resultReceiver).send(eq(LoginResultReceiver.RESULT_OK),
                 bundleArgumentCaptor.capture());
         assertEquals(PHONE_WITH_COUNTRY_CODE, bundleArgumentCaptor.getValue().getString
-                (AuthClient.EXTRA_PHONE));
+                (DigitsClient.EXTRA_PHONE));
     }
 
     public void testExecuteRequest_successWithEmailRequestSessionHasEmail() throws Exception {
@@ -89,7 +89,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<VerifyAccountResponse> resultEmailRequest = new Result(
                 TestConstants.getVerifyAccountResponse(), null);
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
-                callMeButton, phoneEditText, sessionManager, authClient, REQUEST_ID, USER_ID,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
                 digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
@@ -111,7 +111,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         final Result<DigitsSessionResponse> result = new Result(response, null);
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
-                callMeButton, phoneEditText, sessionManager, authClient, REQUEST_ID, USER_ID,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
                 digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
@@ -132,7 +132,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
     public void testExecuteRequest_failureNotValidInput() throws Exception {
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
-                callMeButton, phoneEditText, sessionManager, authClient, REQUEST_ID, USER_ID,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
                 digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
@@ -147,7 +147,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         assertNotNull(digitsEventDetails.country);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sendButton).showError();
-        verifyNoInteractions(authClient);
+        verifyNoInteractions(digitsClient);
     }
 
     public void testExecuteRequest_successWithEmailRequestSessionNoEmail() throws Exception {
@@ -158,7 +158,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final ComponentName emailRequestComponent = new ComponentName(context,
                 controller.activityClassManager.getEmailRequestActivity());
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
-                callMeButton, phoneEditText, sessionManager, authClient, REQUEST_ID, USER_ID,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
                 digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
@@ -177,8 +177,8 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Intent intent = intentArgumentCaptor.getValue();
         assertEquals(emailRequestComponent, intent.getComponent());
         final Bundle bundle = intent.getExtras();
-        assertTrue(BundleManager.assertContains(bundle, AuthClient.EXTRA_PHONE,
-                AuthClient.EXTRA_RESULT_RECEIVER));
+        assertTrue(BundleManager.assertContains(bundle, DigitsClient.EXTRA_PHONE,
+                DigitsClient.EXTRA_RESULT_RECEIVER));
     }
 
     public void testResendCode_success() throws Exception {
@@ -186,7 +186,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
                 (Runnable.class);
 
         final DummyLoginCodeController dlc = new DummyLoginCodeController(resultReceiver,
-                sendButton, resendButton, callMeButton, phoneEditText, sessionManager, authClient,
+                sendButton, resendButton, callMeButton, phoneEditText, sessionManager, digitsClient,
                 REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
                 digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
         final CountDownTimer timer = dlc.getCountDownTimer();
@@ -194,7 +194,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         controller = dlc;
         controller.resendCode(context, resendButton, Verification.sms);
         verify(resendButton).showProgress();
-        verify(authClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
+        verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
                 callbackCaptor.capture());
 
         final DigitsCallback<AuthResponse> callback = callbackCaptor.getValue();
@@ -225,18 +225,18 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         //Verify if requestId was reset
         when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable(CODE));
         controller.executeRequest(context);
-        verify(authClient).loginDevice(eq(FAKE_REQUEST_ID), eq(USER_ID), eq(CODE),
+        verify(digitsClient).loginDevice(eq(FAKE_REQUEST_ID), eq(USER_ID), eq(CODE),
                 any(DigitsCallback.class));
     }
 
     public void testResendCode_failure() throws Exception {
         controller = new DummyLoginCodeController(resultReceiver, sendButton, resendButton,
-                callMeButton, phoneEditText, sessionManager, authClient, REQUEST_ID, USER_ID,
+                callMeButton, phoneEditText, sessionManager, digitsClient, REQUEST_ID, USER_ID,
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
                 digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
         controller.resendCode(context, resendButton, Verification.sms);
-        verify(authClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
+        verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(Verification.sms),
                 callbackCaptor.capture());
         final DigitsCallback<AuthResponse> callback = callbackCaptor.getValue();
         assertNotNull(callback);
@@ -264,7 +264,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         verify(resultReceiver).send(eq(LoginResultReceiver.RESULT_OK),
                 bundleArgumentCaptor.capture());
         assertEquals(PHONE_WITH_COUNTRY_CODE, bundleArgumentCaptor.getValue().getString
-                (AuthClient.EXTRA_PHONE));
+                (DigitsClient.EXTRA_PHONE));
     }
 
     public void testExecuteRequest_requiresPinCode() throws Exception {
@@ -282,9 +282,9 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Intent intent = intentArgumentCaptor.getValue();
         assertEquals(pinCodeComponent, intent.getComponent());
         final Bundle bundle = intent.getExtras();
-        assertTrue(BundleManager.assertContains(bundle, AuthClient.EXTRA_REQUEST_ID,
-                AuthClient.EXTRA_USER_ID, AuthClient.EXTRA_PHONE,
-                AuthClient.EXTRA_RESULT_RECEIVER, AuthClient.EXTRA_EMAIL));
+        assertTrue(BundleManager.assertContains(bundle, DigitsClient.EXTRA_REQUEST_ID,
+                DigitsClient.EXTRA_USER_ID, DigitsClient.EXTRA_PHONE,
+                DigitsClient.EXTRA_RESULT_RECEIVER, DigitsClient.EXTRA_EMAIL));
         verify(context).finish();
     }
 
@@ -300,7 +300,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         assertNotNull(digitsEventDetails.country);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
         verify(sendButton).showProgress();
-        verify(authClient).loginDevice(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
+        verify(digitsClient).loginDevice(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
                 callbackArgumentCaptor.capture());
         return callbackArgumentCaptor.getValue();
     }

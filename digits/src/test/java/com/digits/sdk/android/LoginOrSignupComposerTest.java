@@ -53,7 +53,7 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class LoginOrSignupComposerTest {
     Context context;
-    AuthClient authClient;
+    DigitsClient digitsClient;
     ResultReceiver resultReceiver;
     ActivityClassManager activityClassManager;
     ArgumentCaptor<Callback> callbackCaptor;
@@ -78,7 +78,7 @@ public class LoginOrSignupComposerTest {
     @Before
     public void setUp() throws Exception {
         context = mock(MockContext.class);
-        authClient = mock(AuthClient.class);
+        digitsClient = mock(DigitsClient.class);
         resultReceiver = mock(ResultReceiver.class);
         activityClassManager = mock(ActivityClassManager.class);
         callbackCaptor = ArgumentCaptor.forClass(Callback.class);
@@ -128,7 +128,7 @@ public class LoginOrSignupComposerTest {
     @Test
     public void testLoginSuccess() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                authClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
+                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
                 activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
@@ -144,7 +144,7 @@ public class LoginOrSignupComposerTest {
         loginOrSignupComposer.start();
 
         //Simulate Auth success
-        verify(authClient).authDevice(anyString(), any(Verification.class),
+        verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
         final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.success(new Result(authResponse, null));
@@ -153,7 +153,7 @@ public class LoginOrSignupComposerTest {
     @Test
     public void testSignupSuccess() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                authClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
+                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
                 activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
@@ -169,13 +169,13 @@ public class LoginOrSignupComposerTest {
         loginOrSignupComposer.start();
 
         //Simulate Auth failure
-        verify(authClient).authDevice(anyString(), any(Verification.class),
+        verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
         final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.failure(couldNotAuthenticateException);
 
         //Simulate Signup success
-        verify(authClient).registerDevice(anyString(), any(Verification.class),
+        verify(digitsClient).registerDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
         final Callback signupCallback = callbackCaptor.getValue();
         signupCallback.success(new Result(deviceRegistrationResponse, null));
@@ -185,14 +185,14 @@ public class LoginOrSignupComposerTest {
     public void testLoginSuccess_authConfigNull() {
         authResponse.authConfig = null;
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                authClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
+                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
                 activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
-                assertEquals(true, intent.getBooleanExtra(AuthClient.EXTRA_EMAIL, false));
-                assertNull(intent.getParcelableExtra(AuthClient.EXTRA_AUTH_CONFIG));
+                assertEquals(true, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL, false));
+                assertNull(intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
                 assertEquals(PHONE_WITH_COUNTRY_CODE,
-                        intent.getStringExtra(AuthClient.EXTRA_PHONE));
+                        intent.getStringExtra(DigitsClient.EXTRA_PHONE));
             }
 
             @Override
@@ -204,7 +204,7 @@ public class LoginOrSignupComposerTest {
         loginOrSignupComposer.start();
 
         //Simulate Auth success
-        verify(authClient).authDevice(anyString(), any(Verification.class),
+        verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
         final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.success(new Result(authResponse, null));
@@ -215,12 +215,12 @@ public class LoginOrSignupComposerTest {
         authResponse.normalizedPhoneNumber = null;
 
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                authClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
+                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
                 activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertEquals(PHONE_WITH_COUNTRY_CODE,
-                        intent.getStringExtra(AuthClient.EXTRA_PHONE));
+                        intent.getStringExtra(DigitsClient.EXTRA_PHONE));
             }
 
             @Override
@@ -232,7 +232,7 @@ public class LoginOrSignupComposerTest {
         loginOrSignupComposer.start();
 
         //Simulate Auth success
-        verify(authClient).authDevice(anyString(), any(Verification.class),
+        verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
         final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.success(new Result(authResponse, null));
@@ -242,7 +242,7 @@ public class LoginOrSignupComposerTest {
     @Test
     public void testLoginFailure() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                authClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
+                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
                 activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
@@ -259,7 +259,7 @@ public class LoginOrSignupComposerTest {
         loginOrSignupComposer.start();
 
         //Simulate Auth failure
-        verify(authClient).authDevice(anyString(), any(Verification.class),
+        verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
 
         final Callback loginCallback = callbackCaptor.getValue();
@@ -269,7 +269,7 @@ public class LoginOrSignupComposerTest {
     @Test
     public void testSignupFailure() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                authClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
+                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
                 activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
@@ -286,14 +286,14 @@ public class LoginOrSignupComposerTest {
         loginOrSignupComposer.start();
 
         //Simulate Auth failure
-        verify(authClient).authDevice(anyString(), any(Verification.class),
+        verify(digitsClient).authDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
 
         final Callback loginCallback = callbackCaptor.getValue();
         loginCallback.failure(couldNotAuthenticateException);
 
         //Simulate Signup failure
-        verify(authClient).registerDevice(anyString(), any(Verification.class),
+        verify(digitsClient).registerDevice(anyString(), any(Verification.class),
                 callbackCaptor.capture());
 
         final Callback signupCallback = callbackCaptor.getValue();
@@ -301,27 +301,27 @@ public class LoginOrSignupComposerTest {
     }
 
     private void assertExpectedLoginIntent(Intent intent){
-        assertEquals(FAKE_REQUEST_ID, intent.getStringExtra(AuthClient.EXTRA_REQUEST_ID));
-        assertEquals(FAKE_USER_ID, intent.getLongExtra(AuthClient.EXTRA_USER_ID, 0));
+        assertEquals(FAKE_REQUEST_ID, intent.getStringExtra(DigitsClient.EXTRA_REQUEST_ID));
+        assertEquals(FAKE_USER_ID, intent.getLongExtra(DigitsClient.EXTRA_USER_ID, 0));
         assertEquals(resultReceiver,
-                intent.getParcelableExtra(AuthClient.EXTRA_RESULT_RECEIVER));
+                intent.getParcelableExtra(DigitsClient.EXTRA_RESULT_RECEIVER));
         assertEquals(PHONE_WITH_COUNTRY_CODE,
-                intent.getStringExtra(AuthClient.EXTRA_PHONE));
+                intent.getStringExtra(DigitsClient.EXTRA_PHONE));
         assertEquals(digitsEventDetailsBuilder,
-                intent.getParcelableExtra(AuthClient.EXTRA_EVENT_DETAILS_BUILDER));
-        assertEquals(authConfig, intent.getParcelableExtra(AuthClient.EXTRA_AUTH_CONFIG));
-        assertEquals(true, intent.getBooleanExtra(AuthClient.EXTRA_EMAIL, false));
+                intent.getParcelableExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER));
+        assertEquals(authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
+        assertEquals(true, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL, false));
         assertEquals(loginCodeActivity.getName(), intent.getComponent().getClassName());
 
     }
 
     private void assertExpectedSignupIntent(Intent intent){
         assertEquals(resultReceiver,
-                intent.getParcelableExtra(AuthClient.EXTRA_RESULT_RECEIVER));
+                intent.getParcelableExtra(DigitsClient.EXTRA_RESULT_RECEIVER));
         assertEquals(PHONE_WITH_COUNTRY_CODE,
-                intent.getStringExtra(AuthClient.EXTRA_PHONE));
-        assertEquals(authConfig, intent.getParcelableExtra(AuthClient.EXTRA_AUTH_CONFIG));
-        assertEquals(true, intent.getBooleanExtra(AuthClient.EXTRA_EMAIL, false));
+                intent.getStringExtra(DigitsClient.EXTRA_PHONE));
+        assertEquals(authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
+        assertEquals(true, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL, false));
         assertEquals(confirmationCodeActivity.getName(), intent.getComponent().getClassName());
     }
 }

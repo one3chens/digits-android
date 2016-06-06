@@ -50,10 +50,10 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements 
     @Override
     public boolean isValid(Bundle bundle) {
         final boolean isValidBundle = BundleManager.assertContains(bundle,
-                AuthClient.EXTRA_RESULT_RECEIVER, AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+                DigitsClient.EXTRA_RESULT_RECEIVER, DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
         if (isValidBundle) {
             final DigitsEventDetailsBuilder eventDetailsBuilder =
-                    bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+                    bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
 
             return eventDetailsBuilder.authStartTime != null
                     && eventDetailsBuilder.language != null;
@@ -64,7 +64,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements 
     @Override
     public void init(Activity activity, Bundle bundle) {
         this.activity = activity;
-        eventDetailsBuilder = bundle.getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+        eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
         countryCodeSpinner = (CountryListSpinner) activity.findViewById(R.id.dgts__countryCode);
         sendButton = (StateButton) activity.findViewById(R.id.dgts__sendCodeButton);
         phoneEditText = (EditText) activity.findViewById(R.id.dgts__phoneNumberEditText);
@@ -86,7 +86,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements 
     }
 
     void setupPhoneNumber(SimManager simManager, Bundle bundle) {
-        final String bundledPhoneNumber = bundle.getString(AuthClient.EXTRA_PHONE);
+        final String bundledPhoneNumber = bundle.getString(DigitsClient.EXTRA_PHONE);
         final PhoneNumber normalizedPhoneNumber;
 
         if (TextUtils.isEmpty(bundledPhoneNumber)) {
@@ -101,9 +101,9 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements 
 
     PhoneNumberController initController(Bundle bundle) {
         return new PhoneNumberController(bundle
-                .<ResultReceiver>getParcelable(AuthClient.EXTRA_RESULT_RECEIVER), sendButton,
+                .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER), sendButton,
                 phoneEditText, countryCodeSpinner, this, digitsEventCollector, bundle.getBoolean
-                (AuthClient.EXTRA_EMAIL), eventDetailsBuilder);
+                (DigitsClient.EXTRA_EMAIL), eventDetailsBuilder);
     }
 
     @Override

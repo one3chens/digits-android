@@ -29,7 +29,7 @@ public class DummyPhoneNumberController extends PhoneNumberController {
 
     DummyPhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
                                EditText phoneEditText, CountryListSpinner countryCodeSpinner,
-                               AuthClient client, ErrorCodes errors,
+                               DigitsClient client, ErrorCodes errors,
                                ActivityClassManager activityClassManager,
                                SessionManager<DigitsSession> sessionManager,
                                TosView tosView, DigitsEventCollector digitsEventCollector,
@@ -47,12 +47,12 @@ public class DummyPhoneNumberController extends PhoneNumberController {
 
     protected abstract class DummyLoginOrSignupComposer extends LoginOrSignupComposer {
 
-        DummyLoginOrSignupComposer(Context context, AuthClient authClient, String phoneNumber,
+        DummyLoginOrSignupComposer(Context context, DigitsClient digitsClient, String phoneNumber,
                                    Verification verificationType, boolean emailCollection,
                                    ResultReceiver resultReceiver,
                                    ActivityClassManager activityClassManager,
                                    DigitsEventDetailsBuilder metricsBuilder) {
-            super(context, authClient, phoneNumber, verificationType, emailCollection,
+            super(context, digitsClient, phoneNumber, verificationType, emailCollection,
                     resultReceiver, activityClassManager, metricsBuilder);
         }
     }

@@ -31,7 +31,7 @@ public class DummyConfirmationCodeController extends ConfirmationCodeController 
                                     InvertedStateButton callMeButton,
                                     EditText phoneEditText, String phoneNumber,
                                     SessionManager<DigitsSession> sessionManager,
-                                    AuthClient client, ErrorCodes errors,
+                                    DigitsClient client, ErrorCodes errors,
                                     ActivityClassManager activityClassManager,
                                     DigitsEventCollector digitsEventCollector,
                                     boolean isEmailCollection, TextView timerText,

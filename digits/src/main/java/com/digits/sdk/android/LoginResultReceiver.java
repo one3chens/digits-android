@@ -51,7 +51,7 @@ class LoginResultReceiver extends ResultReceiver {
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         final DigitsEventDetailsBuilder details = resultData
-                .getParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER);
+                .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
 
         if (callback != null) {
             if (resultCode == RESULT_OK) {
@@ -61,7 +61,7 @@ class LoginResultReceiver extends ResultReceiver {
                 }
 
                 callback.success(sessionManager.getActiveSession(),
-                        resultData.getString(AuthClient.EXTRA_PHONE));
+                        resultData.getString(DigitsClient.EXTRA_PHONE));
             } else if (resultCode == RESULT_ERROR) {
                 if (details != null) {
                     digitsEventCollector.authFailure(details

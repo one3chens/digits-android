@@ -40,7 +40,7 @@ public class PhoneNumberActivityTests extends DigitsActivityTests<PhoneNumberAct
         super.setUp();
 
         final Bundle bundle = getBundle();
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
 
         final Intent launchIntent = new Intent();
         launchIntent.putExtras(bundle);

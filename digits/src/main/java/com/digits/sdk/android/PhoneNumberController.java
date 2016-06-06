@@ -44,7 +44,7 @@ class PhoneNumberController extends DigitsControllerImpl {
                           DigitsEventCollector digitsEventCollector, boolean emailCollection,
                           DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
         this(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
-                Digits.getInstance().getAuthClient(), new PhoneNumberErrorCodes(stateButton
+                Digits.getInstance().getDigitsClient(), new PhoneNumberErrorCodes(stateButton
                         .getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), Digits.getSessionManager(),
                 tosView, digitsEventCollector, emailCollection, digitsEventDetailsBuilder);
@@ -55,7 +55,7 @@ class PhoneNumberController extends DigitsControllerImpl {
      */
     PhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
                           EditText phoneEditText, CountryListSpinner countryCodeSpinner,
-                          AuthClient client, ErrorCodes errors,
+                          DigitsClient client, ErrorCodes errors,
                           ActivityClassManager activityClassManager,
                           SessionManager<DigitsSession> sessionManager, TosView tosView,
                           DigitsEventCollector digitsEventCollector, boolean emailCollection,
@@ -88,7 +88,7 @@ class PhoneNumberController extends DigitsControllerImpl {
                 .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
                 .withCurrentTime(System.currentTimeMillis());
 
-        return new LoginOrSignupComposer(context, authClient, phoneNumber,
+        return new LoginOrSignupComposer(context, digitsClient, phoneNumber,
                 getVerificationType(), this.emailCollection, resultReceiver,
                 activityClassManager, dm) {
 
@@ -198,9 +198,9 @@ class PhoneNumberController extends DigitsControllerImpl {
     @Override
     public void startFallback(Context context, ResultReceiver receiver, DigitsException reason) {
         final Intent intent = new Intent(context, activityClassManager.getFailureActivity());
-        intent.putExtra(AuthClient.EXTRA_RESULT_RECEIVER, receiver);
-        intent.putExtra(AuthClient.EXTRA_FALLBACK_REASON, reason);
-        intent.putExtra(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder
+        intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, receiver);
+        intent.putExtra(DigitsClient.EXTRA_FALLBACK_REASON, reason);
+        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder
                 .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country()));
         context.startActivity(intent);
     }

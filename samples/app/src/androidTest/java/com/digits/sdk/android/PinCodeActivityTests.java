@@ -49,9 +49,9 @@ public class PinCodeActivityTests extends DigitsActivityTests<PinCodeActivity> {
 
     public Bundle getBundle() {
         final Bundle bundle = super.getBundle();
-        bundle.putString(AuthClient.EXTRA_PHONE, PHONE);
-        bundle.putString(AuthClient.EXTRA_REQUEST_ID, REQUEST_ID);
-        bundle.putString(AuthClient.EXTRA_USER_ID, String.valueOf(USER_ID));
+        bundle.putString(DigitsClient.EXTRA_PHONE, PHONE);
+        bundle.putString(DigitsClient.EXTRA_REQUEST_ID, REQUEST_ID);
+        bundle.putString(DigitsClient.EXTRA_USER_ID, String.valueOf(USER_ID));
         return bundle;
     }
 

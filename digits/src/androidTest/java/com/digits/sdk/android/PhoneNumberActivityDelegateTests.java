@@ -55,8 +55,8 @@ public class PhoneNumberActivityDelegateTests extends
                 new DigitsEventDetailsBuilder()
                 .withAuthStartTime(1L)
                 .withLanguage("lang");
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
 
         assertTrue(delegate.isValid(bundle));
     }
@@ -68,7 +68,7 @@ public class PhoneNumberActivityDelegateTests extends
                         .withAuthStartTime(1L)
                         .withLanguage("lang");
 
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
         assertFalse(delegate.isValid(bundle));
     }
 
@@ -78,8 +78,8 @@ public class PhoneNumberActivityDelegateTests extends
                 new DigitsEventDetailsBuilder()
                         .withAuthStartTime(1L);
 
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -90,8 +90,8 @@ public class PhoneNumberActivityDelegateTests extends
                 new DigitsEventDetailsBuilder()
                         .withLanguage("lang");
 
-        bundle.putParcelable(AuthClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
-        bundle.putParcelable(AuthClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, new ResultReceiver(null));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, digitsEventDetailsBuilder);
 
         assertFalse(delegate.isValid(bundle));
     }
@@ -141,7 +141,7 @@ public class PhoneNumberActivityDelegateTests extends
         final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
         final SimManager simManager = mock(MockSimManager.class);
         final Bundle bundle = new Bundle();
-        bundle.putString(AuthClient.EXTRA_PHONE, "+14349873237");
+        bundle.putString(DigitsClient.EXTRA_PHONE, "+14349873237");
 
         delegate.controller = controller;
         delegate.setupPhoneNumber(simManager, bundle);
