@@ -66,8 +66,6 @@ class DefaultAnswersLogger extends DigitsEventLogger {
     static final Constructor customEventConstructor;
 
     static{
-        instance = new DefaultAnswersLogger();
-
         answersVersion = getAnswersVersion();
 
         //Class: Answers
@@ -92,6 +90,8 @@ class DefaultAnswersLogger extends DigitsEventLogger {
 
         //Method: new CustomEvent(String.class)
         customEventConstructor = getConstructor(customEventClass, String.class);
+
+        instance = new DefaultAnswersLogger();
     }
 
     private DefaultAnswersLogger() {
@@ -119,6 +119,20 @@ class DefaultAnswersLogger extends DigitsEventLogger {
                 answersClass);
         final Object customEvent =
                 newInstance(answersVersion, customEventConstructor, "Digits Login Success");
+
+        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Language",
+                details.language);
+        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Country",
+                details.country);
+        invokeMethod(answersVersion, logCustomMethod, answersInstance, customEvent);
+    }
+
+    @Override
+    public void logout(LogoutEventDetails details) {
+        final Object answersInstance = invokeMethod(answersVersion, getInstanceMethod,
+                answersClass);
+        final Object customEvent =
+                newInstance(answersVersion, customEventConstructor, "Digits Logout");
 
         invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Language",
                 details.language);

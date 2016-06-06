@@ -266,9 +266,12 @@ public class Digits extends Kit<Void> {
         final MigrationHelper migrationHelper = new MigrationHelper();
         migrationHelper.migrateSessionStore(getContext(), getIdentifier(),
                 getIdentifier() + ":" + SESSION_PREF_FILE_NAME + ".xml");
-        sessionManager = new PersistedSessionManager<>(new PreferenceStoreImpl(getContext(),
+        final PersistedSessionManager persistedSessionManager =
+                new PersistedSessionManager(new PreferenceStoreImpl(getContext(),
                 SESSION_PREF_FILE_NAME), new DigitsSession.Serializer(), PREF_KEY_ACTIVE_SESSION,
                 PREF_KEY_SESSION);
+
+        sessionManager = new LoggingSessionManager(persistedSessionManager, digitsEventCollector);
         digitsSessionVerifier = new DigitsSessionVerifier();
         return super.onPreExecute();
     }

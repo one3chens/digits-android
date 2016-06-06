@@ -32,6 +32,11 @@ public class FailFastEventDetailsCheckerTest {
             .withAuthStartTime(1L).withLanguage("en").withCurrentTime(2L).build();
     private final DigitsEventDetails details = new DigitsEventDetailsBuilder()
             .withAuthStartTime(1L).withLanguage("en").withCountry("US").withCurrentTime(2L).build();
+    private final LogoutEventDetails logoutEventDetails =
+            new LogoutEventDetails("en", "US");
+
+    private final LogoutEventDetails logoutEventDetailsWithoutCountry =
+            new LogoutEventDetails("en", null);
 
     @Test(expected = IllegalArgumentException.class)
     public void testLoginSuccess_incompleteDetailsObject() throws Exception {
@@ -41,6 +46,11 @@ public class FailFastEventDetailsCheckerTest {
     @Test(expected = IllegalArgumentException.class)
     public void testLoginFailure_incompleteDetailsObject() throws Exception {
         failFastEventDetailsChecker.loginFailure(detailsWithoutCountry);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testLoginSessionCleared_incompleteDetailsObject() throws Exception {
+        failFastEventDetailsChecker.logout(logoutEventDetailsWithoutCountry);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -105,6 +115,10 @@ public class FailFastEventDetailsCheckerTest {
 
     public void testLoginFailure_completeDetailsObject() throws Exception {
         failFastEventDetailsChecker.loginFailure(details);
+    }
+
+    public void testLoginSessionCleared_completeDetailsObject() throws Exception {
+        failFastEventDetailsChecker.logout(logoutEventDetails);
     }
 
     public void testPhoneNumberSubmit_completeDetailsObject() throws Exception {

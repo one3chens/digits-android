@@ -51,6 +51,8 @@ public class DigitsEventCollectorTest {
             .build();
     private final DigitsEventLogger digitsEventLogger = mock(DigitsEventLogger.class);
     private HashSet<DigitsEventLogger> loggers;
+    private final LogoutEventDetails logoutEventDetails =
+            new LogoutEventDetails("en", "US");
 
     @Before
     public void setUp() throws Exception {
@@ -375,5 +377,12 @@ public class DigitsEventCollectorTest {
     public void testSubmitClickOnContactScreen_withExternalLogger() {
         testSubmitClickOnContactScreen();
         verify(digitsEventLogger, times(1)).contactsPermissionSubmit();
+    }
+
+    @Test
+    public void testAuthCleared_withExternalLogger() {
+        digitsEventCollector.authCleared(logoutEventDetails);
+        verify(failFastEventDetailsChecker).logout(logoutEventDetails);
+        verify(digitsEventLogger).logout(logoutEventDetails);
     }
 }

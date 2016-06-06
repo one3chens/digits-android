@@ -21,32 +21,15 @@ import com.crashlytics.android.answers.CustomEvent;
 
 import com.digits.sdk.android.DigitsEventLogger;
 import com.digits.sdk.android.DigitsEventDetails;
+import com.digits.sdk.android.LogoutEventDetails;
 
-import java.util.Locale;
-
-import io.fabric.sdk.android.Fabric;
-
-/**
- * This logger does multiple things to demonstrate the flexibility
- * we intend to provide
- * 1) Generate Answers Custom Events
- * 2) Log to stdOut
- */
 public class AnswersLogger extends DigitsEventLogger {
-    private final String TAG = "AnswersLogger";
-
     @Override
     public void loginBegin(DigitsEventDetails details) {
         Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
                 .putCustomAttribute("Action", "loginBegin")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
-
-        Fabric.getLogger().d(TAG, "loginBegin event received");
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
-                details.elapsedTimeInMillis / 1000));
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
-                details.language));
     }
 
     @Override
@@ -55,112 +38,153 @@ public class AnswersLogger extends DigitsEventLogger {
                 .putCustomAttribute("Action", "phoneNumberImpression")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
-
-        Fabric.getLogger().d(TAG, "phoneNumberImpression event received");
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "timeElapsed = %d%n",
-                details.elapsedTimeInMillis / 1000));
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "language = %s",
-                details.language));
     }
 
     @Override
     public void phoneNumberSubmit(DigitsEventDetails details) {
-        statAndPrintAll("phoneNumberSubmit", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "phoneNumberSubmit")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void phoneNumberSuccess(DigitsEventDetails details) {
-        statAndPrintAll("phoneNumberSuccess", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "phoneNumberSuccess")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void confirmationCodeImpression(DigitsEventDetails details) {
-        statAndPrintAll("confirmationCodeImpression", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "confirmationCodeImpression")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void confirmationCodeSubmit(DigitsEventDetails details) {
-        statAndPrintAll("confirmationCodeSubmit", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "confirmationCodeSubmit")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void confirmationCodeSuccess(DigitsEventDetails details) {
-        statAndPrintAll("confirmationCodeSuccess", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "confirmationCodeSuccess")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void twoFactorPinImpression(DigitsEventDetails details) {
-        statAndPrintAll("twoFactorPinImpression", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "twoFactorPinImpression")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void twoFactorPinSubmit(DigitsEventDetails details) {
-        statAndPrintAll("twoFactorPinSubmit", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "twoFactorPinSubmit")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void twoFactorPinSuccess(DigitsEventDetails details) {
-        statAndPrintAll("twoFactorPinSuccess", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "twoFactorPinSuccess")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void emailImpression(DigitsEventDetails details) {
-        statAndPrintAll("emailImpression", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "emailImpression")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void emailSubmit(DigitsEventDetails details) {
-        statAndPrintAll("emailSubmit", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "emailSubmit")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void emailSuccess(DigitsEventDetails details) {
-        statAndPrintAll("emailSuccess", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "emailSuccess")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void failureImpression(DigitsEventDetails details) {
-        statAndPrintLanguageAndElapsedTime("failureImpression", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "failureImpression")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void failureRetryClick(DigitsEventDetails details) {
-        statAndPrintLanguageAndElapsedTime("failureRetryClick", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "failureRetryClick")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void failureDismissClick(DigitsEventDetails details) {
-        statAndPrintLanguageAndElapsedTime("failureDismissClick", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "failureDismissClick")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void loginSuccess(DigitsEventDetails details) {
-        statAndPrintAll("loginSuccess", details);
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "loginSuccess")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void loginFailure(DigitsEventDetails details) {
-        statAndPrintLanguageAndElapsedTime("loginFailure", details);
-    }
-
-    private void statAndPrintAll(String event, DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent(event)
-                .putCustomAttribute("Action", String.format("%s event received", event))
-                .putCustomAttribute("Language", details.language)
-                .putCustomAttribute("Country", details.country)
-                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
-
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "%s event received", event));
-        Fabric.getLogger().d(TAG, details.toString());
-    }
-
-    private void statAndPrintLanguageAndElapsedTime(String event, DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent(event)
-                .putCustomAttribute("Action", String.format("%s event received", event))
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "loginFailure")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
+    }
 
-        Fabric.getLogger().d(TAG, String.format(Locale.US, "%s event received", event));
-        Fabric.getLogger().d(TAG, details.toString());
+    @Override
+    public void logout(LogoutEventDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
+                .putCustomAttribute("Action", "logout")
+                .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country));
     }
 }

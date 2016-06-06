@@ -76,6 +76,16 @@ class DigitsEventCollector {
         }
     }
 
+    //Logout event
+    public void authCleared(LogoutEventDetails details) {
+        failFastEventDetailsChecker.logout(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.logout(details);
+        }
+    }
+
     //Phone screen events
     public void phoneScreenImpression(DigitsEventDetails details) {
         failFastEventDetailsChecker.phoneNumberImpression(details);

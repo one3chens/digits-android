@@ -50,6 +50,14 @@ class FailFastEventDetailsChecker extends DigitsEventLogger {
     }
 
     @Override
+    public void logout(LogoutEventDetails s) {
+        throwIncompleteDetailsExWhenFalse(
+                s.country != null && s.language != null,
+                s
+        );
+    }
+
+    @Override
     public void phoneNumberImpression(DigitsEventDetails d) {
         throwIncompleteDetailsExWhenFalse(
                 d.language != null && d.elapsedTimeInMillis != null,
@@ -172,6 +180,13 @@ class FailFastEventDetailsChecker extends DigitsEventLogger {
     }
 
     private void throwIncompleteDetailsExWhenFalse(boolean bool, DigitsEventDetails d) {
+        if (!bool) {
+            throw new IllegalArgumentException(String.format(Locale.US,
+                    "Incomplete DigitsEventDetails object %s", d.toString()));
+        }
+    }
+
+    private void throwIncompleteDetailsExWhenFalse(boolean bool, LogoutEventDetails d) {
         if (!bool) {
             throw new IllegalArgumentException(String.format(Locale.US,
                     "Incomplete DigitsEventDetails object %s", d.toString()));

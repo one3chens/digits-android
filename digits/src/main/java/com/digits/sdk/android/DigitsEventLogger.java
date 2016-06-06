@@ -27,6 +27,7 @@ public abstract class DigitsEventLogger {
     public void loginBegin(DigitsEventDetails digitsEventDetails){}
     public void loginSuccess(DigitsEventDetails digitsEventDetails) {}
     public void loginFailure(DigitsEventDetails digitsEventDetails) {}
+    public void logout(LogoutEventDetails logoutEventDetails){}
 
     public void phoneNumberImpression(DigitsEventDetails digitsEventDetails){}
     public void phoneNumberSubmit(DigitsEventDetails digitsEventDetails) {}
