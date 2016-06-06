@@ -202,15 +202,16 @@ public class DigitsMainActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-
+                Object isEnabledTag = toggleSandboxButton.getTag(R.id.is_sandbox_enabled_tag);
+                boolean isDisabled = isEnabledTag == null || (boolean) isEnabledTag;
                 Digits.getInstance().setSandboxConfig(
-                        new SandboxConfig(toggleSandboxButton.isEnabled(),
-                        SandboxConfig.Mode.values()[position], new MockApiInterface()));
+                        new SandboxConfig(!isDisabled,
+                                SandboxConfig.Mode.values()[position], new MockApiInterface()));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing here
+                // Do Nothing
             }
         });
 

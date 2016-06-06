@@ -54,14 +54,7 @@ public class ContactsClient {
      * background service to upload contacts. Otherwise, do nothing.
      */
     public void startContactsUpload() {
-        if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
-            final Intent intent = new Intent(ContactsUploadService.UPLOAD_COMPLETE);
-            intent.putExtra(ContactsUploadService.UPLOAD_COMPLETE_EXTRA,
-                    new ContactsUploadResult(2, 2));
-            digits.getContext().sendBroadcast(intent);
-        } else {
-            startContactsUpload(R.style.Digits_default);
-        }
+        startContactsUpload(R.style.Digits_default);
     }
 
     /**
@@ -72,9 +65,12 @@ public class ContactsClient {
      * @param themeResId Resource id of theme
      */
     public void startContactsUpload(int themeResId) {
-        startContactsUpload(digits.getContext(), themeResId);
+        if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
+            sandoxedContactUpload(themeResId);
+        } else {
+            startContactsUpload(digits.getContext(), themeResId);
+        }
     }
-
 
     /**
      * Returns true if user has previously granted contacts upload permission. Otherwise, returns
@@ -82,6 +78,14 @@ public class ContactsClient {
      */
     public boolean hasUserGrantedPermission() {
         return prefManager.hasContactImportPermissionGranted();
+    }
+
+    protected void sandoxedContactUpload(int themeResId){
+        final Intent intent = new Intent(ContactsUploadService.UPLOAD_COMPLETE);
+        intent.putExtra(ContactsUploadService.UPLOAD_COMPLETE_EXTRA,
+                new ContactsUploadResult(2, 2));
+        intent.putExtra(ThemeUtils.THEME_RESOURCE_ID, themeResId);
+        digits.getContext().sendBroadcast(intent);
     }
 
     protected void startContactsUpload(Context context, int themeResId) {
@@ -125,11 +129,7 @@ public class ContactsClient {
      * @param callback   to be executed on UI thread with matched users.
      */
     public void lookupContactMatchesStart(final Callback<Contacts> callback) {
-        if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
-            MockApiInterface.createAllContacts(callback);
-        } else {
-            lookupContactMatches(null, 100, callback);
-        }
+        lookupContactMatches(null, 100, callback);
     }
 
     /**
@@ -142,7 +142,9 @@ public class ContactsClient {
      */
     public void lookupContactMatches(final String nextCursor, final Integer count,
                                         final Callback<Contacts> callback) {
-        if (count == null || count < 1 || count > 100) {
+        if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
+            MockApiInterface.createAllContacts(callback);
+        } else if (count == null || count < 1 || count > 100) {
             getDigitsApiService().usersAndUploadedBy(nextCursor, null, callback);
         } else {
             getDigitsApiService().usersAndUploadedBy(nextCursor, count, callback);
