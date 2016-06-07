@@ -20,6 +20,9 @@ package com.digits.sdk.android;
 import android.content.Context;
 import android.content.Intent;
 import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
+
 import retrofit.client.Response;
 
 public class ContactsClient {
@@ -28,24 +31,28 @@ public class ContactsClient {
     private final DigitsApiClientManager apiClientManager;
     private final Digits digits;
     private SandboxConfig sandboxConfig;
+    private final DigitsEventCollector digitsEventCollector;
 
     ContactsClient(DigitsApiClientManager apiManager) {
         this(Digits.getInstance(),
                 apiManager,
                 new ContactsPreferenceManager(),
                 new ActivityClassManagerFactory(),
-                Digits.getInstance().getSandboxConfig());
+                Digits.getInstance().getSandboxConfig(),
+                Digits.getInstance().getDigitsEventCollector());
     }
 
     ContactsClient(Digits digits, DigitsApiClientManager apiManager,
                    ContactsPreferenceManager prefManager,
                    ActivityClassManagerFactory activityClassManagerFactory,
-                   SandboxConfig sandboxConfig) {
+                   SandboxConfig sandboxConfig,
+                   DigitsEventCollector digitsEventCollector) {
         this.digits = digits;
         this.apiClientManager = apiManager;
         this.prefManager = prefManager;
         this.activityClassManagerFactory = activityClassManagerFactory;
         this.sandboxConfig = sandboxConfig;
+        this.digitsEventCollector = digitsEventCollector;
     }
 
     /**
@@ -65,8 +72,10 @@ public class ContactsClient {
      * @param themeResId Resource id of theme
      */
     public void startContactsUpload(int themeResId) {
+        digitsEventCollector.startContactsUpload(new ContactsUploadStartDetails());
+
         if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
-            sandoxedContactUpload(themeResId);
+            sandboxedContactUpload(themeResId);
         } else {
             startContactsUpload(digits.getContext(), themeResId);
         }
@@ -80,7 +89,7 @@ public class ContactsClient {
         return prefManager.hasContactImportPermissionGranted();
     }
 
-    protected void sandoxedContactUpload(int themeResId){
+    protected void sandboxedContactUpload(int themeResId){
         final Intent intent = new Intent(ContactsUploadService.UPLOAD_COMPLETE);
         intent.putExtra(ContactsUploadService.UPLOAD_COMPLETE_EXTRA,
                 new ContactsUploadResult(2, 2));
@@ -119,7 +128,9 @@ public class ContactsClient {
      * @param callback to be executed on UI thread with HTTP response.
      */
     public void deleteAllUploadedContacts(final ContactsCallback<Response> callback) {
-        getDigitsApiService().deleteAll(callback);
+        digitsEventCollector.startDeleteContacts(new ContactsDeletionStartDetails());
+        getDigitsApiService().deleteAll(
+                new DeleteContactsCallbackWrapper(callback, digitsEventCollector));
     }
 
     /**
@@ -142,17 +153,78 @@ public class ContactsClient {
      */
     public void lookupContactMatches(final String nextCursor, final Integer count,
                                         final Callback<Contacts> callback) {
+        digitsEventCollector.startFindMatches(new ContactsLookupStartDetails(nextCursor));
+        final FoundContactsCallbackWrapper wrappedCallback =
+                new FoundContactsCallbackWrapper(callback, digitsEventCollector);
+
         if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
-            MockApiInterface.createAllContacts(callback);
+            MockApiInterface.createAllContacts(wrappedCallback);
         } else if (count == null || count < 1 || count > 100) {
-            getDigitsApiService().usersAndUploadedBy(nextCursor, null, callback);
+            getDigitsApiService().usersAndUploadedBy(nextCursor, null, wrappedCallback);
         } else {
-            getDigitsApiService().usersAndUploadedBy(nextCursor, count, callback);
+            getDigitsApiService().usersAndUploadedBy(nextCursor, count, wrappedCallback);
         }
     }
 
     UploadResponse uploadContacts(Vcards vcards) {
         return getDigitsApiService().upload(vcards);
+    }
+
+    class FoundContactsCallbackWrapper extends Callback<Contacts> {
+        final Callback<Contacts> callback;
+        final DigitsEventCollector digitsEventCollector;
+
+        public FoundContactsCallbackWrapper(Callback<Contacts> callback,
+                                            DigitsEventCollector digitsEventCollector) {
+            this.callback = callback;
+            this.digitsEventCollector = digitsEventCollector;
+        }
+
+        @Override
+        public void success(Result<Contacts> result) {
+            if (result.data != null && result.data.users != null) {
+                digitsEventCollector.succeedFindMatches(
+                        new ContactsLookupSuccessDetails(result.data.users.size()));
+            }
+            if (callback != null) {
+                callback.success(result);
+            }
+        }
+
+        @Override
+        public void failure(TwitterException exception) {
+            digitsEventCollector.failedFindMatches(new ContactsLookupFailureDetails());
+            if (callback != null) {
+                callback.failure(exception);
+            }
+        }
+    }
+
+    class DeleteContactsCallbackWrapper extends ContactsCallback<Response> {
+        final ContactsCallback<Response>  callback;
+        final DigitsEventCollector digitsEventCollector;
+
+        public DeleteContactsCallbackWrapper(ContactsCallback<Response>  callback,
+                                            DigitsEventCollector digitsEventCollector) {
+            this.callback = callback;
+            this.digitsEventCollector = digitsEventCollector;
+        }
+
+        @Override
+        public void success(Result<Response> result) {
+            digitsEventCollector.succeedDeleteContacts(new ContactsDeletionSuccessDetails());
+            if (callback != null) {
+                callback.success(result);
+            }
+        }
+
+        @Override
+        public void failure(TwitterException exception) {
+            digitsEventCollector.failedDeleteContacts(new ContactsDeletionFailureDetails());
+            if (callback != null) {
+                callback.failure(exception);
+            }
+        }
     }
 
 }

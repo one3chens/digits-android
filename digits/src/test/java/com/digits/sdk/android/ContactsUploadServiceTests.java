@@ -32,9 +32,11 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -70,12 +72,15 @@ public class ContactsUploadServiceTests {
     private ContactsUploadService service;
     private Logger logger;
     private ArgumentCaptor<Intent> intentCaptor;
+    private DigitsEventCollector digitsEventCollector;
+
 
     @Before
     public void setUp() throws Exception {
         executor = mock(RetryThreadPoolExecutor.class);
         perfManager = mock(MockContactsPreferenceManager.class);
         sdkService = mock(ApiInterface.class);
+        digitsEventCollector = mock(DigitsEventCollector.class);
         apiClient = mock(DigitsApiClient.class);
         clientManager = mock(DigitsApiClientManager.class);
         when(clientManager.getApiClient()).thenReturn(apiClient);
@@ -89,7 +94,7 @@ public class ContactsUploadServiceTests {
         when(helper.createContactList(cursor)).thenReturn(cradList);
 
         service = spy(new ContactsUploadService(clientManager, helper, perfManager, executor,
-                logger, Locale.JAPANESE));
+                logger, Locale.JAPANESE, digitsEventCollector));
     }
 
     @Test
@@ -122,6 +127,9 @@ public class ContactsUploadServiceTests {
                 .getParcelableExtra(ContactsUploadService.UPLOAD_COMPLETE_EXTRA);
         assertEquals(cradList.size(), result.successCount);
         assertEquals(cradList.size(), result.totalCount);
+
+        verify(digitsEventCollector).succeedContactsUpload(any(ContactsUploadSuccessDetails.class));
+
     }
 
     @Test
@@ -160,6 +168,8 @@ public class ContactsUploadServiceTests {
         final ContactsUploadFailureResult result = intentCaptor.getValue()
                 .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
         assertEquals(ContactsUploadFailureResult.Summary.RATE_LIMIT, result.summary);
+        verify(digitsEventCollector).failedContactsUpload(any(ContactsUploadFailureDetails.class));
+
     }
 
     @Test
@@ -194,6 +204,8 @@ public class ContactsUploadServiceTests {
         final ContactsUploadFailureResult result = intentCaptor.getValue()
                 .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
         assertEquals(ContactsUploadFailureResult.Summary.PARSING, result.summary);
+        verify(digitsEventCollector).failedContactsUpload(any(ContactsUploadFailureDetails.class));
+
     }
 
     @Test
@@ -213,6 +225,7 @@ public class ContactsUploadServiceTests {
         final ContactsUploadFailureResult result = intentCaptor.getValue()
                 .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
         assertEquals(ContactsUploadFailureResult.Summary.UNEXPECTED, result.summary);
+        verify(digitsEventCollector).failedContactsUpload(any(ContactsUploadFailureDetails.class));
     }
 
     @Test
@@ -232,6 +245,7 @@ public class ContactsUploadServiceTests {
         final ContactsUploadFailureResult result = intentCaptor.getValue()
                 .getParcelableExtra(ContactsUploadService.UPLOAD_FAILED_EXTRA);
         assertEquals(ContactsUploadFailureResult.Summary.PERMISSION, result.summary);
+        verify(digitsEventCollector).failedContactsUpload(any(ContactsUploadFailureDetails.class));
     }
 
     @Test
@@ -255,6 +269,7 @@ public class ContactsUploadServiceTests {
 
         verify(perfManager).setContactImportPermissionGranted();
         verifyNoMoreInteractions(perfManager);
+        verify(digitsEventCollector).failedContactsUpload(any(ContactsUploadFailureDetails.class));
     }
 
     @Test
@@ -295,7 +310,76 @@ public class ContactsUploadServiceTests {
                 new TypedByteArray("application/json", body.getBytes("UTF-8")));
     }
 
+    @Test
+    public void testUploadEventCounts() throws Exception {
+        final TestDigitsEventCollector collector = new TestDigitsEventCollector(null, null, null);
+        service = spy(new ContactsUploadService(clientManager, helper, perfManager, executor,
+                logger, Locale.JAPANESE, collector));
+        when(executor.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(true);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                ((Runnable) invocationOnMock.getArguments()[0]).run();
+                return null;
+            }
+        }).when(executor).scheduleWithRetry(any(Runnable.class));
+
+        service.onHandleIntent(null);
+
+        verify(helper).getContactsCursor();
+        verify(helper).createContactList(cursor);
+        verify(executor).scheduleWithRetry(any(Runnable.class));
+        verify(executor).shutdown();
+        verify(executor).awaitTermination(anyLong(), any(TimeUnit.class));
+
+        verify(service).sendBroadcast(intentCaptor.capture());
+        assertEquals(ContactsUploadService.UPLOAD_COMPLETE, intentCaptor.getValue().getAction());
+
+        verify(perfManager).setContactImportPermissionGranted();
+        verify(perfManager).setContactsUploaded(cradList.size());
+        verify(perfManager).setContactsReadTimestamp(anyLong());
+
+        final ContactsUploadResult result = intentCaptor.getValue()
+                .getParcelableExtra(ContactsUploadService.UPLOAD_COMPLETE_EXTRA);
+        assertEquals(cradList.size(), result.successCount);
+        assertEquals(cradList.size(), result.totalCount);
+
+        assertEquals(collector.events.size(), 1);
+        final ContactsUploadSuccessDetails details =
+                (ContactsUploadSuccessDetails) collector.events.get(0);
+        assertEquals(details.successContacts.intValue(), 1);
+        assertEquals(details.totalContacts.intValue(), 1);
+    }
+
     String toJson(UploadResponse response) {
         return new Gson().toJson(response);
+    }
+
+    class TestDigitsEventCollector extends DigitsEventCollector {
+        List<Object> events;
+
+        TestDigitsEventCollector(DigitsScribeClient client,
+                                 FailFastEventDetailsChecker checker,
+                                 Set<DigitsEventLogger> loggers){
+            super(mock(DigitsScribeClient.class), mock(FailFastEventDetailsChecker.class),
+                    new HashSet<DigitsEventLogger>());
+            this.events = new ArrayList<Object>();
+        }
+
+        @Override
+        public void startContactsUpload(ContactsUploadStartDetails details) {
+            events.add(details);
+
+        }
+
+        @Override
+        public void succeedContactsUpload(ContactsUploadSuccessDetails details) {
+            events.add(details);
+        }
+
+        @Override
+        public void failedContactsUpload(ContactsUploadFailureDetails details) {
+            events.add(details);
+        }
     }
 }

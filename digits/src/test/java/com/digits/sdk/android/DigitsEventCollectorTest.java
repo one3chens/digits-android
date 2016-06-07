@@ -34,6 +34,7 @@ import java.util.HashSet;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -311,30 +312,6 @@ public class DigitsEventCollectorTest {
         digitsEventCollector.submitEmailException(exception);
         verify(digitsScribeClient).error(Component.EMAIL, exception);
     }
-    //Contacts upload screen events
-    @Test
-    public void testContactScreenImpression() {
-        digitsEventCollector.contactScreenImpression();
-        verify(digitsScribeClient).impression(Component.CONTACTS);
-    }
-
-    @Test
-    public void testCancelClickOnContactScreen() {
-        digitsEventCollector.cancelClickOnContactScreen();
-        verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.CANCEL);
-    }
-
-    @Test
-    public void testBackClickOnContactScreen() {
-        digitsEventCollector.backClickOnContactScreen();
-        verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.BACK);
-    }
-
-    @Test
-    public void testSubmitClickOnContactScreen() {
-        digitsEventCollector.submitClickOnContactScreen();
-        verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.SUBMIT);
-    }
 
     //Failure screen events
     @Test
@@ -361,22 +338,32 @@ public class DigitsEventCollectorTest {
         verify(digitsEventLogger, times(1)).failureDismissClick(details);
     }
 
+    //Contacts upload screen events
     @Test
-    public void testContactScreenImpression_withExternalLogger() {
-        testContactScreenImpression();
-        verify(digitsEventLogger, times(1)).contactsPermissionImpression();
+    public void testContactsPermissionForDigitsImpression() {
+        digitsEventCollector.contactsPermissionImpression(
+                new ContactsPermissionForDigitsImpressionDetails());
+        verify(digitsScribeClient).impression(Component.CONTACTS);
     }
 
     @Test
-    public void testCancelClickOnContactScreen_withExternalLogger() {
-        testCancelClickOnContactScreen();
-        verify(digitsEventLogger, times(1)).contactsPermissionCancel();
+    public void testContactsPermissionDeferred() {
+        digitsEventCollector.contactsPermissionDeferred(
+                new ContactsPermissionForDigitsDeferredDetails());
+        verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.CANCEL);
     }
 
     @Test
-    public void testSubmitClickOnContactScreen_withExternalLogger() {
-        testSubmitClickOnContactScreen();
-        verify(digitsEventLogger, times(1)).contactsPermissionSubmit();
+    public void testBackClickOnContactScreen() {
+        digitsEventCollector.backClickOnContactScreen();
+        verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.BACK);
+    }
+
+    @Test
+    public void testContactsPermissionApproved() {
+        digitsEventCollector.contactsPermissionApproved(
+                new ContactsPermissionForDigitsApprovedDetails());
+        verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.SUBMIT);
     }
 
     @Test
@@ -385,4 +372,28 @@ public class DigitsEventCollectorTest {
         verify(failFastEventDetailsChecker).logout(logoutEventDetails);
         verify(digitsEventLogger).logout(logoutEventDetails);
     }
+
+    // Contacts upload permissions events
+
+    @Test
+    public void testContactsPermissionForDigitsImpression_withExternalLogger() {
+        testContactsPermissionForDigitsImpression();
+        verify(digitsEventLogger).contactsPermissionForDigitsImpression(
+                any(ContactsPermissionForDigitsImpressionDetails.class));
+    }
+
+    @Test
+    public void testContactsPermissionDeferred_withExternalLogger() {
+        testContactsPermissionDeferred();
+        verify(digitsEventLogger).contactsPermissionForDigitsDeferred(
+                any(ContactsPermissionForDigitsDeferredDetails.class));
+    }
+
+    @Test
+    public void testContactsPermissionApproved_withExternalLogger() {
+        testContactsPermissionApproved();
+        verify(digitsEventLogger).contactsPermissionForDigitsApproved(
+                any(ContactsPermissionForDigitsApprovedDetails.class));
+    }
+
 }

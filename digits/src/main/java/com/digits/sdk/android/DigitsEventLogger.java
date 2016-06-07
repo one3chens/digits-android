@@ -49,7 +49,23 @@ public abstract class DigitsEventLogger {
     public void failureRetryClick(DigitsEventDetails digitsEventDetails) {}
     public void failureDismissClick(DigitsEventDetails digitsEventDetails) {}
 
-    public void contactsPermissionImpression() {}
-    public void contactsPermissionSubmit() {}
-    public void contactsPermissionCancel() {}
+    public void contactsPermissionForDigitsImpression(
+            ContactsPermissionForDigitsImpressionDetails details){}
+    public void contactsPermissionForDigitsApproved(
+            ContactsPermissionForDigitsApprovedDetails details){}
+    public void contactsPermissionForDigitsDeferred(
+            ContactsPermissionForDigitsDeferredDetails details){}
+
+    public void contactsUploadStart(ContactsUploadStartDetails details){}
+    public void contactsUploadSuccess(ContactsUploadSuccessDetails details){}
+    public void contactsUploadFailure(ContactsUploadFailureDetails details){}
+
+    public void contactsLookupStart(ContactsLookupStartDetails details){}
+    public void contactsLookupSuccess(ContactsLookupSuccessDetails details){}
+    public void contactsLookupFailure(ContactsLookupFailureDetails details){}
+
+    public void contactsDeletionStart(ContactsDeletionStartDetails details){}
+    public void contactsDeletionSuccess(ContactsDeletionSuccessDetails details){}
+    public void contactsDeletionFailure(ContactsDeletionFailureDetails details){}
+
 }

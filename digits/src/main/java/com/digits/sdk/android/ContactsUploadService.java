@@ -54,6 +54,7 @@ public class ContactsUploadService extends IntentService {
     private static final int INITIAL_BACKOFF_MS = 1000;
     private static final int MAX_PAGE_SIZE = 100;
     private DigitsApiClientManager clientManager;
+    private DigitsEventCollector digitsEventCollector;
     private ContactsHelper helper;
     private ContactsPreferenceManager prefManager;
     private RetryThreadPoolExecutor executor;
@@ -69,7 +70,8 @@ public class ContactsUploadService extends IntentService {
                 new RetryThreadPoolExecutor(CORE_THREAD_POOL_SIZE,
                         new DefaultRetryPolicy(MAX_RETRIES),
                         new ExponentialBackoff(INITIAL_BACKOFF_MS)),
-                Fabric.getLogger(), Locale.getDefault());
+                Fabric.getLogger(), Locale.getDefault(),
+                Digits.getInstance().getDigitsEventCollector());
     }
 
     /*
@@ -77,21 +79,23 @@ public class ContactsUploadService extends IntentService {
      */
     ContactsUploadService(DigitsApiClientManager clientManager, ContactsHelper helper,
                           ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
-                          Logger logger, Locale locale) {
+                          Logger logger, Locale locale,
+                          DigitsEventCollector digitsEventCollector) {
         super(THREAD_NAME);
 
-        init(clientManager, helper, prefManager, executor, logger, locale);
+        init(clientManager, helper, prefManager, executor, logger, locale, digitsEventCollector);
     }
 
     private void init(DigitsApiClientManager clientManager, ContactsHelper helper,
               ContactsPreferenceManager prefManager, RetryThreadPoolExecutor executor,
-                      Logger logger, Locale locale) {
+                      Logger logger, Locale locale, DigitsEventCollector digitsEventCollector) {
         this.clientManager = clientManager;
         this.helper = helper;
         this.prefManager = prefManager;
         this.executor = executor;
         this.logger = logger;
         this.locale = locale;
+        this.digitsEventCollector = digitsEventCollector;
 
         setIntentRedelivery(true);
     }
@@ -99,13 +103,14 @@ public class ContactsUploadService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         prefManager.setContactImportPermissionGranted();
+        int totalCount = 0;
+        final AtomicInteger successCount = new AtomicInteger(0);
 
         //noinspection TryWithIdenticalCatches
         try {
             final List<String> allCards = getAllCards();
-            final int totalCount = allCards.size();
+            totalCount = allCards.size();
             final int pages = getNumberOfPages(totalCount);
-            final AtomicInteger successCount = new AtomicInteger(0);
             final List<Exception> retrofitErrors = Collections.synchronizedList(
                     new ArrayList<Exception>());
             for (int i = 0; i < pages; i++) {
@@ -132,22 +137,31 @@ public class ContactsUploadService extends IntentService {
             executor.shutdown();
             final boolean success = executor.awaitTermination(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
 
-            if (totalCount == 0) {
-                sendFailureBroadcast(
-                        new ContactsUploadFailureResult(
-                                ContactsUploadFailureResult.Summary.NO_CONTACTS_FOUND));
-            } else if (!success) {
-                executor.shutdownNow();
-                sendFailureBroadcast(ContactsUploadFailureResult.create(retrofitErrors));
-            } else if (successCount.get() == 0) {
-                sendFailureBroadcast(ContactsUploadFailureResult.create(retrofitErrors));
-            } else {
+            if (success && successCount.get() > 0) {
                 prefManager.setContactsReadTimestamp(System.currentTimeMillis());
                 prefManager.setContactsUploaded(successCount.get());
+                digitsEventCollector.succeedContactsUpload(
+                        new ContactsUploadSuccessDetails(totalCount, successCount.get()));
                 sendSuccessBroadcast(new ContactsUploadResult(successCount.get(), totalCount));
+            } else {
+                final int failedCount = totalCount - successCount.get();
+                digitsEventCollector.failedContactsUpload(
+                        new ContactsUploadFailureDetails(totalCount, failedCount));
+                if (totalCount == 0) {
+                    sendFailureBroadcast(new ContactsUploadFailureResult(
+                            ContactsUploadFailureResult.Summary.NO_CONTACTS_FOUND));
+                } else if (!success) {
+                    executor.shutdownNow();
+                    sendFailureBroadcast(ContactsUploadFailureResult.create(retrofitErrors));
+                } else if (successCount.get() == 0) {
+                    sendFailureBroadcast(ContactsUploadFailureResult.create(retrofitErrors));
+                }
             }
         } catch (Exception ex) {
             log(ex);
+            final int failedCount = totalCount - successCount.get();
+            digitsEventCollector.failedContactsUpload(
+                    new ContactsUploadFailureDetails(totalCount, failedCount));
             sendFailureBroadcast(ContactsUploadFailureResult.create(ex));
         }
     }

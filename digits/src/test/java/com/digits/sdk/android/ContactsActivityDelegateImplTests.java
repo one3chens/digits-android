@@ -29,6 +29,7 @@ import org.mockito.ArgumentCaptor;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -67,7 +68,8 @@ public class ContactsActivityDelegateImplTests {
 
         delegate.init();
 
-        verify(digitsEventCollector).contactScreenImpression();
+        verify(digitsEventCollector).contactsPermissionImpression(
+                any(ContactsPermissionForDigitsImpressionDetails.class));
         verify(delegate).setContentView();
         verify(delegate).setUpViews();
     }
@@ -99,7 +101,8 @@ public class ContactsActivityDelegateImplTests {
         verify(button).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
-        verify(digitsEventCollector).cancelClickOnContactScreen();
+        verify(digitsEventCollector).contactsPermissionDeferred(
+                any(ContactsPermissionForDigitsDeferredDetails.class));
         verify(activity).finish();
     }
 
@@ -110,7 +113,8 @@ public class ContactsActivityDelegateImplTests {
         verify(button).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
-        verify(digitsEventCollector).submitClickOnContactScreen();
+        verify(digitsEventCollector).contactsPermissionApproved(
+                any(ContactsPermissionForDigitsApprovedDetails.class));
         verify(controller).startUploadService(activity);
         verify(activity).finish();
     }

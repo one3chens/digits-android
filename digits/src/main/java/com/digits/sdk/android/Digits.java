@@ -30,6 +30,7 @@ import com.twitter.sdk.android.core.internal.SessionMonitor;
 import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -66,36 +67,24 @@ public class Digits extends Kit<Void> {
     private int themeResId;
 
     public Digits() {
-        super();
-        //create api client wrappers only.
-        //all expensive api clients are created in the background
-        digitsScribeClient = new DigitsScribeClient();
-        sandboxConfig = new SandboxConfig();
-
-        final HashSet<DigitsEventLogger> loggers = new HashSet<>();
-        loggers.add(DefaultAnswersLogger.instance);
-
-        digitsEventCollector = new DigitsEventCollector(digitsScribeClient,
-                FailFastEventDetailsChecker.instance, loggers);
+        this(DefaultStdOutLogger.instance, DefaultAnswersLogger.instance);
     }
 
+    public Digits(DigitsEventLogger externalLogger) {
+        this(DefaultStdOutLogger.instance, DefaultAnswersLogger.instance, externalLogger);
+    }
 
-    Digits(DigitsEventLogger externalLogger) {
+    protected Digits(DigitsEventLogger... loggers){
         super();
         //create api client wrappers only.
         //all expensive api clients are created in the background
         digitsScribeClient = new DigitsScribeClient();
         sandboxConfig = new SandboxConfig();
 
-        final HashSet<DigitsEventLogger> loggers = new HashSet<>();
-        loggers.add(DefaultAnswersLogger.instance);
-
-        if (externalLogger != null) {
-            loggers.add(externalLogger);
-        }
+        final HashSet<DigitsEventLogger> eventLoggers = new HashSet<>(Arrays.asList(loggers));
 
         digitsEventCollector = new DigitsEventCollector(digitsScribeClient,
-                FailFastEventDetailsChecker.instance, loggers);
+                FailFastEventDetailsChecker.instance, eventLoggers);
     }
 
     public static Digits getInstance() {

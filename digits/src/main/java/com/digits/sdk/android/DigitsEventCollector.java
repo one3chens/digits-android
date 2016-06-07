@@ -294,31 +294,6 @@ class DigitsEventCollector {
         digitsScribeClient.error(Component.EMAIL, exception);
     }
 
-    //Contacts upload screen events
-    public void contactScreenImpression() {
-        digitsScribeClient.impression(Component.CONTACTS);
-        for (DigitsEventLogger logger: eventLoggers) {
-            logger.contactsPermissionImpression();
-        }
-    }
-
-    public void backClickOnContactScreen() {
-        digitsScribeClient.click(Component.CONTACTS, Element.BACK);
-    }
-
-    public void cancelClickOnContactScreen() {
-        digitsScribeClient.click(Component.CONTACTS, Element.CANCEL);
-        for (DigitsEventLogger logger: eventLoggers) {
-            logger.contactsPermissionCancel();
-        }
-    }
-
-    public void submitClickOnContactScreen() {
-        digitsScribeClient.click(Component.CONTACTS, Element.SUBMIT);
-        for (DigitsEventLogger logger: eventLoggers) {
-            logger.contactsPermissionSubmit();
-        }
-    }
 
     //Failure screen events
     public void failureScreenImpression(DigitsEventDetails details) {
@@ -345,6 +320,122 @@ class DigitsEventCollector {
         digitsScribeClient.click(Component.FAILURE, Element.DISMISS);
         for (DigitsEventLogger logger: eventLoggers) {
             logger.failureDismissClick(details);
+        }
+    }
+
+    //Contacts upload  events
+    public void contactsPermissionImpression(ContactsPermissionForDigitsImpressionDetails details) {
+        failFastEventDetailsChecker.contactsPermissionForDigitsImpression(details);
+
+        digitsScribeClient.impression(Component.CONTACTS);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.contactsPermissionForDigitsImpression(details);
+        }
+    }
+
+    public void backClickOnContactScreen() {
+        digitsScribeClient.click(Component.CONTACTS, Element.BACK);
+    }
+
+    public void contactsPermissionDeferred(ContactsPermissionForDigitsDeferredDetails details) {
+        failFastEventDetailsChecker.contactsPermissionForDigitsDeferred(details);
+
+        digitsScribeClient.click(Component.CONTACTS, Element.CANCEL);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.contactsPermissionForDigitsDeferred(details);
+        }
+    }
+
+    public void contactsPermissionApproved(ContactsPermissionForDigitsApprovedDetails details) {
+        failFastEventDetailsChecker.contactsPermissionForDigitsApproved(details);
+
+        digitsScribeClient.click(Component.CONTACTS, Element.SUBMIT);
+        for (DigitsEventLogger logger: eventLoggers) {
+            logger.contactsPermissionForDigitsApproved(details);
+        }
+    }
+
+    //Contact upload events
+    public void startContactsUpload(ContactsUploadStartDetails details) {
+        failFastEventDetailsChecker.contactsUploadStart(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsUploadStart(details);
+        }
+    }
+
+    public void succeedContactsUpload(ContactsUploadSuccessDetails details) {
+        failFastEventDetailsChecker.contactsUploadSuccess(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsUploadSuccess(details);
+        }
+    }
+
+    public void failedContactsUpload(ContactsUploadFailureDetails details) {
+        failFastEventDetailsChecker.contactsUploadFailure(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsUploadFailure(details);
+        }
+    }
+
+    //Contacts found events
+    public void startFindMatches(ContactsLookupStartDetails details) {
+        failFastEventDetailsChecker.contactsLookupStart(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsLookupStart(details);
+        }
+    }
+
+    public void failedFindMatches(ContactsLookupFailureDetails details) {
+        failFastEventDetailsChecker.contactsLookupFailure(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsLookupFailure(details);
+        }
+    }
+
+    public void succeedFindMatches(ContactsLookupSuccessDetails details) {
+        failFastEventDetailsChecker.contactsLookupSuccess(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsLookupSuccess(details);
+        }
+    }
+
+    //Contacts deleted
+    public void startDeleteContacts(ContactsDeletionStartDetails details){
+        failFastEventDetailsChecker.contactsDeletionStart(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsDeletionStart(details);
+        }
+    }
+
+    public void succeedDeleteContacts(ContactsDeletionSuccessDetails details){
+        failFastEventDetailsChecker.contactsDeletionSuccess(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsDeletionSuccess(details);
+        }
+    }
+
+    public void failedDeleteContacts(ContactsDeletionFailureDetails details){
+        failFastEventDetailsChecker.contactsDeletionFailure(details);
+
+        //No scribing identified
+        for (DigitsEventLogger logger : eventLoggers) {
+            logger.contactsDeletionFailure(details);
         }
     }
 }

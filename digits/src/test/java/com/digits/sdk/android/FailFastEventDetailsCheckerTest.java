@@ -181,4 +181,16 @@ public class FailFastEventDetailsCheckerTest {
     public void testFailureDismissClick_completeDetailsObject() throws Exception {
         failFastEventDetailsChecker.failureDismissClick(detailsWithoutCountry);
     }
+
+    public void testContactsUploadSuccess_completeDetailsObject() throws Exception {
+        failFastEventDetailsChecker.contactsUploadSuccess(new ContactsUploadSuccessDetails(1, 1));
+    }
+
+    public void testContactsUploadFailure_completeDetailsObject() throws Exception {
+        failFastEventDetailsChecker.contactsUploadFailure(new ContactsUploadFailureDetails(1, 1));
+    }
+
+    public void testContactsLookupSuccess_completeDetailsObject() throws Exception {
+        failFastEventDetailsChecker.contactsLookupSuccess(new ContactsLookupSuccessDetails(1));
+    }
 }

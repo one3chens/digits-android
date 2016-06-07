@@ -179,7 +179,81 @@ class FailFastEventDetailsChecker extends DigitsEventLogger {
         );
     }
 
-    private void throwIncompleteDetailsExWhenFalse(boolean bool, DigitsEventDetails d) {
+    @Override
+    public void contactsUploadSuccess(ContactsUploadSuccessDetails details) {
+        throwIncompleteDetailsExWhenFalse(
+                details.totalContacts != null && details.successContacts != null,
+                details
+        );
+    }
+
+    @Override
+    public void contactsUploadFailure(ContactsUploadFailureDetails details) {
+        throwIncompleteDetailsExWhenFalse(
+                details.totalContacts != null && details.failedContacts != null,
+                details
+        );
+    }
+
+    @Override
+    public void contactsLookupSuccess(ContactsLookupSuccessDetails details) {
+        throwIncompleteDetailsExWhenFalse(
+                details.matchCount != null,
+                details
+        );
+    }
+
+    // EmptyDigitsDetails: These events have no parameters, and thus no input validation to be done
+
+    @Override
+    public void contactsPermissionForDigitsImpression(
+            ContactsPermissionForDigitsImpressionDetails details) {
+        // No input validations to be done here
+    }
+
+    @Override
+    public void contactsPermissionForDigitsApproved(
+            ContactsPermissionForDigitsApprovedDetails details) {
+        // No input validations to be done here
+    }
+
+    @Override
+    public void contactsPermissionForDigitsDeferred(
+            ContactsPermissionForDigitsDeferredDetails details) {
+        // No input validations to be done here
+    }
+
+    @Override
+    public void contactsUploadStart(ContactsUploadStartDetails details) {
+        // No input validations to be done here
+    }
+
+    @Override
+    public void contactsLookupStart(ContactsLookupStartDetails details) {
+        // No input validations to be done here
+    }
+
+    @Override
+    public void contactsLookupFailure(ContactsLookupFailureDetails details) {
+        // No input validations to be done here
+    }
+
+    @Override
+    public void contactsDeletionStart(ContactsDeletionStartDetails details) {
+        // No input validations to be done here
+    }
+
+    @Override
+    public void contactsDeletionSuccess(ContactsDeletionSuccessDetails details) {
+        // No input validations to be done here
+    }
+
+    @Override
+    public void contactsDeletionFailure(ContactsDeletionFailureDetails details) {
+        // No input validations to be done here
+    }
+
+    private <T> void throwIncompleteDetailsExWhenFalse(boolean bool, T d) {
         if (!bool) {
             throw new IllegalArgumentException(String.format(Locale.US,
                     "Incomplete DigitsEventDetails object %s", d.toString()));

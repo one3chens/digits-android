@@ -40,7 +40,8 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
     }
 
     public void init() {
-        digitsEventCollector.contactScreenImpression();
+        digitsEventCollector.contactsPermissionImpression(
+                new ContactsPermissionForDigitsImpressionDetails());
         setContentView();
         setUpViews();
     }
@@ -79,7 +80,8 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                digitsEventCollector.cancelClickOnContactScreen();
+                digitsEventCollector.contactsPermissionDeferred(
+                        new ContactsPermissionForDigitsDeferredDetails());
                 activity.finish();
             }
         });
@@ -89,7 +91,8 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                digitsEventCollector.submitClickOnContactScreen();
+                digitsEventCollector.contactsPermissionApproved(
+                        new ContactsPermissionForDigitsApprovedDetails());
                 controller.startUploadService(activity);
                 activity.finish();
             }

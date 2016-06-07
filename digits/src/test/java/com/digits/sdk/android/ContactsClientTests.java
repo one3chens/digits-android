@@ -44,6 +44,10 @@ public class ContactsClientTests {
     private ComponentName serviceComponent;
     private ContactsCallback callback;
 
+    ArgumentCaptor<ContactsClient.FoundContactsCallbackWrapper> callbackCaptor;
+
+    private DigitsEventCollector digitsEventCollector;
+
     final SandboxConfig sandboxConfig = new SandboxConfig();
     final Digits digits = mock(Digits.class);
     final DigitsUserAgent userAgent = new DigitsUserAgent("digitsVersion", "androidVersion",
@@ -58,7 +62,10 @@ public class ContactsClientTests {
         activityClassManagerFactory = new ActivityClassManagerFactory();
         context = mock(MockContext.class);
         callback = mock(ContactsCallback.class);
+
         prefManager = mock(ContactsPreferenceManager.class);
+        digitsEventCollector = mock(DigitsEventCollector.class);
+        callbackCaptor = ArgumentCaptor.forClass(ContactsClient.FoundContactsCallbackWrapper.class);
 
         intentArgumentCaptor = ArgumentCaptor.forClass(Intent.class);
         when(digits.getContext()).thenReturn(context);
@@ -70,7 +77,7 @@ public class ContactsClientTests {
         when(apiClientManager.getService()).thenReturn(sdkService);
 
         contactsClient = new ContactsClient(digits, apiClientManager, prefManager,
-                activityClassManagerFactory, sandboxConfig);
+                activityClassManagerFactory, sandboxConfig, digitsEventCollector);
 
         activityComponent = new ComponentName(context, ContactsActivity.class.getName());
         serviceComponent = new ComponentName(context, ContactsUploadService.class.getName());
@@ -85,6 +92,7 @@ public class ContactsClientTests {
         contactsClient.startContactsUpload();
 
         verify(contactsClient).startContactsUpload(R.style.Digits_default);
+        verify(digitsEventCollector).startContactsUpload(any(ContactsUploadStartDetails.class));
     }
 
     @Test
@@ -94,6 +102,7 @@ public class ContactsClientTests {
         contactsClient.startContactsUpload(R.style.Digits_default);
 
         verify(contactsClient).startContactsUpload(context, R.style.Digits_default);
+        verify(digitsEventCollector).startContactsUpload(any(ContactsUploadStartDetails.class));
     }
 
     @Test
@@ -109,6 +118,8 @@ public class ContactsClientTests {
                 capturedIntent.getIntExtra(ThemeUtils.THEME_RESOURCE_ID, 0));
         assertEquals(Intent.FLAG_ACTIVITY_NEW_TASK, capturedIntent.getFlags());
         verify(prefManager).hasContactImportPermissionGranted();
+        verify(digitsEventCollector, times(0)).startContactsUpload(
+                any(ContactsUploadStartDetails.class));
     }
 
     @Test
@@ -141,9 +152,15 @@ public class ContactsClientTests {
 
     @Test
     public void testDeleteAllContacts() {
+        final ArgumentCaptor<ContactsClient.DeleteContactsCallbackWrapper> deleteCaptor =
+                ArgumentCaptor.forClass(ContactsClient.DeleteContactsCallbackWrapper.class);
+
         contactsClient.deleteAllUploadedContacts(callback);
 
-        verify(sdkService).deleteAll(callback);
+        verify(sdkService).deleteAll(deleteCaptor.capture());
+        assertNotNull(deleteCaptor.getValue());
+
+        verify(digitsEventCollector).startDeleteContacts(any(ContactsDeletionStartDetails.class));
     }
 
     @Test
@@ -153,7 +170,9 @@ public class ContactsClientTests {
 
         contactsClient.lookupContactMatches(cursor, count, callback);
 
-        verify(sdkService).usersAndUploadedBy(cursor, count, callback);
+        verify(sdkService).usersAndUploadedBy(eq(cursor), eq(count), callbackCaptor.capture());
+        assertNotNull(callbackCaptor.getValue());
+        verify(digitsEventCollector).startFindMatches(any(ContactsLookupStartDetails.class));
     }
 
     @Test
@@ -163,7 +182,10 @@ public class ContactsClientTests {
 
         contactsClient.lookupContactMatches(cursor, count, callback);
 
-        verify(sdkService).usersAndUploadedBy(cursor, null, callback);
+        verify(sdkService).usersAndUploadedBy(eq(cursor), eq((Integer) null),
+                callbackCaptor.capture());
+        assertNotNull(callbackCaptor.getValue());
+        verify(digitsEventCollector).startFindMatches(any(ContactsLookupStartDetails.class));
     }
 
     @Test
@@ -173,7 +195,10 @@ public class ContactsClientTests {
 
         contactsClient.lookupContactMatches(cursor, count, callback);
 
-        verify(sdkService).usersAndUploadedBy(cursor, null, callback);
+        verify(sdkService).usersAndUploadedBy(eq(cursor), eq((Integer) null),
+                callbackCaptor.capture());
+        assertNotNull(callbackCaptor.getValue());
+        verify(digitsEventCollector).startFindMatches(any(ContactsLookupStartDetails.class));
     }
 
     @Test
@@ -182,7 +207,10 @@ public class ContactsClientTests {
 
         contactsClient.lookupContactMatches(cursor, null, callback);
 
-        verify(sdkService).usersAndUploadedBy(cursor, null, callback);
+        verify(sdkService).usersAndUploadedBy(eq(cursor), eq((Integer) null),
+                callbackCaptor.capture());
+        assertNotNull(callbackCaptor.getValue());
+        verify(digitsEventCollector).startFindMatches(any(ContactsLookupStartDetails.class));
     }
 
     @Test
