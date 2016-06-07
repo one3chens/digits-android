@@ -78,7 +78,7 @@ public interface ApiInterface {
         void deleteAll(Callback<Response> cb);
 
         @GET("/1.1/contacts/users_and_uploaded_by.json")
-        void usersAndUploadedBy(@Query("next_cursor") String nextCursor,
+        void usersAndUploadedBy(@Query("cursor") String cursor,
                                 @Query("count") Integer count, Callback<Contacts> cb);
     }
 

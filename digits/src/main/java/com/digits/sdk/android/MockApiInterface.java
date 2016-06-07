@@ -140,16 +140,16 @@ public class MockApiInterface implements ApiInterface {
     }
 
     @Override
-    public void usersAndUploadedBy(@Query("next_cursor") String nextCursor,
+    public void usersAndUploadedBy(@Query("cursor") String cursor,
                                    @Query("count") Integer count, Callback<Contacts> cb) {
         final Contacts data;
 
-        if (nextCursor == null) {
+        if (cursor == null) {
             // First page:
             data = getContactsPages().get("");
         } else {
             // Subsequent pages
-            data = getContactsPages().get(nextCursor);
+            data = getContactsPages().get(cursor);
         }
 
         final Response response = new Response("/1.1/contacts/users_and_uploaded_by.json", 200,
