@@ -33,16 +33,11 @@ import io.fabric.sdk.android.Fabric;
  * 2) Log to stdOut
  */
 public class AnswersLogger extends DigitsEventLogger {
-    private final Answers answers;
     private final String TAG = "AnswersLogger";
-
-    AnswersLogger(Answers answers) {
-        this.answers = answers;
-    }
 
     @Override
     public void loginBegin(DigitsEventDetails details) {
-        answers.logCustom(new CustomEvent("Login-Digits")
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
                 .putCustomAttribute("Action", "loginBegin")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -56,7 +51,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void phoneNumberImpression(DigitsEventDetails details) {
-        answers.logCustom(new CustomEvent("Login-Digits")
+        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
                 .putCustomAttribute("Action", "phoneNumberImpression")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -125,17 +120,17 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void failureImpression(DigitsEventDetails details) {
-        statAndPrintAll("failureImpression", details);
+        statAndPrintLanguageAndElapsedTime("failureImpression", details);
     }
 
     @Override
     public void failureRetryClick(DigitsEventDetails details) {
-        statAndPrintAll("failureRetryClick", details);
+        statAndPrintLanguageAndElapsedTime("failureRetryClick", details);
     }
 
     @Override
     public void failureDismissClick(DigitsEventDetails details) {
-        statAndPrintAll("failureDismissClick", details);
+        statAndPrintLanguageAndElapsedTime("failureDismissClick", details);
     }
 
     @Override
@@ -145,14 +140,24 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void loginFailure(DigitsEventDetails details) {
-        statAndPrintAll("loginFailure", details);
+        statAndPrintLanguageAndElapsedTime("loginFailure", details);
     }
 
     private void statAndPrintAll(String event, DigitsEventDetails details) {
-        answers.logCustom(new CustomEvent(event)
+        Answers.getInstance().logCustom(new CustomEvent(event)
                 .putCustomAttribute("Action", String.format("%s event received", event))
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
+                .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
+
+        Fabric.getLogger().d(TAG, String.format(Locale.US, "%s event received", event));
+        Fabric.getLogger().d(TAG, details.toString());
+    }
+
+    private void statAndPrintLanguageAndElapsedTime(String event, DigitsEventDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent(event)
+                .putCustomAttribute("Action", String.format("%s event received", event))
+                .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
 
         Fabric.getLogger().d(TAG, String.format(Locale.US, "%s event received", event));

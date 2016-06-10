@@ -102,8 +102,6 @@ public class DigitsMainActivity extends Activity {
 
         digitsAuthButton = (Button) findViewById(R.id.signup_button);
 
-        final DigitsEventLogger digitsEventLogger = new AnswersLogger(answers);
-
         digitsAuthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,8 +110,7 @@ public class DigitsMainActivity extends Activity {
                         .withAuthCallBack(callback)
                         .withPhoneNumber("")
                         .withEmailCollection()
-                        .withThemeResId(R.style.LightTheme)
-                        .withEventLogger(digitsEventLogger);
+                        .withThemeResId(R.style.LightTheme);
 
                 Digits.authenticate(digitsAuthConfigBuilder.build());
             }

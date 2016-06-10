@@ -27,13 +27,11 @@ import static org.mockito.Mockito.mock;
 public class DigitsAuthConfigTests {
     private AuthCallback callback;
     private ConfirmationCodeCallback confirmationCodeCallback;
-    private DigitsEventLogger digitsEventLogger;
 
     @Before
     public void setUp() throws Exception {
         callback = mock(AuthCallback.class);
         confirmationCodeCallback = mock(ConfirmationCodeCallback.class);
-        digitsEventLogger = mock(DigitsEventLogger.class);
     }
 
     @Test
@@ -92,7 +90,6 @@ public class DigitsAuthConfigTests {
                 .withAuthCallBack(callback)
                 .withCustomPhoneNumberScreen(confirmationCodeCallback)
                 .withPartnerKey(TestConstants.PARTNER_KEY)
-                .withEventLogger(digitsEventLogger)
                 .withEmailCollection();
 
         final DigitsAuthConfig digitsAuthConfig = digitsAuthConfigBuilder.build();
@@ -100,7 +97,6 @@ public class DigitsAuthConfigTests {
         assertEquals(TestConstants.THEME_ID, digitsAuthConfig.themeResId);
         assertEquals(TestConstants.PHONE, digitsAuthConfig.phoneNumber);
         assertEquals(callback, digitsAuthConfig.authCallback);
-        assertEquals(digitsEventLogger, digitsAuthConfig.digitsEventLogger);
     }
 
     @Test
@@ -125,7 +121,6 @@ public class DigitsAuthConfigTests {
                 .withThemeResId(TestConstants.THEME_ID)
                 .withPartnerKey(TestConstants.PARTNER_KEY)
                 .withCustomPhoneNumberScreen(confirmationCodeCallback)
-                .withEventLogger(digitsEventLogger)
                 .withAuthCallBack(callback)
                 .withEmailCollection();
 
@@ -139,6 +134,5 @@ public class DigitsAuthConfigTests {
         assertEquals(digitsAuthConfigBuilder.themeResId, digitsAuthConfigBuilder1.themeResId);
         assertEquals(digitsAuthConfigBuilder.partnerKey, TestConstants.PARTNER_KEY);
         assertEquals(digitsAuthConfigBuilder.confirmationCodeCallback, confirmationCodeCallback);
-        assertEquals(digitsAuthConfigBuilder.digitsEventLogger, digitsEventLogger);
     }
 }

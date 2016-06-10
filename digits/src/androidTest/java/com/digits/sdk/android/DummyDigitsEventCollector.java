@@ -16,11 +16,14 @@
  */
 package com.digits.sdk.android;
 
+import java.util.Set;
+
 //Required since Mockito otherwise throws
 //cannot proxy inaccessible class class com.digits.sdk.android.DigitsEventCollector
 public class DummyDigitsEventCollector extends DigitsEventCollector{
     public DummyDigitsEventCollector(DigitsScribeClient digitsScribeClient,
-                                     FailFastEventDetailsChecker failFastEventDetailsChecker) {
-        super(digitsScribeClient, failFastEventDetailsChecker);
+                                     FailFastEventDetailsChecker failFastEventDetailsChecker,
+                                     Set<DigitsEventLogger> loggers) {
+        super(digitsScribeClient, failFastEventDetailsChecker, loggers);
     }
 }

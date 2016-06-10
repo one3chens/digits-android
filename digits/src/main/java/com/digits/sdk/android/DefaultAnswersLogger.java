@@ -41,6 +41,7 @@ import io.fabric.sdk.android.Fabric;
  * Fabric initialization.
  */
 class DefaultAnswersLogger extends DigitsEventLogger {
+    final static DefaultAnswersLogger instance;
     final static String TAG = "DefaultAnswersLogger";
     final static String ANSWERS_CLASS_NAME = "com.crashlytics.android.answers.Answers";
     final static String ANSWERS_EVENT_CLASS_NAME = "com.crashlytics.android.answers.AnswersEvent";
@@ -65,6 +66,8 @@ class DefaultAnswersLogger extends DigitsEventLogger {
     static final Constructor customEventConstructor;
 
     static{
+        instance = new DefaultAnswersLogger();
+
         answersVersion = getAnswersVersion();
 
         //Class: Answers
@@ -91,7 +94,7 @@ class DefaultAnswersLogger extends DigitsEventLogger {
         customEventConstructor = getConstructor(customEventClass, String.class);
     }
 
-    DefaultAnswersLogger() {
+    private DefaultAnswersLogger() {
         if (answersClass == null) {
             Log.d(TAG, "Install the Fabric Answers Kit to get Digits Metrics." +
                     "See: https://fabric.io/kits/android/answers");

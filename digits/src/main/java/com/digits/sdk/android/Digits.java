@@ -30,6 +30,7 @@ import com.twitter.sdk.android.core.internal.SessionMonitor;
 import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -62,18 +63,39 @@ public class Digits extends Kit<Void> {
     private ActivityClassManager activityClassManager;
     private DefaultScribeClient twitterScribeClient;
     private DigitsSessionVerifier digitsSessionVerifier;
-    private DefaultAnswersLogger defaultAnswersLogger;
     private int themeResId;
 
     public Digits() {
         super();
         //create api client wrappers only.
         //all expensive api clients are created in the background
-        defaultAnswersLogger = new DefaultAnswersLogger();
         digitsScribeClient = new DigitsScribeClient();
+        sandboxConfig = new SandboxConfig();
+
+        final HashSet<DigitsEventLogger> loggers = new HashSet<>();
+        loggers.add(DefaultAnswersLogger.instance);
+
         digitsEventCollector = new DigitsEventCollector(digitsScribeClient,
-                FailFastEventDetailsChecker.instance, defaultAnswersLogger);
-        this.sandboxConfig = new SandboxConfig();
+                FailFastEventDetailsChecker.instance, loggers);
+    }
+
+
+    Digits(DigitsEventLogger externalLogger) {
+        super();
+        //create api client wrappers only.
+        //all expensive api clients are created in the background
+        digitsScribeClient = new DigitsScribeClient();
+        sandboxConfig = new SandboxConfig();
+
+        final HashSet<DigitsEventLogger> loggers = new HashSet<>();
+        loggers.add(DefaultAnswersLogger.instance);
+
+        if (externalLogger != null) {
+            loggers.add(externalLogger);
+        }
+
+        digitsEventCollector = new DigitsEventCollector(digitsScribeClient,
+                FailFastEventDetailsChecker.instance, loggers);
     }
 
     public static Digits getInstance() {
@@ -164,7 +186,6 @@ public class Digits extends Kit<Void> {
     @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(DigitsAuthConfig digitsAuthConfig) {
         getInstance().setTheme(digitsAuthConfig.themeResId);
-        getInstance().setExternalLogger(digitsAuthConfig.digitsEventLogger);
         getInstance().getDigitsClient().startSignUp(digitsAuthConfig);
     }
 
@@ -382,9 +403,29 @@ public class Digits extends Kit<Void> {
         return TwitterCore.getInstance().getAuthConfig();
     }
 
-    private void setExternalLogger(DigitsEventLogger externalEventLogger) {
-        if (externalEventLogger != null) {
-            digitsEventCollector.addDigitsEventLogger(externalEventLogger);
+    public static class Builder {
+        DigitsEventLogger digitsEventLogger;
+
+        public Builder() {
+        }
+
+        /**
+         * Set digitsEventLogger to receive synchronous callbacks on Digits events.
+         * @param digitsEventLogger {@link DigitsEventLogger} to receive synchronous notifications from Digits when user complete various stages of
+         *                         login/friend-finder. Apps may create their own logger by implementing {@link DigitsEventLogger} or can use the default loggers
+         *                         provided in our online documentation.
+         */
+
+        public Builder withDigitsEventLogger(DigitsEventLogger digitsEventLogger) {
+            this.digitsEventLogger = digitsEventLogger;
+            return this;
+        }
+
+        /**
+         * @return Digits object constructed using the builder
+         */
+        public Digits build() {
+            return new Digits(digitsEventLogger);
         }
     }
 }

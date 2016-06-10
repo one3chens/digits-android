@@ -71,8 +71,7 @@ public class CustomPhoneNumberActivity extends Activity {
                         .withEmailCollection()
                         .withCustomPhoneNumberScreen(confirmationCodeCallback)
                         .withPartnerKey(BuildConfig.PARTNER_KEY)
-                        .withThemeResId(R.style.LightTheme)
-                        .withEventLogger(new AnswersLogger(answers));
+                        .withThemeResId(R.style.LightTheme);
 
                 Digits.authenticate(digitsAuthConfigBuilder.build());
             }

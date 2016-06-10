@@ -20,7 +20,6 @@ package com.digits.sdk.android;
 import com.digits.sdk.android.DigitsScribeConstants.Component;
 import com.digits.sdk.android.DigitsScribeConstants.Element;
 
-import java.util.HashSet;
 import java.util.Set;
 
 class DigitsEventCollector {
@@ -30,7 +29,7 @@ class DigitsEventCollector {
 
     DigitsEventCollector(DigitsScribeClient digitsScribeClient,
                          FailFastEventDetailsChecker failFastEventDetailsChecker,
-                         DigitsEventLogger... loggers){
+                         Set<DigitsEventLogger> loggers){
 
         if (digitsScribeClient == null) {
             throw new IllegalArgumentException("digits scribe client must not be null");
@@ -40,18 +39,13 @@ class DigitsEventCollector {
             throw new IllegalArgumentException("failFastEventDetailsChecker must not be null");
         }
 
+        if (loggers == null) {
+            throw new IllegalArgumentException("loggers must not be null");
+        }
+
         this.digitsScribeClient = digitsScribeClient;
         this.failFastEventDetailsChecker = failFastEventDetailsChecker;
-
-        eventLoggers = new HashSet<>();
-
-        for (DigitsEventLogger logger: loggers) {
-            eventLoggers.add(logger);
-        }
-    }
-
-    void addDigitsEventLogger(DigitsEventLogger eventLogger){
-        this.eventLoggers.add(eventLogger);
+        this.eventLoggers = loggers;
     }
 
     //Auth/External API events

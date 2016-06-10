@@ -26,6 +26,7 @@ import io.fabric.sdk.android.DefaultLogger;
 import io.fabric.sdk.android.Fabric;
 
 import com.digits.sdk.android.Digits;
+import com.example.app.digits.AnswersLogger;
 import com.squareup.leakcanary.LeakCanary;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -52,8 +53,12 @@ public class SampleApplication extends Application {
         final TwitterAuthConfig authConfig = new TwitterAuthConfig(BuildConfig.CONSUMER_KEY,
                 BuildConfig.CONSUMER_SECRET);
 
+        final Digits digits = new Digits.Builder()
+                .withDigitsEventLogger(new AnswersLogger())
+                .build();
+
         final Fabric fabric = new Fabric.Builder(this)
-                .kits(new Digits(), new Answers(), new TwitterCore(authConfig))
+                .kits(digits, new Answers(), new TwitterCore(authConfig))
                 .logger(new DefaultLogger(Log.DEBUG))
                 .debuggable(true)
                 .build();
