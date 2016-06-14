@@ -93,6 +93,7 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
             public void onClick(View view) {
                 digitsEventCollector.contactsPermissionApproved(
                         new ContactsPermissionForDigitsApprovedDetails());
+                activity.setResult(ContactsActivity.RESULT_OK);
                 controller.startUploadService(activity);
                 activity.finish();
             }

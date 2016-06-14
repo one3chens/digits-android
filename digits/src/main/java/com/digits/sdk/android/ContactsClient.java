@@ -17,6 +17,7 @@
 
 package com.digits.sdk.android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import com.twitter.sdk.android.core.Callback;
@@ -65,19 +66,29 @@ public class ContactsClient {
     }
 
     /**
-     * First checks if user previously gave permission to upload contacts. If not, shows
-     * dialog requesting permission to upload users contacts. If permission granted start
-     * background service to upload contacts. Otherwise, do nothing.
+     * Like {@link #startContactsUpload}, but enables theming.
      *
      * @param themeResId Resource id of theme
      */
     public void startContactsUpload(int themeResId) {
-        digitsEventCollector.startContactsUpload(new ContactsUploadStartDetails());
+        startContactsUpload(themeResId, null);
+    }
 
+    /**
+     * Like {@link #startContactsUpload(int themeResId)}, but defines request code passed to
+     * {@link android.app.Activity#startActivityForResult(android.content.Intent, int)}.
+     *
+     * @param themeResId Resource id of theme
+     * @param requestCode Request code
+     */
+    public void startContactsUpload(int themeResId, Integer requestCode) {
+        digitsEventCollector.startContactsUpload(new ContactsUploadStartDetails());
         if (sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)) {
             sandboxedContactUpload(themeResId);
+        } else if (hasUserGrantedPermission()) {
+            startContactsService(digits.getContext());
         } else {
-            startContactsUpload(digits.getContext(), themeResId);
+            startContactsActivity(digits.getContext(), themeResId, requestCode);
         }
     }
 
@@ -97,24 +108,24 @@ public class ContactsClient {
         digits.getContext().sendBroadcast(intent);
     }
 
-    protected void startContactsUpload(Context context, int themeResId) {
-        if (!hasUserGrantedPermission()) {
-            startContactsActivity(context, themeResId);
+    protected void startContactsActivity(Context context, int themeResId, Integer requestCode) {
+        final ActivityClassManager activityClassManager =
+                activityClassManagerFactory.createActivityClassManager(context, themeResId);
+        final Activity activity = digits.getFabric().getCurrentActivity();
+        final boolean isActivityDefined = activity != null && !activity.isFinishing();
+        final Intent intent = new Intent(context, activityClassManager.getContactsActivity());
+        intent.putExtra(ThemeUtils.THEME_RESOURCE_ID, themeResId);
+        final int flags = isActivityDefined // start new task if current activity has finished
+                ? 0 : (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(flags);
+        if (isActivityDefined && requestCode != null) {
+            activity.startActivityForResult(intent, requestCode);
         } else {
-            startContactsService(context);
+            context.startActivity(intent);
         }
     }
 
-    private void startContactsActivity(Context context, int themeResId) {
-        final ActivityClassManager activityClassManager =
-                activityClassManagerFactory.createActivityClassManager(context, themeResId);
-        final Intent intent = new Intent(context, activityClassManager.getContactsActivity());
-        intent.putExtra(ThemeUtils.THEME_RESOURCE_ID, themeResId);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-    private void startContactsService(Context context) {
+    protected void startContactsService(Context context) {
         context.startService(new Intent(context, ContactsUploadService.class));
     }
 

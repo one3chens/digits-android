@@ -20,6 +20,7 @@ package com.digits.sdk.android;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.Editable;
 
 import com.twitter.sdk.android.core.Result;
@@ -346,6 +347,24 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final DigitsEventDetails digitsEventDetails = digitsEventDetailsArgumentCaptor.getValue();
         assertNotNull(digitsEventDetails.country);
         assertNotNull(digitsEventDetails.elapsedTimeInMillis);
+    }
+
+    public void testSendFailure() throws Exception {
+        when(countrySpinner.getTag()).thenReturn(COUNTRY_INFO);
+        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance()
+                .newEditable(PHONE));
+        final ArgumentCaptor<Bundle> captor = ArgumentCaptor.forClass(Bundle.class);
+
+        controller.sendFailure(PhoneNumberActivityDelegate.CANCELLATION_EXCEPTION_MESSAGE);
+
+        verify(resultReceiver).send(eq(LoginResultReceiver.RESULT_ERROR), captor.capture());
+        final Bundle bundle = captor.getValue();
+        assertEquals(PhoneNumberActivityDelegate.CANCELLATION_EXCEPTION_MESSAGE,
+                bundle.getString(LoginResultReceiver.KEY_ERROR));
+        final DigitsEventDetailsBuilder builder = bundle.getParcelable(
+                DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
+        assertNotNull(builder);
+        assertEquals(COUNTRY, builder.country);
     }
 
     private AuthConfig createAuthConfig(boolean tosUpdate, boolean isVoiceEnabled,

@@ -35,7 +35,7 @@ public class ContactsActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         delegate.onBackPressed();
+        super.onBackPressed();
     }
 }

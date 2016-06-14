@@ -164,6 +164,18 @@ public class PhoneNumberActivityDelegateTests extends
         verifyNoInteractions(controller);
     }
 
+    public void testOnBackPressed() throws Exception {
+        final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
+        delegate.controller = controller;
+
+        delegate.onBackPressed();
+
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(controller).sendFailure(captor.capture());
+        assertEquals(PhoneNumberActivityDelegate.CANCELLATION_EXCEPTION_MESSAGE,
+                captor.getValue());
+    }
+
     public class DummyPhoneNumberActivityDelegate extends PhoneNumberActivityDelegate {
 
         public DummyPhoneNumberActivityDelegate(DigitsEventCollector digitsEventCollector) {

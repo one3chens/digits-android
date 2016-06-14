@@ -23,8 +23,15 @@ package com.digits.sdk.android;
  */
 
 public class PhoneNumberActivity extends DigitsActivity {
+
     @Override
     DigitsActivityDelegate getActivityDelegate() {
         return new PhoneNumberActivityDelegate(Digits.getInstance().getDigitsEventCollector());
+    }
+
+    @Override
+    public void onBackPressed() {
+        ((PhoneNumberActivityDelegate) delegate).onBackPressed();
+        super.onBackPressed();
     }
 }

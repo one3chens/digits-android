@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.widget.EditText;
@@ -231,5 +232,16 @@ class PhoneNumberController extends DigitsControllerImpl {
             sendButton.showStart();
             tosView.setText(R.string.dgts__terms_text);
         }
+    }
+
+    protected void sendFailure(String message) {
+        final Bundle bundle = new Bundle();
+        bundle.putString(LoginResultReceiver.KEY_ERROR, message);
+        final PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(getNumber(
+            ((CountryInfo) countryCodeSpinner.getTag()).countryCode,
+            editText.getText().toString()));
+        bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder
+                .withCountry(phoneNumber.getCountryIso()));
+        resultReceiver.send(LoginResultReceiver.RESULT_ERROR, bundle);
     }
 }

@@ -28,6 +28,8 @@ import android.widget.TextView;
 import io.fabric.sdk.android.services.common.CommonUtils;
 
 class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements TosView {
+    protected final static String CANCELLATION_EXCEPTION_MESSAGE =
+            "Authentication canceled by user";
     private final DigitsEventCollector digitsEventCollector;
     private Activity activity;
 
@@ -133,5 +135,9 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements 
     @Override
     public void setText(int resourceId) {
         termsTextView.setText(tosFormatHelper.getFormattedTerms(resourceId));
+    }
+
+    protected void onBackPressed() {
+        controller.sendFailure(CANCELLATION_EXCEPTION_MESSAGE);
     }
 }

@@ -43,8 +43,8 @@ import static org.mockito.Mockito.when;
 
 public abstract class DigitsControllerTests<T extends DigitsControllerImpl> extends
         DigitsAndroidTestCase {
-    static final CountryInfo COUNTRY_INFO = new CountryInfo(new Locale("", "US"), 123);
     static final String COUNTRY = "US";
+    static final CountryInfo COUNTRY_INFO = new CountryInfo(new Locale("", COUNTRY), 123);
     static final String PHONE = "123456789";
     static final String PHONE_WITH_COUNTRY_CODE = "+" + COUNTRY_INFO.countryCode + "123456789";
     static final String CODE = "123456";

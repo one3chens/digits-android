@@ -33,7 +33,6 @@ import com.crashlytics.android.answers.Answers;
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsAuthConfig;
-import com.digits.sdk.android.DigitsEventLogger;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
 import com.digits.sdk.android.MockApiInterface;
@@ -55,6 +54,7 @@ public class DigitsMainActivity extends Activity {
     private Button customPhoneLoginButton;
     private SessionListener sessionListener;
     private Answers answers;
+
     public static final int CUSTOM_LOGIN_REQUEST = 1;
     public static final int CONTACT_UPLOAD_REQUEST = 2;
     public static final int FIND_FRIENDS_REQUEST = 3;
@@ -156,7 +156,8 @@ public class DigitsMainActivity extends Activity {
         findFriendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Digits.getInstance().getContactsClient().startContactsUpload();
+                Digits.getInstance().getContactsClient().startContactsUpload(
+                        com.digits.sdk.android.R.style.Digits_default, CONTACT_UPLOAD_REQUEST);
             }
         });
 
@@ -224,12 +225,18 @@ public class DigitsMainActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CUSTOM_LOGIN_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(DigitsMainActivity.this,
-                        "Login Succeeded",
-                        Toast.LENGTH_LONG).show();
-            }
+        if (requestCode == CUSTOM_LOGIN_REQUEST && resultCode == RESULT_OK) {
+            Toast.makeText(DigitsMainActivity.this,
+                    "Custom login succeeded",
+                    Toast.LENGTH_LONG).show();
+        } else if (requestCode == CONTACT_UPLOAD_REQUEST && resultCode == RESULT_CANCELED) {
+            Toast.makeText(DigitsMainActivity.this,
+                    "Contacts permission declined",
+                    Toast.LENGTH_LONG).show();
+        } else if (requestCode == CONTACT_UPLOAD_REQUEST && resultCode == RESULT_OK) {
+            Toast.makeText(DigitsMainActivity.this,
+                    "Contacts permission granted",
+                    Toast.LENGTH_LONG).show();
         }
     }
 

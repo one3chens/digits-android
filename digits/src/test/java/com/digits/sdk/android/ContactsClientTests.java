@@ -17,6 +17,7 @@
 
 package com.digits.sdk.android;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.test.mock.MockContext;
@@ -30,12 +31,16 @@ import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 
+import io.fabric.sdk.android.Fabric;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class ContactsClientTests {
+    final Digits digits = mock(Digits.class);
+    final int requestCode = 1;
     private MockContext context;
     private ContactsClient contactsClient;
     private DigitsApiClientManager apiClientManager;
@@ -43,34 +48,34 @@ public class ContactsClientTests {
     private ComponentName activityComponent;
     private ComponentName serviceComponent;
     private ContactsCallback callback;
-
-    ArgumentCaptor<ContactsClient.FoundContactsCallbackWrapper> callbackCaptor;
-
+    private ArgumentCaptor<ContactsClient.FoundContactsCallbackWrapper> callbackCaptor;
     private DigitsEventCollector digitsEventCollector;
-
-    final SandboxConfig sandboxConfig = new SandboxConfig();
-    final Digits digits = mock(Digits.class);
-    final DigitsUserAgent userAgent = new DigitsUserAgent("digitsVersion", "androidVersion",
-            "appName");
+    private Fabric fabric;
+    private Activity activity;
+    private SandboxConfig sandboxConfig;
     private ContactsPreferenceManager prefManager;
     private ActivityClassManagerFactory activityClassManagerFactory;
-
-    ArgumentCaptor<Intent> intentArgumentCaptor;
+    private ArgumentCaptor<Intent> intentArgumentCaptor;
 
     @Before
     public void setUp() throws Exception {
         activityClassManagerFactory = new ActivityClassManagerFactory();
         context = mock(MockContext.class);
         callback = mock(ContactsCallback.class);
-
         prefManager = mock(ContactsPreferenceManager.class);
         digitsEventCollector = mock(DigitsEventCollector.class);
         callbackCaptor = ArgumentCaptor.forClass(ContactsClient.FoundContactsCallbackWrapper.class);
-
+        fabric = mock(Fabric.class);
+        activity = mock(Activity.class);
         intentArgumentCaptor = ArgumentCaptor.forClass(Intent.class);
+        sandboxConfig = mock(SandboxConfig.class);
         when(digits.getContext()).thenReturn(context);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(digits.getActivityClassManager()).thenReturn(new ActivityClassManagerImp());
+        when(digits.getFabric()).thenReturn(fabric);
+        when(fabric.getCurrentActivity()).thenReturn(activity);
+        when(activity.isFinishing()).thenReturn(false);
+        when(sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)).thenReturn(false);
 
         sdkService = mock(ApiInterface.class);
         apiClientManager = mock(DigitsApiClientManager.class);
@@ -81,7 +86,6 @@ public class ContactsClientTests {
 
         activityComponent = new ComponentName(context, ContactsActivity.class.getName());
         serviceComponent = new ComponentName(context, ContactsUploadService.class.getName());
-
     }
 
 
@@ -96,44 +100,101 @@ public class ContactsClientTests {
     }
 
     @Test
-    public void testStartContactsUpload_oneParam() {
+    public void testStartContactsUpload_theme() {
         contactsClient = spy(contactsClient);
 
         contactsClient.startContactsUpload(R.style.Digits_default);
 
-        verify(contactsClient).startContactsUpload(context, R.style.Digits_default);
         verify(digitsEventCollector).startContactsUpload(any(ContactsUploadStartDetails.class));
+        verify(contactsClient).startContactsUpload(R.style.Digits_default, null);
+    }
+
+    @Test
+    public void testStartContactsUpload_themeAndRequestCode() {
+        contactsClient = spy(contactsClient);
+
+        contactsClient.startContactsUpload(R.style.Digits_default, requestCode);
+
+        verify(contactsClient).startContactsUpload(R.style.Digits_default, requestCode);
+    }
+
+    @Test
+    public void testStartContactsUpload_sandbox() {
+        when(sandboxConfig.isMode(SandboxConfig.Mode.DEFAULT)).thenReturn(true);
+        contactsClient = spy(contactsClient);
+
+        contactsClient.startContactsUpload(R.style.Digits_default, null);
+
+        verify(contactsClient).sandboxedContactUpload(R.style.Digits_default);
+    }
+
+    @Test
+    public void testStartContactsUpload_uploadPermissionGranted() {
+        when(prefManager.hasContactImportPermissionGranted()).thenReturn(true);
+        contactsClient = spy(contactsClient);
+
+        contactsClient.startContactsUpload(R.style.Digits_default, null);
+
+        verify(contactsClient).startContactsService(context);
+        verify(prefManager).hasContactImportPermissionGranted();
     }
 
     @Test
     public void testStartContactsUpload_uploadPermissionNotGranted() {
         when(prefManager.hasContactImportPermissionGranted()).thenReturn(false);
+        contactsClient = spy(contactsClient);
 
-        contactsClient.startContactsUpload(context, R.style.Digits_default);
+        contactsClient.startContactsUpload(R.style.Digits_default, null);
+
+        verify(contactsClient).startContactsActivity(context, R.style.Digits_default, null);
+        verify(prefManager).hasContactImportPermissionGranted();
+    }
+
+    @Test
+    public void testStartContactsActivity_withoutActivity() {
+        when(activity.isFinishing()).thenReturn(true);
+
+        contactsClient = spy(contactsClient);
+
+        contactsClient.startContactsActivity(context, R.style.Digits_default, requestCode);
 
         verify(context).startActivity(intentArgumentCaptor.capture());
         final Intent capturedIntent = intentArgumentCaptor.getValue();
         assertEquals(activityComponent, capturedIntent.getComponent());
         assertEquals(R.style.Digits_default,
                 capturedIntent.getIntExtra(ThemeUtils.THEME_RESOURCE_ID, 0));
-        assertEquals(Intent.FLAG_ACTIVITY_NEW_TASK, capturedIntent.getFlags());
-        verify(prefManager).hasContactImportPermissionGranted();
+        assertEquals(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP,
+                capturedIntent.getFlags());
         verify(digitsEventCollector, times(0)).startContactsUpload(
                 any(ContactsUploadStartDetails.class));
     }
 
     @Test
-    public void testStartContactsUpload_uploadPermissionGranted() {
-        when(prefManager.hasContactImportPermissionGranted()).thenReturn(true);
+    public void testStartContactsActivity_withActivityWithoutRequestCode() {
+        contactsClient = spy(contactsClient);
 
-        contactsClient.startContactsUpload(context, R.style.Digits_default);
+        contactsClient.startContactsActivity(context, R.style.Digits_default, null);
 
-        //verify start service is called, passing an ArgumentCaptor to get the intent and check
-        // if it's correctly build
-        verify(context).startService(intentArgumentCaptor.capture());
+        verify(context).startActivity(intentArgumentCaptor.capture());
         final Intent capturedIntent = intentArgumentCaptor.getValue();
-        assertEquals(serviceComponent, capturedIntent.getComponent());
-        verify(prefManager).hasContactImportPermissionGranted();
+        assertEquals(activityComponent, capturedIntent.getComponent());
+        assertEquals(R.style.Digits_default,
+                capturedIntent.getIntExtra(ThemeUtils.THEME_RESOURCE_ID, 0));
+        assertEquals(0, capturedIntent.getFlags());
+    }
+
+    @Test
+    public void testStartContactsActivity_withActivityAndResultCode() {
+        contactsClient = spy(contactsClient);
+
+        contactsClient.startContactsActivity(context, R.style.Digits_default, requestCode);
+
+        verify(activity).startActivityForResult(intentArgumentCaptor.capture(), eq(requestCode));
+        final Intent capturedIntent = intentArgumentCaptor.getValue();
+        assertEquals(activityComponent, capturedIntent.getComponent());
+        assertEquals(R.style.Digits_default,
+                capturedIntent.getIntExtra(ThemeUtils.THEME_RESOURCE_ID, 0));
+        assertEquals(0, capturedIntent.getFlags());
     }
 
     @Test
