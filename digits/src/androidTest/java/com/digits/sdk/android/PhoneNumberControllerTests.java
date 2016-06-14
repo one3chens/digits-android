@@ -43,6 +43,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     private TosView tosView;
     private ArgumentCaptor<Runnable> runnableCaptor;
     private Intent intent;
+    private PhoneNumber normalizedPhoneNumber = new PhoneNumber("1234567898", "US", "1");
 
     @Override
     public void setUp() throws Exception {
@@ -90,7 +91,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
     public void testCreateCompositeCallback_success() {
         final LoginOrSignupComposer loginOrSignupComposer =
-                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE,
+                        normalizedPhoneNumber);
         loginOrSignupComposer.success(intent);
 
         verify(sendButton).showFinish();
@@ -110,14 +112,16 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         controller.voiceEnabled = true;
         controller.resend();
         final LoginOrSignupComposer loginOrSignupComposer =
-                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE,
+                        normalizedPhoneNumber);
         assertEquals(Verification.voicecall, loginOrSignupComposer.verificationType);
     }
 
     public void testExecuteRequest_resendWithVoiceVerificationDisabled() throws Exception {
         controller.resend();
         final LoginOrSignupComposer loginOrSignupComposer =
-                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE,
+                        normalizedPhoneNumber);
 
         assertEquals(Verification.sms, loginOrSignupComposer.verificationType);
     }
@@ -152,7 +156,6 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
         final DigitsEventDetailsBuilder details = intent.getExtras()
                 .getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
-        assertNotNull(details.country);
         assertNotNull(details.language);
         assertNotNull(details.authStartTime);
 
@@ -303,7 +306,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     public void testCreateCompositeCallback_operatorUnsupportedWithVoiceEnabled() throws Exception {
         assertFalse(controller.voiceEnabled);
         final LoginOrSignupComposer loginOrSignupComposer =
-                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE,
+                        normalizedPhoneNumber);
         loginOrSignupComposer.failure(new OperatorUnsupportedException(ERROR_MESSAGE, 1,
                 createAuthConfig(true, true, true)));
 
@@ -325,13 +329,16 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
     public void testCreateCompositeCallback_otherFailure() {
         final LoginOrSignupComposer loginOrSignupComposer =
-                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE);
+                controller.createCompositeCallback(context, PHONE_WITH_COUNTRY_CODE,
+                        normalizedPhoneNumber);
         loginOrSignupComposer.failure(new DigitsException(ERROR_MESSAGE, 1, null));
         verify(phoneEditText).setError(ERROR_MESSAGE);
         verify(sendButton).showError();
     }
 
     public void testRetryScribing() throws Exception {
+        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
+                (PHONE));
         controller.errorCount = 1;
         controller.executeRequest(context);
         verify(digitsEventCollector)

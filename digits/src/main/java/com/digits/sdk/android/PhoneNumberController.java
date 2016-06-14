@@ -83,9 +83,21 @@ class PhoneNumberController extends DigitsControllerImpl {
         }
     }
 
-    LoginOrSignupComposer createCompositeCallback(final Context context, final String phoneNumber) {
+    /**
+     * The normalizedPhoneNumber is passed in as an additional param instead of replacing the
+     * phoneNumber param intentionally because of 2 related reasons:
+     1) The normalization was previously only used to interpret the defaultPhoneNumber passed by the
+        app into the auth flow and is not tested well enough to be a source of truth for the auth
+        flow. It is computed using complicated string prefix matching logic.
+        See: {@link PhoneNumberUtils#getPhoneNumber}
+     2) We would have to re-extract a string representation of the phoneNumber to be used with our
+        backend api.
+     */
+    LoginOrSignupComposer createCompositeCallback(final Context context,
+                                                  final String phoneNumber,
+                                                  final PhoneNumber normalizedPhoneNumber) {
         final DigitsEventDetailsBuilder dm = eventDetailsBuilder
-                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
+                .withCountry(normalizedPhoneNumber.getCountryIso())
                 .withCurrentTime(System.currentTimeMillis());
 
         return new LoginOrSignupComposer(context, digitsClient, phoneNumber,
@@ -95,8 +107,7 @@ class PhoneNumberController extends DigitsControllerImpl {
             @Override
             public void success(final Intent intent) {
                 final DigitsEventDetailsBuilder digitsEventDetailsBuilder = eventDetailsBuilder
-                    .withCountry(((CountryInfo) countryCodeSpinner.getTag())
-                            .locale.getISO3Country())
+                    .withCountry(normalizedPhoneNumber.getCountryIso())
                     .withCurrentTime(System.currentTimeMillis());
 
                 sendButton.showFinish();
@@ -125,20 +136,22 @@ class PhoneNumberController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
-        scribeRequest();
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
             final int code = ((CountryInfo) countryCodeSpinner.getTag()).countryCode;
             final String number = editText.getText().toString();
             final String phoneNumber = getNumber(code, number);
-            createCompositeCallback(context, phoneNumber).start();
+            final PhoneNumber normalizedPhoneNumber =
+                    PhoneNumberUtils.getPhoneNumber(phoneNumber);
+            scribeRequest(normalizedPhoneNumber);
+            createCompositeCallback(context, phoneNumber, normalizedPhoneNumber).start();
         }
     }
 
-    private void scribeRequest() {
+    private void scribeRequest(PhoneNumber phoneNumber) {
         final DigitsEventDetails digitsEventDetails = this.eventDetailsBuilder
-                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
+                .withCountry(phoneNumber.getCountryIso())
                 .withCurrentTime(System.currentTimeMillis())
                 .build();
 
@@ -192,16 +205,18 @@ class PhoneNumberController extends DigitsControllerImpl {
         digitsEventCollector.submitPhoneException(exception);
     }
 
-    //We override the base startFallback and avoid finishing affinity.
-    //The phoneNumber activity remains on the backstack and can be resumed when the user choses
-    //to try again in the Failure screen.
+    //1. We override the base startFallback and avoid finishing affinity.
+    //2. The phoneNumber activity remains on the backstack and can be resumed when the user chooses
+    //   to try again in the Failure screen.
+    //3. The event details builder will _not_ contain country code when delegating to
+    //   FailureActivity. However apps/failfast validations do not expect country to be set.
+    //   See {@link FailFastEventDetailsChecker#failureImpression}
     @Override
     public void startFallback(Context context, ResultReceiver receiver, DigitsException reason) {
         final Intent intent = new Intent(context, activityClassManager.getFailureActivity());
         intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, receiver);
         intent.putExtra(DigitsClient.EXTRA_FALLBACK_REASON, reason);
-        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder
-                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country()));
+        intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder);
         context.startActivity(intent);
     }
 
