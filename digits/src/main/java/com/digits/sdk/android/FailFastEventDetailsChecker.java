@@ -179,29 +179,26 @@ class FailFastEventDetailsChecker extends DigitsEventLogger {
         );
     }
 
+    // These events have no nullable parameters, and thus no input validation to be done
+
     @Override
     public void contactsUploadSuccess(ContactsUploadSuccessDetails details) {
-        throwIncompleteDetailsExWhenFalse(
-                details.totalContacts != null && details.successContacts != null,
-                details
-        );
+        // No input validations to be done here
+
     }
 
     @Override
     public void contactsUploadFailure(ContactsUploadFailureDetails details) {
-        throwIncompleteDetailsExWhenFalse(
-                details.totalContacts != null && details.failedContacts != null,
-                details
-        );
+        // No input validations to be done here
+
     }
 
     @Override
     public void contactsLookupSuccess(ContactsLookupSuccessDetails details) {
-        throwIncompleteDetailsExWhenFalse(
-                details.matchCount != null,
-                details
-        );
+        // No input validations to be done here
+
     }
+
 
     // EmptyDigitsDetails: These events have no parameters, and thus no input validation to be done
 

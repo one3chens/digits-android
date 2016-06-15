@@ -61,7 +61,9 @@ class DefaultAnswersLogger extends DigitsEventLogger {
     @Nullable
     static final Method logCustomMethod;
     @Nullable
-    static final Method putCustomAttributeMethod;
+    static final Method putCustomStringAttributeMethod;
+    @Nullable
+    static final Method putCustomNumberAttributeMethod;
     @Nullable
     static final Constructor customEventConstructor;
 
@@ -85,8 +87,12 @@ class DefaultAnswersLogger extends DigitsEventLogger {
         logCustomMethod = getMethod(answersVersion, answersClass, "logCustom", customEventClass);
 
         //Method: customEvent.putCustomAttribute
-        putCustomAttributeMethod = getMethod(answersVersion, answersEventClass,
+        putCustomStringAttributeMethod = getMethod(answersVersion, answersEventClass,
                 "putCustomAttribute", String.class, String.class);
+
+        //Method: customEvent.putCustomAttribute
+        putCustomNumberAttributeMethod = getMethod(answersVersion, answersEventClass,
+                "putCustomAttribute", String.class, Number.class);
 
         //Method: new CustomEvent(String.class)
         customEventConstructor = getConstructor(customEventClass, String.class);
@@ -108,7 +114,7 @@ class DefaultAnswersLogger extends DigitsEventLogger {
         final Object customEvent =
                 newInstance(answersVersion, customEventConstructor, "Digits Login Start");
 
-        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Language",
+        invokeMethod(answersVersion, putCustomStringAttributeMethod, customEvent, "Language",
                 details.language);
         invokeMethod(answersVersion, logCustomMethod, answersInstance, customEvent);
     }
@@ -120,10 +126,12 @@ class DefaultAnswersLogger extends DigitsEventLogger {
         final Object customEvent =
                 newInstance(answersVersion, customEventConstructor, "Digits Login Success");
 
-        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Language",
+        invokeMethod(answersVersion, putCustomStringAttributeMethod, customEvent, "Language",
                 details.language);
-        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Country",
+        invokeMethod(answersVersion, putCustomStringAttributeMethod, customEvent, "Country",
                 details.country);
+        invokeMethod(answersVersion, putCustomNumberAttributeMethod, customEvent,
+                "Elapsed Time in seconds", details.elapsedTimeInMillis / 1000);
         invokeMethod(answersVersion, logCustomMethod, answersInstance, customEvent);
     }
 
@@ -134,11 +142,35 @@ class DefaultAnswersLogger extends DigitsEventLogger {
         final Object customEvent =
                 newInstance(answersVersion, customEventConstructor, "Digits Logout");
 
-        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Language",
+        invokeMethod(answersVersion, putCustomStringAttributeMethod, customEvent, "Language",
                 details.language);
-        invokeMethod(answersVersion, putCustomAttributeMethod, customEvent, "Country",
+        invokeMethod(answersVersion, putCustomStringAttributeMethod, customEvent, "Country",
                 details.country);
         invokeMethod(answersVersion, logCustomMethod, answersInstance, customEvent);
+    }
+
+    @Override
+    public void contactsUploadSuccess(ContactsUploadSuccessDetails details) {
+        final Object answersInstance = invokeMethod(answersVersion, getInstanceMethod,
+                answersClass);
+        final Object customEvent =
+                newInstance(answersVersion, customEventConstructor, "Digits Contact Uploads");
+
+        invokeMethod(answersVersion, putCustomNumberAttributeMethod,
+                customEvent, "Number of Contacts", details.successContacts);
+        invokeMethod(answersVersion, logCustomMethod, answersInstance, customEvent);
+    }
+
+    @Override
+    public void contactsLookupSuccess(ContactsLookupSuccessDetails details) {
+        // We emit this event for every match retrieved during the lookup.
+        final Object answersInstance = invokeMethod(answersVersion, getInstanceMethod,
+                answersClass);
+        for (int i = 0; i < details.matchCount; i++) {
+            final Object customEvent =
+                    newInstance(answersVersion, customEventConstructor, "Digits Contact Found");
+            invokeMethod(answersVersion, logCustomMethod, answersInstance, customEvent);
+        }
     }
 
     @NonNull

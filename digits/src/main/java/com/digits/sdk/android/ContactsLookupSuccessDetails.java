@@ -17,17 +17,16 @@
 
 package com.digits.sdk.android;
 
-import android.support.annotation.NonNull;
 
 /**
  * ContactsLookupSuccessDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
 public class ContactsLookupSuccessDetails {
-    @NonNull
-    public final Integer matchCount;
 
-    public ContactsLookupSuccessDetails(@NonNull int matchCount) {
+    public final int matchCount;
+
+    public ContactsLookupSuccessDetails(int matchCount) {
         this.matchCount = matchCount;
     }
 

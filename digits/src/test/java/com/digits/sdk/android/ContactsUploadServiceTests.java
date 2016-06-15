@@ -347,8 +347,8 @@ public class ContactsUploadServiceTests {
         assertEquals(collector.events.size(), 1);
         final ContactsUploadSuccessDetails details =
                 (ContactsUploadSuccessDetails) collector.events.get(0);
-        assertEquals(details.successContacts.intValue(), 1);
-        assertEquals(details.totalContacts.intValue(), 1);
+        assertEquals(details.successContacts, 1);
+        assertEquals(details.totalContacts, 1);
     }
 
     String toJson(UploadResponse response) {

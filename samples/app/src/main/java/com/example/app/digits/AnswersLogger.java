@@ -19,6 +19,18 @@ package com.example.app.digits;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 
+import com.digits.sdk.android.ContactsDeletionFailureDetails;
+import com.digits.sdk.android.ContactsDeletionStartDetails;
+import com.digits.sdk.android.ContactsDeletionSuccessDetails;
+import com.digits.sdk.android.ContactsLookupFailureDetails;
+import com.digits.sdk.android.ContactsLookupStartDetails;
+import com.digits.sdk.android.ContactsLookupSuccessDetails;
+import com.digits.sdk.android.ContactsPermissionForDigitsApprovedDetails;
+import com.digits.sdk.android.ContactsPermissionForDigitsDeferredDetails;
+import com.digits.sdk.android.ContactsPermissionForDigitsImpressionDetails;
+import com.digits.sdk.android.ContactsUploadFailureDetails;
+import com.digits.sdk.android.ContactsUploadStartDetails;
+import com.digits.sdk.android.ContactsUploadSuccessDetails;
 import com.digits.sdk.android.DigitsEventLogger;
 import com.digits.sdk.android.DigitsEventDetails;
 import com.digits.sdk.android.LogoutEventDetails;
@@ -186,5 +198,85 @@ public class AnswersLogger extends DigitsEventLogger {
                 .putCustomAttribute("Action", "logout")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country));
+    }
+
+    @Override
+    public void contactsPermissionForDigitsImpression(
+            ContactsPermissionForDigitsImpressionDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Permissions-Digits")
+                .putCustomAttribute("Action", "contactsPermissionForDigitsImpression"));
+    }
+
+    @Override
+    public void contactsPermissionForDigitsApproved(
+            ContactsPermissionForDigitsApprovedDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Permissions-Digits")
+                .putCustomAttribute("Action", "contactsPermissionForDigitsApproved"));
+    }
+
+    @Override
+    public void contactsPermissionForDigitsDeferred(
+            ContactsPermissionForDigitsDeferredDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Permissions-Digits")
+                .putCustomAttribute("Action", "contactsPermissionForDigitsDeferred"));
+    }
+
+    @Override
+    public void contactsUploadStart(ContactsUploadStartDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Upload-Digits")
+                .putCustomAttribute("Action", "contactsUploadStart"));
+    }
+
+    @Override
+    public void contactsUploadSuccess(ContactsUploadSuccessDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Upload-Digits")
+                .putCustomAttribute("Action", "contactsUploadSuccess")
+                .putCustomAttribute("Uploaded", details.successContacts)
+                .putCustomAttribute("Total", details.totalContacts));
+    }
+
+    @Override
+    public void contactsUploadFailure(ContactsUploadFailureDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Upload-Digits")
+                .putCustomAttribute("Action", "contactsUploadFailure")
+                .putCustomAttribute("Failed", details.failedContacts)
+                .putCustomAttribute("Total", details.totalContacts));
+    }
+
+    @Override
+    public void contactsLookupStart(ContactsLookupStartDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Lookup-Digits")
+                .putCustomAttribute("Action", "contactsLookupStart"));
+    }
+
+    @Override
+    public void contactsLookupSuccess(ContactsLookupSuccessDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Lookup-Digits")
+                .putCustomAttribute("Action", "contactsLookupSuccess")
+                .putCustomAttribute("Matches", details.matchCount));
+    }
+
+    @Override
+    public void contactsLookupFailure(ContactsLookupFailureDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Lookup-Digits")
+                .putCustomAttribute("Action", "contactsLookupFailure"));
+    }
+
+    @Override
+    public void contactsDeletionStart(ContactsDeletionStartDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Deletion-Digits")
+                .putCustomAttribute("Action", "contactsDeletionStart"));
+    }
+
+    @Override
+    public void contactsDeletionSuccess(ContactsDeletionSuccessDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Deletion-Digits")
+                .putCustomAttribute("Action", "contactsDeletionSuccess"));
+    }
+
+    @Override
+    public void contactsDeletionFailure(ContactsDeletionFailureDetails details) {
+        Answers.getInstance().logCustom(new CustomEvent("Contacts-Deletion-Digits")
+                .putCustomAttribute("Action", "contactsDeletionFailure"));
     }
 }

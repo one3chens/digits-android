@@ -17,21 +17,18 @@
 
 package com.digits.sdk.android;
 
-import android.support.annotation.NonNull;
 
 /**
  * ContactsUploadSuccessDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
 public class ContactsUploadSuccessDetails {
-    @NonNull
-    public final Integer successContacts;
+    public final int successContacts;
 
-    @NonNull
-    public final Integer totalContacts;
+    public final int totalContacts;
 
-    public ContactsUploadSuccessDetails(@NonNull int totalContacts,
-                                        @NonNull int successContacts) {
+    public ContactsUploadSuccessDetails(int totalContacts,
+                                        int successContacts) {
         this.successContacts = successContacts;
         this.totalContacts = totalContacts;
     }
