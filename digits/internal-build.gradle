@@ -24,6 +24,10 @@ apply plugin: io.fabric.gradle.weaving.FabricPropertiesPlugin
 apply plugin: io.fabric.gradle.release.FabricKitReleasePlugin
 apply plugin: io.fabric.gradle.weaving.DexMethodCountPlugin
 
+repositories {
+    jcenter()
+}
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
@@ -117,6 +121,7 @@ dependencies {
     // in 1.1.0-1.1.3 version, see https://code.google.com/p/android/issues/detail?id=149268.
     compile rootProject.appCompat
     compile rootProject.retrofitMock
+    compile rootProject.answersShim
 
     androidTestCompile rootProject.mockito
     androidTestCompile rootProject.dexmakerMockito

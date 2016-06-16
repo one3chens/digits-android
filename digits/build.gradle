@@ -17,6 +17,10 @@
 
 apply plugin: 'com.android.library'
 
+repositories {
+    jcenter()
+}
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
@@ -77,6 +81,7 @@ dependencies {
     }
     compile rootProject.fabric
     compile rootProject.appCompat
+    compile rootProject.answersShim
 
     androidTestCompile rootProject.mockito
     androidTestCompile rootProject.dexmakerMockito
