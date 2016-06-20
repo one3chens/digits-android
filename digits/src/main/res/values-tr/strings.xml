@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Numaran</string>
     <string name="dgts__phone_number_text">Telefon numaranı gir</string>
     <string name="dgts__pin_code_verification_title">2 adımlı onaylama kodunu gir</string>
-    <string name="dgts__resend_confirmation_button_code">Kodu yeniden gönder</string>
+    <string name="dgts__resend_confirmation_button_code">Yeniden kod</string>
     <string name="dgts__resend_confirmation_text">Doğrulama kodunu yeniden gönder</string>
     <string name="dgts__send_confirmation_code">Onay kodu gönder</string>
     <string name="dgts__sending">Gönderiliyor…</string>

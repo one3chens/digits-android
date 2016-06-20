@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Numărul tău</string>
     <string name="dgts__phone_number_text">Introdu numărul tău de telefon</string>
     <string name="dgts__pin_code_verification_title">Introdu codul de verificare în 2 pași</string>
-    <string name="dgts__resend_confirmation_button_code">Retrimite codul</string>
+    <string name="dgts__resend_confirmation_button_code">Retrimite cod</string>
     <string name="dgts__resend_confirmation_text">Retrimite codul de confirmare</string>
     <string name="dgts__send_confirmation_code">Trimite codul de confirmare</string>
     <string name="dgts__sending">Se trimite…</string>

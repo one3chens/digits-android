@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Deine Nummer</string>
     <string name="dgts__phone_number_text">Deine Telefonnummer eingeben</string>
     <string name="dgts__pin_code_verification_title">2-Schritt-Bestätigungscode eingeben</string>
-    <string name="dgts__resend_confirmation_button_code">Code erneut senden</string>
+    <string name="dgts__resend_confirmation_button_code">Erneut senden</string>
     <string name="dgts__resend_confirmation_text">Bestätigungscode erneut senden</string>
     <string name="dgts__send_confirmation_code">Bestätigungscode senden</string>
     <string name="dgts__sending">Sendet…</string>

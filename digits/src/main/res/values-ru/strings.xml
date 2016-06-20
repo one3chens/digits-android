@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">Позвонить мне</string>
+    <string name="dgts__call_me">Звонок</string>
     <string name="dgts__calling">Вызов…</string>
     <string name="dgts__confirmation_code">Код подтверждения</string>
     <string name="dgts__confirmation_edit_hint">Введите 6-значный код, который мы вам отправили</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Ваш номер</string>
     <string name="dgts__phone_number_text">Введите свой номер телефона</string>
     <string name="dgts__pin_code_verification_title">Введите код двухэтапной проверки</string>
-    <string name="dgts__resend_confirmation_button_code">Отправить код еще раз</string>
+    <string name="dgts__resend_confirmation_button_code">Переслать код</string>
     <string name="dgts__resend_confirmation_text">Отправить код подтверждения ещё раз</string>
     <string name="dgts__send_confirmation_code">Отправить код подтверждения</string>
     <string name="dgts__sending">Отправка…</string>

@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">Tawagan ako</string>
+    <string name="dgts__call_me">Call me</string>
     <string name="dgts__calling">Tumatawag…</string>
     <string name="dgts__confirmation_code">Code sa Pagkumpirma</string>
     <string name="dgts__confirmation_edit_hint">Ilagay ang 6-digit code na ipinadala namin sa iyo</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Ang Numero Mo</string>
     <string name="dgts__phone_number_text">Ipasok ang numero ng telepono mo.</string>
     <string name="dgts__pin_code_verification_title">Ipasok ang 2-step verification code</string>
-    <string name="dgts__resend_confirmation_button_code">Ipadala muli ang code</string>
+    <string name="dgts__resend_confirmation_button_code">Resend code</string>
     <string name="dgts__resend_confirmation_text">Ipadala ulit code ng kumpirmasyon</string>
     <string name="dgts__send_confirmation_code">Ipadala ang code ng kumpirmasyon</string>
     <string name="dgts__sending">Pinapadala…</string>

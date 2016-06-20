@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">আমাকে কল করুন</string>
+    <string name="dgts__call_me">আমাকে কল</string>
     <string name="dgts__calling">কল করা হচ্ছে…</string>
     <string name="dgts__confirmation_code">নিশ্চিতকরণ কোড</string>
     <string name="dgts__confirmation_edit_hint">আপনাকে আমাদের পাঠানো 6 অঙ্কের কোডটি লিখুন</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">আপনার নম্বর</string>
     <string name="dgts__phone_number_text">আপনার ফোন নম্বর লিখুন</string>
     <string name="dgts__pin_code_verification_title">2-পদক্ষেপ যাচাইকরণ কোড লিখুন</string>
-    <string name="dgts__resend_confirmation_button_code">কোডটি পুনরায় পাঠান</string>
+    <string name="dgts__resend_confirmation_button_code">কোড পুনঃপাঠান</string>
     <string name="dgts__resend_confirmation_text">নিশ্চিতকরণ কোড আবার পাঠান</string>
     <string name="dgts__send_confirmation_code">নিশ্চিতকরণ কোড পাঠান</string>
     <string name="dgts__sending">পাঠানো হচ্ছে…</string>

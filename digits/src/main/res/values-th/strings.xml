@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">หมายเลขของคุณ</string>
     <string name="dgts__phone_number_text">กรอกหมายเลขโทรศัพท์ของคุณ</string>
     <string name="dgts__pin_code_verification_title">ป้อนรหัสยืนยัน 2 ชั้น</string>
-    <string name="dgts__resend_confirmation_button_code">ส่งรหัสอีกครั้ง</string>
+    <string name="dgts__resend_confirmation_button_code">ส่งรหัสใหม่</string>
     <string name="dgts__resend_confirmation_text">ส่งรหัสยืนยันอีกครั้ง</string>
     <string name="dgts__send_confirmation_code">ส่งรหัสยืนยัน</string>
     <string name="dgts__sending">กำลังส่ง…</string>

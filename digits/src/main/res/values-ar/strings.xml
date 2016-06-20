@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">الاتصال بي</string>
+    <string name="dgts__call_me">اتصل بي</string>
     <string name="dgts__calling">جاري الاتّصال…</string>
     <string name="dgts__confirmation_code">رمز التأكيد</string>
     <string name="dgts__confirmation_edit_hint">أدخِل الرمز المكوّن من ستة أرقام الذي أرسلناه إليك</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">رقم هاتفك</string>
     <string name="dgts__phone_number_text">أدخل رقم الهاتف الخاص بك</string>
     <string name="dgts__pin_code_verification_title">أدخِل رمز التوثيق المكوَّن من خطوتين</string>
-    <string name="dgts__resend_confirmation_button_code">إعادة إرسال الرمز</string>
+    <string name="dgts__resend_confirmation_button_code">أعد إرسال رمز</string>
     <string name="dgts__resend_confirmation_text">إعادة إرسال رمز التوثيق</string>
     <string name="dgts__send_confirmation_code">أرسل رمز التأكيد</string>
     <string name="dgts__sending">جارٍ الإرسال…</string>

@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">Hubungi saya</string>
+    <string name="dgts__call_me">Telp saya</string>
     <string name="dgts__calling">Menghubungi…</string>
     <string name="dgts__confirmation_code">Kode konfimasi</string>
     <string name="dgts__confirmation_edit_hint">Masukkan kode 6 digit yang kami kirimkan ke Anda</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Nomor Anda</string>
     <string name="dgts__phone_number_text">Masukkan nomor ponsel Anda</string>
     <string name="dgts__pin_code_verification_title">Masukkan kode verifikasi 2 langkah</string>
-    <string name="dgts__resend_confirmation_button_code">Kirim ulang kode</string>
+    <string name="dgts__resend_confirmation_button_code">Krm ulng kode</string>
     <string name="dgts__resend_confirmation_text">Kirim ulang kode konfirmasi</string>
     <string name="dgts__send_confirmation_code">Kirim kode konfirmasi</string>
     <string name="dgts__sending">Mengirim…</string>

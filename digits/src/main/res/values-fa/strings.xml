@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">با من تماس بگیر</string>
+    <string name="dgts__call_me">تماس با من</string>
     <string name="dgts__calling">در حال تماس…</string>
     <string name="dgts__confirmation_code">کد تأیید</string>
     <string name="dgts__confirmation_edit_hint">کد ۶ رقمی را که برایتان فرستادیم، وارد کنید.</string>

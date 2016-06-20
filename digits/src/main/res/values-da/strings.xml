@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">Ring til mig</string>
+    <string name="dgts__call_me">Ring mig op</string>
     <string name="dgts__calling">Ringer…</string>
     <string name="dgts__confirmation_code">Bekræftelseskode</string>
     <string name="dgts__confirmation_edit_hint">Indtast den 6-cifrede kode vi har sendt dig</string>

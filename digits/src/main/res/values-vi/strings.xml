@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">Gọi cho tôi</string>
+    <string name="dgts__call_me">Gọi tôi</string>
     <string name="dgts__calling">Đang gọi…</string>
     <string name="dgts__confirmation_code">Mã xác nhận</string>
     <string name="dgts__confirmation_edit_hint">Nhập mã 6 chữ số chúng tôi đã gửi bạn</string>

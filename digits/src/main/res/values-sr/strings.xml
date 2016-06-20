@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Твој број</string>
     <string name="dgts__phone_number_text">Унеси свој број телефона</string>
     <string name="dgts__pin_code_verification_title">Унеси код за верификацију у 2 корака</string>
-    <string name="dgts__resend_confirmation_button_code">Поново пошаљи код</string>
+    <string name="dgts__resend_confirmation_button_code">Пон. пош. кôд</string>
     <string name="dgts__resend_confirmation_text">Поново пошаљи код за птврду</string>
     <string name="dgts__send_confirmation_code">Пошаљи код за потврду</string>
     <string name="dgts__sending">Слање…</string>

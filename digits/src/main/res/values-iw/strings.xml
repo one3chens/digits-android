@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">התקשרו אליי</string>
+    <string name="dgts__call_me">צרו קשר</string>
     <string name="dgts__calling">מתקשר…</string>
     <string name="dgts__confirmation_code">קוד אישור</string>
     <string name="dgts__confirmation_edit_hint">הכנס את הקוד בן 6 הספרות ששלחנו לך</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">המספר שלך</string>
     <string name="dgts__phone_number_text">הזן את מספר הטלפון שלך</string>
     <string name="dgts__pin_code_verification_title">הזן קוד אימות בשני שלבים</string>
-    <string name="dgts__resend_confirmation_button_code">שליחת קוד מחדש</string>
+    <string name="dgts__resend_confirmation_button_code">שלח קוד מחדש</string>
     <string name="dgts__resend_confirmation_text">שלח מחדש קוד אישור</string>
     <string name="dgts__send_confirmation_code">שלח קוד אישור</string>
     <string name="dgts__sending">שולח…</string>

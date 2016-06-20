@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">Nazovi me</string>
+    <string name="dgts__call_me">Zovi me</string>
     <string name="dgts__calling">Pozivanje…</string>
     <string name="dgts__confirmation_code">Potvrdni kod</string>
     <string name="dgts__confirmation_edit_hint">Unesite šesteroznamenkasti kod koji smo vam poslali</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Vaš broj</string>
     <string name="dgts__phone_number_text">Unesite svoj telefonski broj</string>
     <string name="dgts__pin_code_verification_title">Unesite kod za provjeru autentičnosti u dva koraka</string>
-    <string name="dgts__resend_confirmation_button_code">Ponovno pošalji kod</string>
+    <string name="dgts__resend_confirmation_button_code">Opet šalji kod</string>
     <string name="dgts__resend_confirmation_text">Ponovno pošalji potvrdni kod</string>
     <string name="dgts__send_confirmation_code">Pošalji potvrdni kod</string>
     <string name="dgts__sending">Slanje…</string>

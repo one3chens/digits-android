@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">ನನಗೆ ಕರೆ ಮಾಡಿ</string>
+    <string name="dgts__call_me">ನನಗೆ ಕರೆ</string>
     <string name="dgts__calling">ಕರೆ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="dgts__confirmation_code">ದೃಢೀಕರಣ ಕೋಡ್</string>
     <string name="dgts__confirmation_edit_hint">ನಾವು ನಿಮಗೆ ಕಳುಹಿಸಿರುವ 6-ಅಂಕೆಯ ಕೋಡ್ ನಮೂದಿಸಿ</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">ನಿಮ್ಮ ಸಂಖ್ಯೆ</string>
     <string name="dgts__phone_number_text">ನಿಮ್ಮ ದೂರವಾಣಿ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ</string>
     <string name="dgts__pin_code_verification_title">2-ಹಂತದ ಪರಿಶೀಲನಾ ಕೋಡ್ ನಮೂದಿಸಿ</string>
-    <string name="dgts__resend_confirmation_button_code">ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
+    <string name="dgts__resend_confirmation_button_code">ಕೋಡ್ ಕಳುಹಿಸು</string>
     <string name="dgts__resend_confirmation_text">ದೃಢೀಕರಣ ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
     <string name="dgts__send_confirmation_code">ದೃಢೀಕರಣ ಸಂಕೇತ ಕಳುಹಿಸಿ</string>
     <string name="dgts__sending">ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ…</string>

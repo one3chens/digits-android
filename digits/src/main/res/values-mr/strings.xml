@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">आपला नंबर</string>
     <string name="dgts__phone_number_text">आपला फोन नंबर नोंदवा</string>
     <string name="dgts__pin_code_verification_title">2-चरण सत्यापन कोड प्रविष्ट करा</string>
-    <string name="dgts__resend_confirmation_button_code">कोड पुन्हा पाठवा</string>
+    <string name="dgts__resend_confirmation_button_code">कोड पाठवा</string>
     <string name="dgts__resend_confirmation_text">पुष्टीकरण कोड पुन्हा पाठवा</string>
     <string name="dgts__send_confirmation_code">पुष्टीकरण कोड पाठवा</string>
     <string name="dgts__sending">पाठवित आहे…</string>

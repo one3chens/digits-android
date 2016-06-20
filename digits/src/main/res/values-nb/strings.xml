@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Nummeret ditt</string>
     <string name="dgts__phone_number_text">Skriv inn telefonnummeret ditt</string>
     <string name="dgts__pin_code_verification_title">Skriv inn koden for 2-trinnsbekreftelse</string>
-    <string name="dgts__resend_confirmation_button_code">Send kode på nytt</string>
+    <string name="dgts__resend_confirmation_button_code">Resend koden</string>
     <string name="dgts__resend_confirmation_text">Send bekreftelseskoden på nytt</string>
     <string name="dgts__send_confirmation_code">Send bekreftelseskode</string>
     <string name="dgts__sending">Sender …</string>

@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">A számod</string>
     <string name="dgts__phone_number_text">Add meg a telefonszámod</string>
     <string name="dgts__pin_code_verification_title">Add meg a kétlépcsős hitelesítés kódját</string>
-    <string name="dgts__resend_confirmation_button_code">Kód újraküldése</string>
+    <string name="dgts__resend_confirmation_button_code">Kód újraküld</string>
     <string name="dgts__resend_confirmation_text">Megerősítő kód újraküldése</string>
     <string name="dgts__send_confirmation_code">Megerősítő kód küldése</string>
     <string name="dgts__sending">Küldés folyamatban…</string>

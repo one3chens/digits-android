@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">Soita minulle</string>
+    <string name="dgts__call_me">Soita</string>
     <string name="dgts__calling">Soitetaan…</string>
     <string name="dgts__confirmation_code">Vahvistuskoodi</string>
     <string name="dgts__confirmation_edit_hint">Syötä kuusinumeroinen koodi jonka lähetimme sinulle</string>
@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Numerosi</string>
     <string name="dgts__phone_number_text">Anna puhelinnumerosi</string>
     <string name="dgts__pin_code_verification_title">Syötä kaksivaiheinen varmennuskoodi</string>
-    <string name="dgts__resend_confirmation_button_code">Lähetä koodi uudelleen</string>
+    <string name="dgts__resend_confirmation_button_code">Lähetä koodi</string>
     <string name="dgts__resend_confirmation_text">Lähetä vahvistuskoodi</string>
     <string name="dgts__send_confirmation_code">Lähetä vahvistuskoodi</string>
     <string name="dgts__sending">Lähetetään…</string>

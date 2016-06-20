@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">El teu número</string>
     <string name="dgts__phone_number_text">Introdueix el número de telèfon</string>
     <string name="dgts__pin_code_verification_title">Introdueix el codi de verificació en 2 passos</string>
-    <string name="dgts__resend_confirmation_button_code">Torna a enviar el codi</string>
+    <string name="dgts__resend_confirmation_button_code">Reenvia codi</string>
     <string name="dgts__resend_confirmation_text">Torna a enviar el codi de confirmació</string>
     <string name="dgts__send_confirmation_code">Envia el codi de confirmació</string>
     <string name="dgts__sending">S\'està enviant…</string>

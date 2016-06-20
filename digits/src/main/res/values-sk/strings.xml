@@ -43,7 +43,7 @@
     <string name="dgts__phone_number_edit_hint">Vaše číslo</string>
     <string name="dgts__phone_number_text">Zadajte svoje telefónne číslo</string>
     <string name="dgts__pin_code_verification_title">Zadajte kód na dvojstupňové overenie</string>
-    <string name="dgts__resend_confirmation_button_code">Znova odoslať kód</string>
+    <string name="dgts__resend_confirmation_button_code">Preposlať kód</string>
     <string name="dgts__resend_confirmation_text">Znova odoslať potvrdzovací kód</string>
     <string name="dgts__send_confirmation_code">Odoslať potvrdzovací kód</string>
     <string name="dgts__sending">Odosiela sa…</string>

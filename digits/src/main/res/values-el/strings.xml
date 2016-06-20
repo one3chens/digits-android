@@ -18,7 +18,7 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__call_me">Καλέστε με</string>
+    <string name="dgts__call_me">Κλήση</string>
     <string name="dgts__calling">Κλήση…</string>
     <string name="dgts__confirmation_code">Κωδικός επιβεβαίωσης</string>
     <string name="dgts__confirmation_edit_hint">Εισαγάγετε τον εξαψήφιο κωδικό που σας στείλαμε</string>
@@ -43,7 +43,8 @@
     <string name="dgts__phone_number_edit_hint">O αριθμός σας</string>
     <string name="dgts__phone_number_text">Εισαγάγετε τον αριθμό τηλεφώνου σας</string>
     <string name="dgts__pin_code_verification_title">Εισαγωγή κωδικού επαλήθευσης 2 βημάτων</string>
-    <string name="dgts__resend_confirmation_button_code">Εκ νέου αποστολή κωδικού</string>
+    <string name="dgts__resend_confirmation_button_code">Νέα\
+αποστολή</string>
     <string name="dgts__resend_confirmation_text">Εκ νέου αποστολή κωδικού επιβεβαίωσης</string>
     <string name="dgts__send_confirmation_code">Αποστολή κωδικού επιβεβαίωσης</string>
     <string name="dgts__sending">Αποστολή…</string>
