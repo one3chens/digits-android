@@ -22,4 +22,5 @@ package com.digits.sdk.android;
  * ContactsPermissionForDigitsApprovedDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
+@Beta(Beta.Feature.Metrics)
 public class ContactsPermissionForDigitsApprovedDetails extends EmptyDigitsDetails {}

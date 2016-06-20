@@ -17,6 +17,7 @@
 
 package com.digits.sdk.android;
 
+@Beta(Beta.Feature.Sandbox)
 public class SandboxConfig {
     private boolean enabled;
     private Mode mode;

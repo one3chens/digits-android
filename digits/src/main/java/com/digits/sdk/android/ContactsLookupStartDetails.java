@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
  * ContactsLookupStartDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
+@Beta(Beta.Feature.Metrics)
 public class ContactsLookupStartDetails {
     @NonNull
     public final boolean hasCursor;

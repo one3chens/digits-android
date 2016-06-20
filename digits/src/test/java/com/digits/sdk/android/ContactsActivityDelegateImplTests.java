@@ -102,7 +102,7 @@ public class ContactsActivityDelegateImplTests {
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
         verify(digitsEventCollector).contactsPermissionDeferred(
-                any(ContactsPermissionForDigitsDeferredDetails.class));
+                any(ContactsPermissionForDigitsDeclinedDetails.class));
         verify(activity).finish();
     }
 

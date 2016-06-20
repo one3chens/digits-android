@@ -22,6 +22,7 @@ package com.digits.sdk.android;
  * ContactsLookupSuccessDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
+@Beta(Beta.Feature.Metrics)
 public class ContactsLookupSuccessDetails {
 
     public final int matchCount;

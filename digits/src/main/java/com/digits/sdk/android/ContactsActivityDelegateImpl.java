@@ -81,7 +81,7 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
             @Override
             public void onClick(View view) {
                 digitsEventCollector.contactsPermissionDeferred(
-                        new ContactsPermissionForDigitsDeferredDetails());
+                        new ContactsPermissionForDigitsDeclinedDetails());
                 activity.finish();
             }
         });

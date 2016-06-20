@@ -134,7 +134,7 @@ class DefaultStdOutLogger extends DigitsEventLogger {
 
     @Override
     public void contactsPermissionForDigitsDeferred(
-            ContactsPermissionForDigitsDeferredDetails details) {
+            ContactsPermissionForDigitsDeclinedDetails details) {
         logEvent(details);
     }
 

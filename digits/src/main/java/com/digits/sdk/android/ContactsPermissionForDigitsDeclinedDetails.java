@@ -18,7 +18,8 @@
 package com.digits.sdk.android;
 
 /**
- * ContactsPermissionForDigitsDeferredDetails contains information passed into the
+ * ContactsPermissionForDigitsDeclinedDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
-public class ContactsPermissionForDigitsDeferredDetails extends EmptyDigitsDetails {}
+@Beta(Beta.Feature.Metrics)
+public class ContactsPermissionForDigitsDeclinedDetails extends EmptyDigitsDetails {}

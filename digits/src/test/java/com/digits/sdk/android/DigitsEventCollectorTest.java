@@ -349,7 +349,7 @@ public class DigitsEventCollectorTest {
     @Test
     public void testContactsPermissionDeferred() {
         digitsEventCollector.contactsPermissionDeferred(
-                new ContactsPermissionForDigitsDeferredDetails());
+                new ContactsPermissionForDigitsDeclinedDetails());
         verify(digitsScribeClient).click(Component.CONTACTS, DigitsScribeConstants.Element.CANCEL);
     }
 
@@ -386,7 +386,7 @@ public class DigitsEventCollectorTest {
     public void testContactsPermissionDeferred_withExternalLogger() {
         testContactsPermissionDeferred();
         verify(digitsEventLogger).contactsPermissionForDigitsDeferred(
-                any(ContactsPermissionForDigitsDeferredDetails.class));
+                any(ContactsPermissionForDigitsDeclinedDetails.class));
     }
 
     @Test

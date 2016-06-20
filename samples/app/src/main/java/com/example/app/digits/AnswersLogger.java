@@ -26,7 +26,7 @@ import com.digits.sdk.android.ContactsLookupFailureDetails;
 import com.digits.sdk.android.ContactsLookupStartDetails;
 import com.digits.sdk.android.ContactsLookupSuccessDetails;
 import com.digits.sdk.android.ContactsPermissionForDigitsApprovedDetails;
-import com.digits.sdk.android.ContactsPermissionForDigitsDeferredDetails;
+import com.digits.sdk.android.ContactsPermissionForDigitsDeclinedDetails;
 import com.digits.sdk.android.ContactsPermissionForDigitsImpressionDetails;
 import com.digits.sdk.android.ContactsUploadFailureDetails;
 import com.digits.sdk.android.ContactsUploadStartDetails;
@@ -216,7 +216,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void contactsPermissionForDigitsDeferred(
-            ContactsPermissionForDigitsDeferredDetails details) {
+            ContactsPermissionForDigitsDeclinedDetails details) {
         Answers.getInstance().logCustom(new CustomEvent("Contacts-Permissions-Digits")
                 .putCustomAttribute("Action", "contactsPermissionForDigitsDeferred"));
     }

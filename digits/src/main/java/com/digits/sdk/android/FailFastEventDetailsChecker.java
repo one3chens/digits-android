@@ -216,7 +216,7 @@ class FailFastEventDetailsChecker extends DigitsEventLogger {
 
     @Override
     public void contactsPermissionForDigitsDeferred(
-            ContactsPermissionForDigitsDeferredDetails details) {
+            ContactsPermissionForDigitsDeclinedDetails details) {
         // No input validations to be done here
     }
 

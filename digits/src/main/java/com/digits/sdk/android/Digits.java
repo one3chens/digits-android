@@ -214,6 +214,7 @@ public class Digits extends Kit<Void> {
      * Enable sandbox mode
      */
     @SuppressWarnings("UnusedDeclaration")
+    @Beta(Beta.Feature.Sandbox)
     public static void enableSandbox() {
         Fabric.getLogger().i(Digits.TAG, "Sandbox is enabled");
         getInstance().getSandboxConfig().enable();
@@ -224,6 +225,7 @@ public class Digits extends Kit<Void> {
      * Disable sandbox mode
      */
     @SuppressWarnings("UnusedDeclaration")
+    @Beta(Beta.Feature.Sandbox)
     public static void disableSandbox() {
         Fabric.getLogger().i(Digits.TAG, "Sandbox is disabled");
         getInstance().getSandboxConfig().disable();
@@ -407,7 +409,7 @@ public class Digits extends Kit<Void> {
          *                         login/friend-finder. Apps may create their own logger by implementing {@link DigitsEventLogger} or can use the default loggers
          *                         provided in our online documentation.
          */
-        @Beta
+        @Beta(Beta.Feature.Metrics)
         public Builder withDigitsEventLogger(DigitsEventLogger digitsEventLogger) {
             this.digitsEventLogger = digitsEventLogger;
             return this;

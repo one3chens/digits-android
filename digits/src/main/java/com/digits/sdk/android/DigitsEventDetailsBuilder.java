@@ -22,6 +22,7 @@ import android.os.Parcelable;
 
 import java.util.Locale;
 
+@Beta(Beta.Feature.Metrics)
 class DigitsEventDetailsBuilder implements Parcelable {
     final String language;
     final String country;

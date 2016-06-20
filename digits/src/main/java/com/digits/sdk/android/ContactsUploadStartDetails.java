@@ -21,4 +21,5 @@ package com.digits.sdk.android;
  * ContactsUploadStartDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
+@Beta(Beta.Feature.Metrics)
 public class ContactsUploadStartDetails extends EmptyDigitsDetails {}

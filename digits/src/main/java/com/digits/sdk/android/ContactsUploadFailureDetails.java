@@ -18,9 +18,10 @@
 package com.digits.sdk.android;
 
 /**
- * ContactsUploadSuccessDetails contains information passed into the
+ * ContactsUploadFailureDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
+@Beta(Beta.Feature.Metrics)
 public class ContactsUploadFailureDetails {
 
     public final int failedContacts;

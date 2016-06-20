@@ -21,4 +21,5 @@ package com.digits.sdk.android;
  * ContactsDeletionFailureDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
+@Beta(Beta.Feature.Metrics)
 public class ContactsDeletionFailureDetails extends EmptyDigitsDetails {}

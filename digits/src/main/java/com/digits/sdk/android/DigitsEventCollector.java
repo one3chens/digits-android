@@ -337,7 +337,7 @@ class DigitsEventCollector {
         digitsScribeClient.click(Component.CONTACTS, Element.BACK);
     }
 
-    public void contactsPermissionDeferred(ContactsPermissionForDigitsDeferredDetails details) {
+    public void contactsPermissionDeferred(ContactsPermissionForDigitsDeclinedDetails details) {
         failFastEventDetailsChecker.contactsPermissionForDigitsDeferred(details);
 
         digitsScribeClient.click(Component.CONTACTS, Element.CANCEL);

@@ -21,4 +21,10 @@ package com.digits.sdk.android;
  * Indicates an experimental feature. Expect breaking changes with each release until the
  * associated code stabilizes.
  */
-@interface Beta {}
+@interface Beta {
+    Feature value();
+
+    enum Feature {
+        Metrics, Sandbox
+    }
+}
