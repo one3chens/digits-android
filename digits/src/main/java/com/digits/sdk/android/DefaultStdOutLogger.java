@@ -32,92 +32,92 @@ class DefaultStdOutLogger extends DigitsEventLogger {
 
     @Override
     public void loginBegin(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("loginBegin", details);
     }
 
     @Override
     public void phoneNumberImpression(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("phoneNumberImpression", details);
     }
 
     @Override
     public void phoneNumberSubmit(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("phoneNumberSubmit", details);
     }
 
     @Override
     public void phoneNumberSuccess(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("phoneNumberSuccess", details);
     }
 
     @Override
     public void confirmationCodeImpression(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("confirmationCodeImpression", details);
     }
 
     @Override
     public void confirmationCodeSubmit(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("confirmationCodeSubmit", details);
     }
 
     @Override
     public void confirmationCodeSuccess(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("confirmationCodeSuccess", details);
     }
 
     @Override
     public void twoFactorPinImpression(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("twoFactorPinImpression", details);
     }
 
     @Override
     public void twoFactorPinSubmit(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("twoFactorPinSubmit", details);
     }
 
     @Override
     public void twoFactorPinSuccess(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("twoFactorPinSuccess", details);
     }
 
     @Override
     public void emailImpression(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("emailImpression", details);
     }
 
     @Override
     public void emailSubmit(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("emailSubmit", details);
     }
 
     @Override
     public void emailSuccess(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("emailSuccess", details);
     }
 
     @Override
     public void failureImpression(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("failureImpression", details);
     }
 
     @Override
     public void failureRetryClick(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("failureRetryClick", details);
     }
 
     @Override
     public void failureDismissClick(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("failureDismissClick", details);
     }
 
     @Override
     public void loginSuccess(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("loginSuccess", details);
     }
 
     @Override
     public void loginFailure(DigitsEventDetails details) {
-        logEvent(details);
+        logAuthEvent("loginFailure", details);
     }
 
     @Override
@@ -185,6 +185,10 @@ class DefaultStdOutLogger extends DigitsEventLogger {
 
     private <T> void logEvent(T details){
         Fabric.getLogger().d(TAG, details.toString());
+    }
+
+    private void logAuthEvent(String method, DigitsEventDetails details){
+        Fabric.getLogger().d(TAG, method + ": " + details.toString());
     }
 }
 
