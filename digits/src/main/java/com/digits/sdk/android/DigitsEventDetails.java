@@ -21,7 +21,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**
- * @Deprecated
  * DigitsEventDetails contains information passed into the DigitsEventLogger implementations.
  */
 public class DigitsEventDetails {
