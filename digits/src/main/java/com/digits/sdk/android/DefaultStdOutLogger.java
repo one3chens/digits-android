@@ -36,6 +36,11 @@ class DefaultStdOutLogger extends DigitsEventLogger {
     }
 
     @Override
+    public void logout(LogoutEventDetails details) {
+        logEvent(details);
+    }
+
+    @Override
     public void phoneNumberImpression(DigitsEventDetails details) {
         logAuthEvent("phoneNumberImpression", details);
     }
