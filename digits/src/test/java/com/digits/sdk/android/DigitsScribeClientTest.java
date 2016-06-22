@@ -19,6 +19,7 @@ package com.digits.sdk.android;
 import com.digits.sdk.android.DigitsScribeConstants.Action;
 import com.digits.sdk.android.DigitsScribeConstants.Component;
 import com.digits.sdk.android.DigitsScribeConstants.Element;
+import com.twitter.sdk.android.core.TwitterApiErrorConstants;
 import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
 
@@ -47,6 +48,9 @@ public class DigitsScribeClientTest {
 
     @Captor
     private ArgumentCaptor<EventNamespace> eventNamespaceArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<String> eventInfoArgumentCaptor;
 
     private Component component = Component.AUTH;
     @Before
@@ -95,7 +99,10 @@ public class DigitsScribeClientTest {
     @Test
     public void testError() throws Exception {
         digitsScribeClient.error(component, TestConstants.ANY_EXCEPTION);
-        verify(defaultScribeClient).scribe(eventNamespaceArgumentCaptor.capture());
+        verify(defaultScribeClient).scribe(eventNamespaceArgumentCaptor.capture(),
+                eventInfoArgumentCaptor.capture());
+        assertEquals(eventInfoArgumentCaptor.getValue(),
+                "error_code:" + TwitterApiErrorConstants.UNKNOWN_ERROR);
         final EventNamespace actualEventNamespace = eventNamespaceArgumentCaptor.getValue();
         final EventNamespace expectedEventNamespace = createException();
         assertEquals(expectedEventNamespace, actualEventNamespace);

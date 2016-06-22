@@ -86,7 +86,8 @@ public class DigitsScribeClient {
                 .setElement(Element.EMPTY.getElement())
                 .setAction(DigitsScribeConstants.Action.ERROR.getAction())
                 .builder();
-        safeScribe(ns);
+
+        safeScribe(ns, "error_code:" + exception.getErrorCode());
     }
 
     public void setTwitterScribeClient(DefaultScribeClient twitterScribeClient){
@@ -99,6 +100,12 @@ public class DigitsScribeClient {
     private void safeScribe(EventNamespace ns){
         if (twitterScribeClient != null) {
             twitterScribeClient.scribe(ns);
+        }
+    }
+
+    private void safeScribe(EventNamespace ns, String eventInfo){
+        if (twitterScribeClient != null) {
+            twitterScribeClient.scribe(ns, eventInfo);
         }
     }
 }
