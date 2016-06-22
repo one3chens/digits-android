@@ -46,14 +46,14 @@ public class DigitsEventDetails {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("DigitsEventDetails{");
+        stringBuilder.append(this.getClass().getName() + "{");
 
         if (language != null) stringBuilder.append("language='" + language + '\'');
-        if (elapsedTimeInMillis != null) stringBuilder.append("elapsedTimeInMillis='"
+        if (elapsedTimeInMillis != null) stringBuilder.append(",elapsedTimeInMillis='"
                 + elapsedTimeInMillis + '\'');
-        if (country != null) stringBuilder.append("country='" + country + '\'');
+        if (country != null) stringBuilder.append(",country='" + country + '\'');
 
-        stringBuilder.append("}'");
+        stringBuilder.append("}");
         return stringBuilder.toString();
     }
 }

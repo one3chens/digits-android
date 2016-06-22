@@ -39,9 +39,9 @@ public class ContactsLookupStartDetails {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.getClass().getName() + "{" + '\'');
+        stringBuilder.append(this.getClass().getName() + "{");
         stringBuilder.append("hasCursor='" + hasCursor + '\'');
-        stringBuilder.append("}'");
+        stringBuilder.append("}");
         return stringBuilder.toString();
     }
 }

@@ -37,10 +37,10 @@ public class ContactsUploadFailureDetails {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.getClass().getName() + "{"  + '\'');
-        stringBuilder.append("failedContacts='" + failedContacts + '\'');
-        stringBuilder.append("totalContacts='" + totalContacts + '\'');
-        stringBuilder.append("}'");
+        stringBuilder.append(this.getClass().getName() + "{");
+        stringBuilder.append("failedContacts='" + failedContacts + "',");
+        stringBuilder.append("totalContacts='" + totalContacts + "',");
+        stringBuilder.append("}");
         return stringBuilder.toString();
     }
 }

@@ -34,9 +34,9 @@ public class ContactsLookupSuccessDetails {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.getClass().getName() + "{" + '\'');
+        stringBuilder.append(this.getClass().getName() + "{");
         stringBuilder.append("matchCount='" + matchCount + '\'');
-        stringBuilder.append("}'");
+        stringBuilder.append("}");
         return stringBuilder.toString();
     }
 }

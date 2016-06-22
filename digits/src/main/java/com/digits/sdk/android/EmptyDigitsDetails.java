@@ -26,8 +26,8 @@ abstract class EmptyDigitsDetails {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.getClass().getName() + "{" + '\'');
-        stringBuilder.append("}'");
+        stringBuilder.append(this.getClass().getName() + "{");
+        stringBuilder.append("}");
         return stringBuilder.toString();
     }
 }

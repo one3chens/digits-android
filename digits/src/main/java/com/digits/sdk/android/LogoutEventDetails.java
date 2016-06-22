@@ -33,4 +33,14 @@ public class LogoutEventDetails {
         this.language = language;
         this.country = country;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.getClass().getName() + "{");
+        if (language != null) stringBuilder.append("language='" + language + '\'');
+        if (country != null) stringBuilder.append(",country='" + country + '\'');
+        stringBuilder.append("}");
+        return stringBuilder.toString();
+    }
 }
