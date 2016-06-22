@@ -175,7 +175,7 @@ public class ContactsClientTests {
 
         contactsClient.startContactsActivity(context, R.style.Digits_default, null);
 
-        verify(context).startActivity(intentArgumentCaptor.capture());
+        verify(activity).startActivity(intentArgumentCaptor.capture());
         final Intent capturedIntent = intentArgumentCaptor.getValue();
         assertEquals(activityComponent, capturedIntent.getComponent());
         assertEquals(R.style.Digits_default,

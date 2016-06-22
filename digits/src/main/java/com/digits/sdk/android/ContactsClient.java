@@ -115,13 +115,15 @@ public class ContactsClient {
         final boolean isActivityDefined = activity != null && !activity.isFinishing();
         final Intent intent = new Intent(context, activityClassManager.getContactsActivity());
         intent.putExtra(ThemeUtils.THEME_RESOURCE_ID, themeResId);
-        final int flags = isActivityDefined // start new task if current activity has finished
-                ? 0 : (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(flags);
-        if (isActivityDefined && requestCode != null) {
-            activity.startActivityForResult(intent, requestCode);
+        if (isActivityDefined) {
+            if (requestCode == null) {
+                activity.startActivity(intent);
+            } else {
+                activity.startActivityForResult(intent, requestCode);
+            }
         } else {
-            context.startActivity(intent);
+            context.startActivity(intent.setFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
         }
     }
 
