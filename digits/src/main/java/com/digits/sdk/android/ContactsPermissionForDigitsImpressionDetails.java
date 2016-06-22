@@ -21,5 +21,5 @@ package com.digits.sdk.android;
  * ContactsPermissionForDigitsImpressionDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
-@Beta(Beta.Feature.Metrics)
+@Beta(Beta.Feature.Analytics)
 public class ContactsPermissionForDigitsImpressionDetails extends EmptyDigitsDetails {}

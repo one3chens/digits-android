@@ -25,6 +25,6 @@ package com.digits.sdk.android;
     Feature value();
 
     enum Feature {
-        Metrics, Sandbox
+        Analytics, Sandbox
     }
 }

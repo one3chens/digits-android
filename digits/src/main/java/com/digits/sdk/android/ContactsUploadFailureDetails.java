@@ -21,7 +21,7 @@ package com.digits.sdk.android;
  * ContactsUploadFailureDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
-@Beta(Beta.Feature.Metrics)
+@Beta(Beta.Feature.Analytics)
 public class ContactsUploadFailureDetails {
 
     public final int failedContacts;

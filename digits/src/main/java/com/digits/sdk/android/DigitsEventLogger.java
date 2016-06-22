@@ -23,7 +23,7 @@ package com.digits.sdk.android;
  * DigitsEventLogger may be used by apps to plugin analytics frameworks like Fabric' s Answers to better understand
  * their login/signup funnel.
  */
-@Beta(Beta.Feature.Metrics)
+@Beta(Beta.Feature.Analytics)
 public abstract class DigitsEventLogger {
     public void loginBegin(DigitsEventDetails digitsEventDetails){}
     public void loginSuccess(DigitsEventDetails digitsEventDetails) {}

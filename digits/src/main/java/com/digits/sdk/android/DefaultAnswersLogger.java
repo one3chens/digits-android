@@ -20,7 +20,7 @@ package com.digits.sdk.android;
 import com.crashlytics.android.answers.shim.AnswersOptionalLogger;
 import com.crashlytics.android.answers.shim.KitEvent;
 
-@Beta(Beta.Feature.Metrics)
+@Beta(Beta.Feature.Analytics)
 class DefaultAnswersLogger extends DigitsEventLogger {
     final static DefaultAnswersLogger instance;
 

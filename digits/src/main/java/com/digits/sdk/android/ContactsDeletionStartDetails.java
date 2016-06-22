@@ -21,5 +21,5 @@ package com.digits.sdk.android;
  * ContactsDeletionStartDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
-@Beta(Beta.Feature.Metrics)
+@Beta(Beta.Feature.Analytics)
 public class ContactsDeletionStartDetails extends EmptyDigitsDetails {}

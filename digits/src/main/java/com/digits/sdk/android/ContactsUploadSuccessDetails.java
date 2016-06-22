@@ -22,7 +22,7 @@ package com.digits.sdk.android;
  * ContactsUploadSuccessDetails contains information passed into the
  * DigitsEventLogger implementations.
  */
-@Beta(Beta.Feature.Metrics)
+@Beta(Beta.Feature.Analytics)
 public class ContactsUploadSuccessDetails {
     public final int successContacts;
 

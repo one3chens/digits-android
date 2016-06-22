@@ -409,7 +409,7 @@ public class Digits extends Kit<Void> {
          *                         login/friend-finder. Apps may create their own logger by implementing {@link DigitsEventLogger} or can use the default loggers
          *                         provided in our online documentation.
          */
-        @Beta(Beta.Feature.Metrics)
+        @Beta(Beta.Feature.Analytics)
         public Builder withDigitsEventLogger(DigitsEventLogger digitsEventLogger) {
             this.digitsEventLogger = digitsEventLogger;
             return this;
