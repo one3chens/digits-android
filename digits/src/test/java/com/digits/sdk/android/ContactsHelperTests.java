@@ -49,15 +49,12 @@ public class ContactsHelperTests {
             "is_primary"};
     private static final String[] PHONE_ROW = {"(555)555-5555", "2", "", "1",
             "vnd.android.cursor.item/phone_v2", "0"};
-    private static final String[] EMAIL_ROW = {"support@digits.com", "3", "", "1",
-            "vnd.android.cursor.item/email_v2", "1"};
     private static final String[] NAME_ROW = {"nene goose", "nene", "goose", "1",
             "vnd.android.cursor.item/name", ""};
 
     // Expected results from sample cursor
     private static final String SAMPLE_CARD = "BEGIN:VCARD\r\nVERSION:3.0\r\nN:goose;nene;;;" +
-            "\r\nFN:nene goose\r\nTEL;TYPE=CELL:555-555-5555\r\nEMAIL;TYPE=PREF:support@digits" +
-            ".com\r\nEND:VCARD\r\n";
+            "\r\nFN:nene goose\r\nTEL;TYPE=CELL:555-555-5555\r\nEND:VCARD\r\n";
 
     private Context context;
     private ContentResolver contentResolver;
@@ -77,7 +74,6 @@ public class ContactsHelperTests {
     static Cursor createCursor() {
         final MatrixCursor matrixCursor = new MatrixCursor(COLUMNS);
         matrixCursor.addRow(PHONE_ROW);
-        matrixCursor.addRow(EMAIL_ROW);
         matrixCursor.addRow(NAME_ROW);
         return matrixCursor;
     }

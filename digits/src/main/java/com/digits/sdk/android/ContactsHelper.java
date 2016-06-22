@@ -21,10 +21,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 
 import com.digits.sdk.vcard.VCardBuilder;
@@ -39,19 +37,16 @@ import java.util.List;
 import java.util.Map;
 
 class ContactsHelper {
-    private static final int MAX_CONTACTS = 2500;
     private static final String[] allProjectionColumns = new String[]{
             ContactsContract.Data.MIMETYPE,
             ContactsContract.Contacts.LOOKUP_KEY,
             Phone.TYPE, Phone.LABEL, Phone.IS_PRIMARY, Phone.NUMBER,
-            Email.DATA, Email.TYPE, Email.LABEL, Email.IS_PRIMARY,
             StructuredName.DISPLAY_NAME, StructuredName.GIVEN_NAME, StructuredName.FAMILY_NAME
     };
     private static final String selectionQuery = ContactsContract.Data.MIMETYPE + "=? OR " +
-            ContactsContract.Data.MIMETYPE + "=? OR " +
             ContactsContract.Data.MIMETYPE + "=?";
-    private static final String[] selectionArgs = new String[]{Phone.CONTENT_ITEM_TYPE,
-            Email.CONTENT_ITEM_TYPE,
+    private static final String[] selectionArgs = new String[]{
+            Phone.CONTENT_ITEM_TYPE,
             StructuredName.CONTENT_ITEM_TYPE};
 
     private final Context context;
@@ -65,11 +60,8 @@ class ContactsHelper {
         final HashSet<String> tempSet = new HashSet<>(Arrays.asList(allProjectionColumns));
         final String[] projectionColumns = tempSet.toArray(new String[tempSet.size()]);
 
-        final Uri uri = ContactsContract.Data.CONTENT_URI.buildUpon()
-                .appendQueryParameter("limit", Integer.toString(MAX_CONTACTS)).build();
-
-        return context.getContentResolver().query(uri, projectionColumns, selectionQuery,
-                selectionArgs, null);
+        return context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                projectionColumns, selectionQuery, selectionArgs, null);
     }
 
     public List<String> createContactList(Cursor cursor) {
@@ -91,12 +83,6 @@ class ContactsHelper {
                     DatabaseUtils.cursorStringToContentValuesIfPresent(cursor, cv, Phone.LABEL);
                     DatabaseUtils.cursorIntToContentValuesIfPresent(cursor, cv, Phone.IS_PRIMARY);
                     DatabaseUtils.cursorStringToContentValuesIfPresent(cursor, cv, Phone.NUMBER);
-                    break;
-                case Email.CONTENT_ITEM_TYPE:
-                    DatabaseUtils.cursorStringToContentValuesIfPresent(cursor, cv, Email.DATA);
-                    DatabaseUtils.cursorIntToContentValuesIfPresent(cursor, cv, Email.TYPE);
-                    DatabaseUtils.cursorStringToContentValuesIfPresent(cursor, cv, Email.LABEL);
-                    DatabaseUtils.cursorIntToContentValuesIfPresent(cursor, cv, Email.IS_PRIMARY);
                     break;
                 case StructuredName.CONTENT_ITEM_TYPE:
                     DatabaseUtils.cursorStringToContentValuesIfPresent(cursor, cv,
@@ -129,14 +115,15 @@ class ContactsHelper {
                 VCardConfig.DEFAULT_EXPORT_CHARSET);
         for (String key : mapContactsData.keySet()) {
             final List<ContentValues> contentValuesList = mapContactsData.get(key);
-            boolean hasPhoneOrEmail = false;
+            boolean hasPhone = false;
             contactMimeTypeMap.clear();
             builder.clear();
+
+            // Group by type so we can call builder.append<type> below
             for (ContentValues cv : contentValuesList) {
                 final String mimeType = cv.getAsString(ContactsContract.Data.MIMETYPE);
-                if (Phone.CONTENT_ITEM_TYPE.equals(mimeType) ||
-                        Email.CONTENT_ITEM_TYPE.equals(mimeType)) {
-                    hasPhoneOrEmail = true;
+                if (Phone.CONTENT_ITEM_TYPE.equals(mimeType)) {
+                    hasPhone = true;
                 }
                 List<ContentValues> group = contactMimeTypeMap.get(mimeType);
                 if (group == null) {
@@ -145,14 +132,14 @@ class ContactsHelper {
                 }
                 group.add(cv);
             }
-            if (!hasPhoneOrEmail) {
-                continue; // Contact does not have a phone or email id.
+
+            // Digits users are identified by phone, so ignore contacts w/o a phone
+            if (!hasPhone) {
+                continue;
             }
 
-            builder.appendNameProperties(contactMimeTypeMap.get(
-                    StructuredName.CONTENT_ITEM_TYPE))
-                    .appendPhones(contactMimeTypeMap.get(Phone.CONTENT_ITEM_TYPE), null)
-                    .appendEmails(contactMimeTypeMap.get(Email.CONTENT_ITEM_TYPE));
+            builder.appendNameProperties(contactMimeTypeMap.get(StructuredName.CONTENT_ITEM_TYPE))
+                    .appendPhones(contactMimeTypeMap.get(Phone.CONTENT_ITEM_TYPE), null);
 
             final String vcard = builder.toString();
             vCards.add(vcard);
