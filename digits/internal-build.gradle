@@ -45,18 +45,6 @@ android {
             buildConfigField "String", "ARTIFACT_ID", "\"${pom_artifact_id}\""
             buildConfigField "String", "BUILD_NUMBER", "\"${buildNumber}\""
             buildConfigField "long", "BUILD_TIME", "${System.currentTimeMillis()}L"
-            // recommended fix from https://code.google.com/p/android/issues/detail?id=61573
-            // triggered by including easymock 3.2 in testing/build.gradle
-            packagingOptions {
-                exclude 'META-INF/LICENSE'
-                exclude 'META-INF/NOTICE'
-                exclude 'META-INF/INDEX.LIST'
-                exclude 'META-INF/jersey-module-version'
-                exclude 'META-INF/ASL2.0'
-                exclude 'LICENSE'
-                exclude 'NOTICE'
-                exclude 'asm-license.txt'
-            }
 
             testCoverageEnabled enableTestCodeCoverage
         }
