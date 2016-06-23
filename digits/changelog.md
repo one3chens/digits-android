@@ -3,6 +3,28 @@
 
 ## Unreleased
 
+## v1.11.0
+* Added new beta Sandbox feature that provides
+    * full offline testing (to avoid rate limits in development)
+    * success and error state mocking
+    * docs https://docs.fabric.io/android/digits/sandbox.html
+* Added new beta Analytics feature that provides
+    * out of the box Answers integration
+    * support for custom analytics providers
+    * integration points for full funnel visibility
+    * docs https://docs.fabric.io/android/digits/analytics.html
+* Updated Friend Finder feature to provide
+    * a summary code in the event of failure
+    * feedback when a user cancels the flow
+    * upload bandwidth optimizations
+    * docs https://docs.fabric.io/android/digits/find-friends.html
+* Updated Authentication feature to provide
+    * fixed Russian and Serbian translations
+    * improved input feedback to end-users
+    * feedback when a user cancels the flow
+    * consistent cleanup after activities finish
+    * docs https://docs.fabric.io/android/digits/digits.html
+
 ## v1.10.3
 * Log errors from contact upload requests in logcat.
 * Fixed security issue where certificate pinning wasn't happening for some requests.
