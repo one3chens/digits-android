@@ -98,7 +98,8 @@ dependencies {
     compile project(':digits')
     compile rootProject.appCompat
     compile('com.crashlytics.sdk.android:answers:1.3.6@aar')
-
+    compile('compile rootProject.answersShim')
+    
     debugCompile rootProject.leakCanary
     releaseCompile rootProject.leakCanaryNoOp
 
