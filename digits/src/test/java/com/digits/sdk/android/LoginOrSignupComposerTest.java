@@ -26,8 +26,11 @@ import android.test.mock.MockContext;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.MockDigitsApiException;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.internal.TwitterApiConstants;
 import com.twitter.sdk.android.core.models.ApiError;
 
 import org.junit.Before;
@@ -54,6 +57,7 @@ import static org.mockito.Mockito.when;
 public class LoginOrSignupComposerTest {
     Context context;
     DigitsClient digitsClient;
+    SessionManager<DigitsSession> sessionManager;
     ResultReceiver resultReceiver;
     ActivityClassManager activityClassManager;
     ArgumentCaptor<Callback> callbackCaptor;
@@ -65,6 +69,7 @@ public class LoginOrSignupComposerTest {
     RetrofitError retrofitError;
     TwitterException couldNotAuthenticateException;
     TwitterException userIsNotSdkUserException;
+    TwitterException guestAuthException;
     TwitterException registrationRateExceededException;
     Resources resources;
     DigitsEventDetailsBuilder digitsEventDetailsBuilder;
@@ -79,6 +84,7 @@ public class LoginOrSignupComposerTest {
     public void setUp() throws Exception {
         context = mock(MockContext.class);
         digitsClient = mock(DigitsClient.class);
+        sessionManager = mock(SessionManager.class);
         resultReceiver = mock(ResultReceiver.class);
         activityClassManager = mock(ActivityClassManager.class);
         callbackCaptor = ArgumentCaptor.forClass(Callback.class);
@@ -123,13 +129,18 @@ public class LoginOrSignupComposerTest {
                         TwitterApiErrorConstants.DEVICE_REGISTRATION_RATE_EXCEEDED), null,
                         retrofitError);
 
+        guestAuthException = new MockDigitsApiException
+                (new ApiError("Message",
+                        TwitterApiConstants.Errors.GUEST_AUTH_ERROR_CODE), null,
+                        retrofitError);
+
     }
 
     @Test
     public void testLoginSuccess() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager, digitsEventDetailsBuilder){
+                digitsClient, sessionManager, PHONE_WITH_COUNTRY_CODE, Verification.sms, true,
+                resultReceiver, activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertExpectedLoginIntent(intent);
@@ -153,8 +164,8 @@ public class LoginOrSignupComposerTest {
     @Test
     public void testSignupSuccess() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager, digitsEventDetailsBuilder){
+                digitsClient, sessionManager, PHONE_WITH_COUNTRY_CODE, Verification.sms, true,
+                resultReceiver, activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertExpectedSignupIntent(intent);
@@ -185,8 +196,8 @@ public class LoginOrSignupComposerTest {
     public void testLoginSuccess_authConfigNull() {
         authResponse.authConfig = null;
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager, digitsEventDetailsBuilder){
+                digitsClient, sessionManager, PHONE_WITH_COUNTRY_CODE, Verification.sms, true,
+                resultReceiver, activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertEquals(true, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL, false));
@@ -215,8 +226,8 @@ public class LoginOrSignupComposerTest {
         authResponse.normalizedPhoneNumber = null;
 
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager, digitsEventDetailsBuilder){
+                digitsClient, sessionManager, PHONE_WITH_COUNTRY_CODE, Verification.sms, true,
+                resultReceiver, activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertEquals(PHONE_WITH_COUNTRY_CODE,
@@ -242,8 +253,8 @@ public class LoginOrSignupComposerTest {
     @Test
     public void testLoginFailure() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager, digitsEventDetailsBuilder){
+                digitsClient, sessionManager, PHONE_WITH_COUNTRY_CODE, Verification.sms, true,
+                resultReceiver, activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertTrue(false);
@@ -267,10 +278,38 @@ public class LoginOrSignupComposerTest {
     }
 
     @Test
+    public void testLoginGuestAuthFailure() {
+        LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
+                digitsClient, sessionManager, PHONE_WITH_COUNTRY_CODE, Verification.sms, true,
+                resultReceiver, activityClassManager, digitsEventDetailsBuilder){
+            @Override
+            public void success(final Intent intent){
+                assertTrue(false);
+            }
+
+            @Override
+            public void failure(DigitsException digitsException) {
+                assertEquals(TwitterApiConstants.Errors.GUEST_AUTH_ERROR_CODE,
+                        digitsException.getErrorCode());
+            }
+        };
+
+        loginOrSignupComposer.start();
+
+        //Simulate Auth failure
+        verify(digitsClient).authDevice(anyString(), any(Verification.class),
+                callbackCaptor.capture());
+
+        final Callback loginCallback = callbackCaptor.getValue();
+        loginCallback.failure(guestAuthException);
+        verify(sessionManager).clearSession(TwitterSession.LOGGED_OUT_USER_ID);
+    }
+
+    @Test
     public void testSignupFailure() {
         LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
-                digitsClient, PHONE_WITH_COUNTRY_CODE, Verification.sms, true, resultReceiver,
-                activityClassManager, digitsEventDetailsBuilder){
+                digitsClient, sessionManager, PHONE_WITH_COUNTRY_CODE, Verification.sms, true,
+                resultReceiver, activityClassManager, digitsEventDetailsBuilder){
             @Override
             public void success(final Intent intent){
                 assertTrue(false);
@@ -298,6 +337,41 @@ public class LoginOrSignupComposerTest {
 
         final Callback signupCallback = callbackCaptor.getValue();
         signupCallback.failure(registrationRateExceededException);
+    }
+
+    @Test
+    public void testSignupGuestAuthFailure() {
+        LoginOrSignupComposer loginOrSignupComposer = new LoginOrSignupComposer(context,
+                digitsClient, sessionManager, PHONE_WITH_COUNTRY_CODE, Verification.sms, true,
+                resultReceiver, activityClassManager, digitsEventDetailsBuilder){
+            @Override
+            public void success(final Intent intent){
+                assertTrue(false);
+            }
+
+            @Override
+            public void failure(DigitsException digitsException) {
+                assertEquals(TwitterApiConstants.Errors.GUEST_AUTH_ERROR_CODE,
+                        digitsException.getErrorCode());
+            }
+        };
+
+        loginOrSignupComposer.start();
+
+        //Simulate Auth failure
+        verify(digitsClient).authDevice(anyString(), any(Verification.class),
+                callbackCaptor.capture());
+
+        final Callback loginCallback = callbackCaptor.getValue();
+        loginCallback.failure(couldNotAuthenticateException);
+
+        //Simulate Signup failure
+        verify(digitsClient).registerDevice(anyString(), any(Verification.class),
+                callbackCaptor.capture());
+
+        final Callback signupCallback = callbackCaptor.getValue();
+        signupCallback.failure(guestAuthException);
+        verify(sessionManager).clearSession(TwitterSession.LOGGED_OUT_USER_ID);
     }
 
     private void assertExpectedLoginIntent(Intent intent){

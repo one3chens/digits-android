@@ -48,12 +48,14 @@ public class DummyPhoneNumberController extends PhoneNumberController {
 
     protected abstract class DummyLoginOrSignupComposer extends LoginOrSignupComposer {
 
-        DummyLoginOrSignupComposer(Context context, DigitsClient digitsClient, String phoneNumber,
-                                   Verification verificationType, boolean emailCollection,
-                                   ResultReceiver resultReceiver,
+        DummyLoginOrSignupComposer(Context context, DigitsClient digitsClient,
+                                   SessionManager<DigitsSession> sessionManager,
+                                   String phoneNumber, Verification verificationType,
+                                   boolean emailCollection, ResultReceiver resultReceiver,
                                    ActivityClassManager activityClassManager,
                                    DigitsEventDetailsBuilder metricsBuilder) {
-            super(context, digitsClient, phoneNumber, verificationType, emailCollection,
+            super(context, digitsClient, sessionManager, phoneNumber, verificationType,
+                    emailCollection,
                     resultReceiver, activityClassManager, metricsBuilder);
         }
     }

@@ -84,7 +84,7 @@ class LoginCodeController extends DigitsControllerImpl {
             CommonUtils.hideKeyboard(context, editText);
             final String code = editText.getText().toString();
             digitsClient.loginDevice(requestId, userId, code,
-                    new DigitsCallback<DigitsSessionResponse>(context, this) {
+                    new DigitsCallback<DigitsSessionResponse>(context, this, sessionManager) {
                         public void success(Result<DigitsSessionResponse> result) {
                             digitsEventCollector.loginCodeSuccess(
                                     eventDetailsBuilder
@@ -117,7 +117,7 @@ class LoginCodeController extends DigitsControllerImpl {
                            final Verification verificationType) {
         activeButton.showProgress();
         digitsClient.authDevice(phoneNumber, verificationType,
-                new DigitsCallback<AuthResponse>(context, this) {
+                new DigitsCallback<AuthResponse>(context, this, sessionManager) {
                     @Override
                     public void success(final Result<AuthResponse> result) {
                         activeButton.showFinish();
@@ -160,7 +160,7 @@ class LoginCodeController extends DigitsControllerImpl {
 
     private void emailRequest(final Context context, final DigitsSession session) {
         getAccountService().verifyAccount
-                (new DigitsCallback<VerifyAccountResponse>(context, this) {
+                (new DigitsCallback<VerifyAccountResponse>(context, this, sessionManager) {
                     @Override
                     public void success(Result<VerifyAccountResponse> result) {
                         final DigitsSession newSession =

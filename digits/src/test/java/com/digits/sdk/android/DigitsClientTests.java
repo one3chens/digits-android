@@ -566,12 +566,14 @@ public class DigitsClientTests {
 
         protected abstract class DummyLoginOrSignupComposer extends LoginOrSignupComposer {
             DummyLoginOrSignupComposer(Context context, DigitsClient digitsClient,
+                                       SessionManager<DigitsSession> sessionManager,
                                        String phoneNumber, Verification verificationType,
                                        boolean emailCollection, ResultReceiver resultReceiver,
                                        ActivityClassManager activityClassManager,
                                        DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
-                super(context, digitsClient, phoneNumber, verificationType, emailCollection,
-                        resultReceiver, activityClassManager, digitsEventDetailsBuilder);
+                super(context, digitsClient, sessionManager, phoneNumber, verificationType,
+                        emailCollection, resultReceiver, activityClassManager,
+                        digitsEventDetailsBuilder);
             }
         }
     }

@@ -25,7 +25,9 @@ import android.os.ResultReceiver;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -34,6 +36,7 @@ abstract class LoginOrSignupComposer {
     protected final Callback<DeviceRegistrationResponse> deviceRegCallback;
     protected final Callback<AuthResponse> loginCallback;
     final DigitsClient digitsClient;
+    private final SessionManager<DigitsSession> sessionManager;
     final String phoneNumber;
     final Verification verificationType;
     final boolean emailCollection;
@@ -42,6 +45,7 @@ abstract class LoginOrSignupComposer {
     final DigitsEventDetailsBuilder eventDetailsBuilder;
 
     LoginOrSignupComposer(final Context context, final DigitsClient digitsClient,
+                          final SessionManager<DigitsSession> sessionManager,
                           final String phoneNumber, final Verification verificationType,
                           boolean emailCollection, ResultReceiver resultReceiver,
                           ActivityClassManager activityClassManager,
@@ -54,6 +58,7 @@ abstract class LoginOrSignupComposer {
         this.resultReceiver = resultReceiver;
         this.activityClassManager = activityClassManager;
         this.eventDetailsBuilder = eventDetailsBuilder;
+        this.sessionManager = sessionManager;
 
         loginCallback = new Callback<AuthResponse>() {
             @Override
@@ -69,6 +74,12 @@ abstract class LoginOrSignupComposer {
                         + digitsException.getMessage());
                 if (digitsException instanceof CouldNotAuthenticateException) {
                     beginRegistration();
+                } else if (digitsException instanceof AppAuthErrorException
+                        || digitsException instanceof GuestAuthErrorException) {
+                    Fabric.getLogger().e(Digits.TAG,
+                            DigitsConstants.GUEST_AUTH_REFRESH_LOG_MESSAGE);
+                    clearGuestSession(LoginOrSignupComposer.this.sessionManager);
+                    LoginOrSignupComposer.this.failure(digitsException);
                 } else {
                     LoginOrSignupComposer.this.failure(digitsException);
                 }
@@ -84,12 +95,24 @@ abstract class LoginOrSignupComposer {
             @Override
             public void failure(TwitterException twitterException) {
                 final DigitsException digitsException = createDigitsException(twitterException);
+                if (digitsException instanceof AppAuthErrorException
+                        || digitsException instanceof GuestAuthErrorException){
+                    Fabric.getLogger().e(Digits.TAG, "Refreshing guest auth token");
+                    clearGuestSession(LoginOrSignupComposer.this.sessionManager);
+                }
                 Fabric.getLogger().e(Digits.TAG, "HTTP Error: " + twitterException.getMessage() +
                         ", API Error: " + "" + digitsException.getErrorCode() + ", User Message: "
                         + digitsException.getMessage());
                 LoginOrSignupComposer.this.failure(digitsException);
             }
         };
+    }
+
+    private void clearGuestSession(SessionManager<DigitsSession> sessionManager) {
+        if (sessionManager != null) {
+            Fabric.getLogger().e(Digits.TAG, DigitsConstants.GUEST_AUTH_REFRESH_LOG_MESSAGE);
+            sessionManager.clearSession(TwitterSession.LOGGED_OUT_USER_ID);
+        }
     }
 
     public abstract void success(final Intent intent);
@@ -147,5 +170,4 @@ abstract class LoginOrSignupComposer {
         return DigitsException.create(
                 confirmationErrorCodes, exception);
     }
-
 }

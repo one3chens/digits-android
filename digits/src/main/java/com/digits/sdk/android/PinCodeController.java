@@ -83,7 +83,7 @@ class PinCodeController extends DigitsControllerImpl {
             CommonUtils.hideKeyboard(context, editText);
             final String code = editText.getText().toString();
             digitsClient.verifyPin(requestId, userId, code,
-                    new DigitsCallback<DigitsSessionResponse>(context, this) {
+                    new DigitsCallback<DigitsSessionResponse>(context, this, sessionManager) {
                         @Override
                         public void success(Result<DigitsSessionResponse> result) {
                             digitsEventCollector.twoFactorPinVerificationSuccess(eventDetailsBuilder
@@ -109,7 +109,7 @@ class PinCodeController extends DigitsControllerImpl {
 
     private void emailRequest(final Context context, final DigitsSession session) {
         getAccountService().verifyAccount
-                (new DigitsCallback<VerifyAccountResponse>(context, this) {
+                (new DigitsCallback<VerifyAccountResponse>(context, this, sessionManager) {
                     @Override
                     public void success(Result<VerifyAccountResponse>
                                                 result) {

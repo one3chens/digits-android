@@ -20,37 +20,50 @@ package com.digits.sdk.android;
 import android.content.Context;
 import android.util.Log;
 
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.SessionManager;
+import com.twitter.sdk.android.core.TwitterApiException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.internal.TwitterApiConstants;
+
 import io.fabric.sdk.android.Fabric;
 import io.fabric.sdk.android.FabricTestUtils;
 import io.fabric.sdk.android.KitStub;
 import io.fabric.sdk.android.Logger;
-
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterException;
+import retrofit.RetrofitError;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 public class DigitsCallbackTests extends DigitsAndroidTestCase {
-
     private StubDigitsCallback digitsCallback;
     private DigitsController controller;
+    private SessionManager<DigitsSession> sessionManager;
+    private RetrofitError retrofitError;
+    private TwitterApiException twitterApiException;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         controller = mock(DigitsController.class);
-        digitsCallback = new StubDigitsCallback(controller);
+        sessionManager = mock(SessionManager.class);
+        retrofitError = mock(RetrofitError.class);
+        digitsCallback = new StubDigitsCallback(controller, sessionManager);
+        twitterApiException = mock(TwitterApiException.class);
+        retrofitError = mock(RetrofitError.class);
         when(controller.getErrors()).thenReturn(mock(ErrorCodes.class));
+        when(twitterApiException.getRetrofitError()).thenReturn(retrofitError);
+        when(retrofitError.isNetworkError()).thenReturn(false);
     }
 
     public void testFailure() throws Exception {
         try {
             final Logger mockLogger = mock(Logger.class);
             when(mockLogger.isLoggable(Digits.TAG, Log.ERROR)).thenReturn(true);
+            when(twitterApiException.getErrorCode()).thenReturn(-1);
+            when(twitterApiException.getErrorMessage()).thenReturn("");
 
             final Fabric fabric = new Fabric.Builder(getContext())
                     .kits(new KitStub())
@@ -59,9 +72,34 @@ public class DigitsCallbackTests extends DigitsAndroidTestCase {
                     .build();
             FabricTestUtils.with(fabric);
 
-            digitsCallback.failure(new TwitterException(""));
+            digitsCallback.failure(twitterApiException);
             verify(controller).handleError(any(Context.class), any(DigitsException.class));
-            verify(mockLogger).e(Digits.TAG, "HTTP Error: , API Error: -1, User Message: null");
+            verify(mockLogger).e(Digits.TAG, "HTTP Error: null, API Error: -1, User Message: null");
+        } finally {
+            FabricTestUtils.resetFabric();
+        }
+    }
+
+    public void testFailure_guestAuthFailure() throws Exception {
+        try {
+            final Logger mockLogger = mock(Logger.class);
+            when(mockLogger.isLoggable(Digits.TAG, Log.ERROR)).thenReturn(true);
+            when(twitterApiException.getErrorCode())
+                    .thenReturn(TwitterApiConstants.Errors.GUEST_AUTH_ERROR_CODE);
+            when(twitterApiException.getErrorMessage()).thenReturn("");
+
+            final Fabric fabric = new Fabric.Builder(getContext())
+                    .kits(new KitStub())
+                    .debuggable(false)
+                    .logger(mockLogger)
+                    .build();
+            FabricTestUtils.with(fabric);
+
+            digitsCallback.failure(twitterApiException);
+            verify(controller).handleError(any(Context.class), any(DigitsException.class));
+            verify(mockLogger).e(Digits.TAG,
+                    DigitsConstants.GUEST_AUTH_REFRESH_LOG_MESSAGE);
+            verify(sessionManager).clearSession(TwitterSession.LOGGED_OUT_USER_ID);
         } finally {
             FabricTestUtils.resetFabric();
         }
@@ -75,8 +113,9 @@ public class DigitsCallbackTests extends DigitsAndroidTestCase {
     private class StubDigitsCallback extends DigitsCallback<String> {
         boolean isCalled = false;
 
-        StubDigitsCallback(DigitsController controller) {
-            super(null, controller);
+        StubDigitsCallback(DigitsController controller,
+                           SessionManager<DigitsSession> sessionManager) {
+            super(null, controller, sessionManager);
         }
 
         @Override

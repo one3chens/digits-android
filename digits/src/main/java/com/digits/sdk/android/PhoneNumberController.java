@@ -101,7 +101,7 @@ class PhoneNumberController extends DigitsControllerImpl {
                 .withCountry(normalizedPhoneNumber.getCountryIso())
                 .withCurrentTime(System.currentTimeMillis());
 
-        return new LoginOrSignupComposer(context, digitsClient, phoneNumber,
+        return new LoginOrSignupComposer(context, digitsClient, sessionManager, phoneNumber,
                 getVerificationType(), this.emailCollection, resultReceiver,
                 activityClassManager, dm) {
 

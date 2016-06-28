@@ -79,7 +79,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
             CommonUtils.hideKeyboard(context, editText);
             final String code = editText.getText().toString();
             digitsClient.createAccount(code, phoneNumber,
-                    new DigitsCallback<DigitsUser>(context, this) {
+                    new DigitsCallback<DigitsUser>(context, this, sessionManager) {
                         @Override
                         public void success(Result<DigitsUser> result) {
                             digitsEventCollector.signupSuccess(eventDetailsBuilder
@@ -107,7 +107,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                            final Verification verificationType) {
         activeButton.showProgress();
         digitsClient.registerDevice(phoneNumber, verificationType,
-            new DigitsCallback<DeviceRegistrationResponse>(context, this) {
+            new DigitsCallback<DeviceRegistrationResponse>(context, this, sessionManager) {
                 @Override
                 public void success(Result<DeviceRegistrationResponse> result) {
                     activeButton.showFinish();

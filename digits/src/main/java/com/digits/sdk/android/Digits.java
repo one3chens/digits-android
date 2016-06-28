@@ -52,7 +52,6 @@ public class Digits extends Kit<Void> {
     static final String PREF_KEY_ACTIVE_SESSION = "active_session";
     static final String PREF_KEY_SESSION = "session";
     static final String SESSION_PREF_FILE_NAME = "session_store";
-
     private final DigitsScribeClient digitsScribeClient;
     private final DigitsEventCollector digitsEventCollector;
     private final SandboxConfig sandboxConfig;

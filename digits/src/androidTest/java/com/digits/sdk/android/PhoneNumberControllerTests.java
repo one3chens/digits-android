@@ -172,7 +172,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
             assertNotNull(callbackCaptor.getValue());
             return callbackCaptor.getValue();
         } else {
-            return new DigitsCallback<AuthResponse>(context, controller) {
+            return new DigitsCallback<AuthResponse>(context, controller, sessionManager) {
                 @Override
                 public void success(Result<AuthResponse> result) {
                     // If it was a success, we should have valid input

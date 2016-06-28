@@ -73,7 +73,8 @@ public class EmailRequestController extends DigitsControllerImpl {
             if (session != null && !session.isLoggedOutUser()) {
                 final ApiInterface service =
                         getSdkService();
-                service.email(email, new DigitsCallback<DigitsSessionResponse>(context, this) {
+                service.email(email, new DigitsCallback<DigitsSessionResponse>(context, this,
+                        sessionManager) {
                     @Override
                     public void success(Result<DigitsSessionResponse> result) {
                         digitsEventCollector.submitEmailSuccess(eventDetailsBuilder

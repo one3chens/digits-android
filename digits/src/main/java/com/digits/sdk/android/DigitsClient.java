@@ -212,8 +212,8 @@ public class DigitsClient {
         final ActivityClassManager activityClassManager =
                 Digits.getInstance().getActivityClassManager();
 
-        return new LoginOrSignupComposer(context, this, digitsAuthConfig.phoneNumber,
-                Verification.sms, digitsAuthConfig.isEmailRequired,
+        return new LoginOrSignupComposer(context, this, sessionManager,
+                digitsAuthConfig.phoneNumber, Verification.sms, digitsAuthConfig.isEmailRequired,
                 createResultReceiver(digitsAuthConfig.authCallback), activityClassManager,
                 outerDetails) {
 

@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
 import com.twitter.sdk.android.core.TwitterApiException;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.internal.TwitterApiConstants;
 
 import retrofit.RetrofitError;
 
@@ -60,6 +61,10 @@ public class DigitsException extends RuntimeException {
             return new CouldNotAuthenticateException(message, error, config);
         } else if (error == TwitterApiErrorConstants.OPERATOR_UNSUPPORTED) {
             return new OperatorUnsupportedException(message, error, config);
+        } else if (error == TwitterApiConstants.Errors.APP_AUTH_ERROR_CODE) {
+            return new AppAuthErrorException(message, error, config);
+        } else if (error == TwitterApiConstants.Errors.GUEST_AUTH_ERROR_CODE) {
+            return new GuestAuthErrorException(message, error, config);
         } else if (isUnrecoverable(error)) {
             return new UnrecoverableException(message, error, config);
         } else {
