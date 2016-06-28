@@ -81,6 +81,7 @@ dependencies {
     }
     compile rootProject.fabric
     compile rootProject.appCompat
+    compile rootProject.retrofitMock
     compile rootProject.answersShim
 
     androidTestCompile rootProject.mockito
