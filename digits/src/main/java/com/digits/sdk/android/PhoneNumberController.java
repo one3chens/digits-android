@@ -86,7 +86,7 @@ class PhoneNumberController extends DigitsControllerImpl {
 
     LoginOrSignupComposer createCompositeCallback(final Context context, final String phoneNumber) {
         final DigitsEventDetailsBuilder dm = eventDetailsBuilder
-                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
+                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getCountry())
                 .withCurrentTime(System.currentTimeMillis());
 
         return new LoginOrSignupComposer(context, digitsClient, sessionManager, phoneNumber,
@@ -97,7 +97,7 @@ class PhoneNumberController extends DigitsControllerImpl {
             public void success(final Intent intent) {
                 final DigitsEventDetailsBuilder digitsEventDetailsBuilder = eventDetailsBuilder
                     .withCountry(((CountryInfo) countryCodeSpinner.getTag())
-                            .locale.getISO3Country())
+                            .locale.getCountry())
                     .withCurrentTime(System.currentTimeMillis());
 
                 sendButton.showFinish();
@@ -139,7 +139,7 @@ class PhoneNumberController extends DigitsControllerImpl {
 
     private void scribeRequest() {
         final DigitsEventDetails digitsEventDetails = this.eventDetailsBuilder
-                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country())
+                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getCountry())
                 .withCurrentTime(System.currentTimeMillis())
                 .build();
 
@@ -202,7 +202,7 @@ class PhoneNumberController extends DigitsControllerImpl {
         intent.putExtra(DigitsClient.EXTRA_RESULT_RECEIVER, receiver);
         intent.putExtra(DigitsClient.EXTRA_FALLBACK_REASON, reason);
         intent.putExtra(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder
-                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getISO3Country()));
+                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getCountry()));
         context.startActivity(intent);
     }
 
@@ -222,11 +222,8 @@ class PhoneNumberController extends DigitsControllerImpl {
     protected void sendFailure(String message) {
         final Bundle bundle = new Bundle();
         bundle.putString(LoginResultReceiver.KEY_ERROR, message);
-        final PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(getNumber(
-            ((CountryInfo) countryCodeSpinner.getTag()).countryCode,
-            editText.getText().toString()));
         bundle.putParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER, eventDetailsBuilder
-                .withCountry(phoneNumber.getCountryIso()));
+                .withCountry(((CountryInfo) countryCodeSpinner.getTag()).locale.getCountry()));
         resultReceiver.send(LoginResultReceiver.RESULT_ERROR, bundle);
     }
 }
