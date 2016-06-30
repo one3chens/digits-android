@@ -41,8 +41,7 @@ public class DummyPhoneNumberController extends PhoneNumberController {
     }
 
     @Override
-    LoginOrSignupComposer createCompositeCallback(final Context context, final String phoneNumber,
-                                                  final PhoneNumber normalizedPhoneNumber) {
+    LoginOrSignupComposer createCompositeCallback(final Context context, final String phoneNumber) {
         return this.loginOrSignupComposer;
     }
 
