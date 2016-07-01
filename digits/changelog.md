@@ -3,6 +3,13 @@
 
 ## Unreleased
 
+## v1.11.1
+* Bugs Fixed
+    *OSS gradle files breakages.
+    *Crash caused when digitsLoginFailure event was reported without countryCode
+    *Users being unable to login when guest auth expires on the service but not on the client.
+    *Delete contacts throws exception in okhttp 2.3.1+
+
 ## v1.11.0
 * Added new beta Sandbox feature that provides
     * full offline testing (to avoid rate limits in development)
