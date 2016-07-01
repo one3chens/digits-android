@@ -218,7 +218,7 @@ public class ContactsClientTests {
 
         contactsClient.deleteAllUploadedContacts(callback);
 
-        verify(sdkService).deleteAll(deleteCaptor.capture());
+        verify(sdkService).deleteAll(eq(""), deleteCaptor.capture());
         assertNotNull(deleteCaptor.getValue());
 
         verify(digitsEventCollector).startDeleteContacts(any(ContactsDeletionStartDetails.class));

@@ -142,7 +142,9 @@ public class ContactsClient {
      */
     public void deleteAllUploadedContacts(final ContactsCallback<Response> callback) {
         digitsEventCollector.startDeleteContacts(new ContactsDeletionStartDetails());
-        getDigitsApiService().deleteAll(
+        //We pass an empty String into the body to work around the an error in Okhttp 2.3+
+        //See: https://github.com/square/retrofit/issues/854
+        getDigitsApiService().deleteAll("",
                 new DeleteContactsCallbackWrapper(callback, digitsEventCollector));
     }
 

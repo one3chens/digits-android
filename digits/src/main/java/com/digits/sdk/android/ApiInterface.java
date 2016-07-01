@@ -18,6 +18,7 @@
 package com.digits.sdk.android;
 
 import com.twitter.sdk.android.core.Callback;
+
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.Field;
@@ -75,7 +76,7 @@ public interface ApiInterface {
         UploadResponse upload(@Body Vcards vcards);
 
         @POST("/1.1/contacts/destroy/all.json")
-        void deleteAll(Callback<Response> cb);
+        void deleteAll(@Body String body, Callback<Response> cb);
 
         @GET("/1.1/contacts/users_and_uploaded_by.json")
         void usersAndUploadedBy(@Query("cursor") String cursor,

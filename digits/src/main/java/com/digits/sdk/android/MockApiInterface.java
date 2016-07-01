@@ -131,7 +131,7 @@ public class MockApiInterface implements ApiInterface {
     }
 
     @Override
-    public void deleteAll(Callback<Response> cb) {
+    public void deleteAll(@Body String body, Callback<Response> cb) {
         final Response response = new Response("/1.1/contacts/destroy/all.json", 200, "ok",
                 Collections.<Header>emptyList(), new TypedByteArray("application/json",
         new Gson().toJson("response").getBytes()));
