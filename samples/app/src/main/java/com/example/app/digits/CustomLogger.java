@@ -31,31 +31,35 @@ import com.digits.sdk.android.ContactsPermissionForDigitsImpressionDetails;
 import com.digits.sdk.android.ContactsUploadFailureDetails;
 import com.digits.sdk.android.ContactsUploadStartDetails;
 import com.digits.sdk.android.ContactsUploadSuccessDetails;
+import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsEventLogger;
 import com.digits.sdk.android.DigitsEventDetails;
 import com.digits.sdk.android.LogoutEventDetails;
 
-public class AnswersLogger extends DigitsEventLogger {
+/**
+ * Log events to any analytics provider of your choice by implementing a CustomLogger injected into
+ * {@link Digits.Builder#withDigitsEventLogger(DigitsEventLogger)}()}.
+ * 
+ * In this example we log events to Fabric's {@link Answers}.
+ */
+public class CustomLogger extends DigitsEventLogger {
     @Override
     public void loginBegin(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "loginBegin")
+        Answers.getInstance().logCustom(new CustomEvent("LoginBegin")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void phoneNumberImpression(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "phoneNumberImpression")
+        Answers.getInstance().logCustom(new CustomEvent("PhoneNumberImpression")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void phoneNumberSubmit(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "phoneNumberSubmit")
+        Answers.getInstance().logCustom(new CustomEvent("PhoneNumberSubmit")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -63,8 +67,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void phoneNumberSuccess(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "phoneNumberSuccess")
+        Answers.getInstance().logCustom(new CustomEvent("PhoneNumberSuccess")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -72,8 +75,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void confirmationCodeImpression(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "confirmationCodeImpression")
+        Answers.getInstance().logCustom(new CustomEvent("ConfirmationCodeImpression")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -81,8 +83,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void confirmationCodeSubmit(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "confirmationCodeSubmit")
+        Answers.getInstance().logCustom(new CustomEvent("ConfirmationCodeSubmit")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -90,8 +91,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void confirmationCodeSuccess(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "confirmationCodeSuccess")
+        Answers.getInstance().logCustom(new CustomEvent("ConfirmationCodeSuccess")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -99,8 +99,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void twoFactorPinImpression(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "twoFactorPinImpression")
+        Answers.getInstance().logCustom(new CustomEvent("TwoFactorPinImpression")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -108,8 +107,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void twoFactorPinSubmit(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "twoFactorPinSubmit")
+        Answers.getInstance().logCustom(new CustomEvent("TwoFactorPinSubmit")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -117,8 +115,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void twoFactorPinSuccess(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "twoFactorPinSuccess")
+        Answers.getInstance().logCustom(new CustomEvent("TwoFactorPinSuccess")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -126,8 +123,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void emailImpression(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "emailImpression")
+        Answers.getInstance().logCustom(new CustomEvent("EmailImpression")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -135,8 +131,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void emailSubmit(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "emailSubmit")
+        Answers.getInstance().logCustom(new CustomEvent("EmailSubmit")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -144,8 +139,7 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void emailSuccess(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "emailSuccess")
+        Answers.getInstance().logCustom(new CustomEvent("EmailSuccess")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -153,32 +147,28 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void failureImpression(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "failureImpression")
+        Answers.getInstance().logCustom(new CustomEvent("FailureImpression")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void failureRetryClick(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "failureRetryClick")
+        Answers.getInstance().logCustom(new CustomEvent("FailureRetryClick")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void failureDismissClick(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "failureDismissClick")
+        Answers.getInstance().logCustom(new CustomEvent("FailureDismissClick")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void loginSuccess(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "loginSuccess")
+        Answers.getInstance().logCustom(new CustomEvent("LoginSuccess")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
@@ -186,16 +176,15 @@ public class AnswersLogger extends DigitsEventLogger {
 
     @Override
     public void loginFailure(DigitsEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "loginFailure")
+        Answers.getInstance().logCustom(new CustomEvent("LoginFailure")
                 .putCustomAttribute("Language", details.language)
+                .putCustomAttribute("Country", details.country)
                 .putCustomAttribute("ElapsedTime", details.elapsedTimeInMillis / 1000));
     }
 
     @Override
     public void logout(LogoutEventDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Login-Digits")
-                .putCustomAttribute("Action", "logout")
+        Answers.getInstance().logCustom(new CustomEvent("Logout")
                 .putCustomAttribute("Language", details.language)
                 .putCustomAttribute("Country", details.country));
     }
@@ -203,80 +192,68 @@ public class AnswersLogger extends DigitsEventLogger {
     @Override
     public void contactsPermissionForDigitsImpression(
             ContactsPermissionForDigitsImpressionDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Permissions-Digits")
-                .putCustomAttribute("Action", "contactsPermissionForDigitsImpression"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsPermissionForDigitsImpression"));
     }
 
     @Override
     public void contactsPermissionForDigitsApproved(
             ContactsPermissionForDigitsApprovedDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Permissions-Digits")
-                .putCustomAttribute("Action", "contactsPermissionForDigitsApproved"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsPermissionForDigitsApproved"));
     }
 
     @Override
     public void contactsPermissionForDigitsDeferred(
             ContactsPermissionForDigitsDeclinedDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Permissions-Digits")
-                .putCustomAttribute("Action", "contactsPermissionForDigitsDeferred"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsPermissionForDigitsDeferred"));
     }
 
     @Override
     public void contactsUploadStart(ContactsUploadStartDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Upload-Digits")
-                .putCustomAttribute("Action", "contactsUploadStart"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsUploadStart"));
     }
 
     @Override
     public void contactsUploadSuccess(ContactsUploadSuccessDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Upload-Digits")
-                .putCustomAttribute("Action", "contactsUploadSuccess")
+        Answers.getInstance().logCustom(new CustomEvent("ContactsUploadSuccess")
                 .putCustomAttribute("Uploaded", details.successContacts)
                 .putCustomAttribute("Total", details.totalContacts));
     }
 
     @Override
     public void contactsUploadFailure(ContactsUploadFailureDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Upload-Digits")
-                .putCustomAttribute("Action", "contactsUploadFailure")
+        Answers.getInstance().logCustom(new CustomEvent("ContactsUploadFailure")
                 .putCustomAttribute("Failed", details.failedContacts)
                 .putCustomAttribute("Total", details.totalContacts));
     }
 
     @Override
     public void contactsLookupStart(ContactsLookupStartDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Lookup-Digits")
-                .putCustomAttribute("Action", "contactsLookupStart"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsLookupStart"));
     }
 
     @Override
     public void contactsLookupSuccess(ContactsLookupSuccessDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Lookup-Digits")
-                .putCustomAttribute("Action", "contactsLookupSuccess")
+        Answers.getInstance().logCustom(new CustomEvent("ContactsLookupSuccess")
                 .putCustomAttribute("Matches", details.matchCount));
     }
 
     @Override
     public void contactsLookupFailure(ContactsLookupFailureDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Lookup-Digits")
-                .putCustomAttribute("Action", "contactsLookupFailure"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsLookupFailure"));
     }
 
     @Override
     public void contactsDeletionStart(ContactsDeletionStartDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Deletion-Digits")
-                .putCustomAttribute("Action", "contactsDeletionStart"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsDeletionStart"));
     }
 
     @Override
     public void contactsDeletionSuccess(ContactsDeletionSuccessDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Deletion-Digits")
-                .putCustomAttribute("Action", "contactsDeletionSuccess"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsDeletionSuccess"));
     }
 
     @Override
     public void contactsDeletionFailure(ContactsDeletionFailureDetails details) {
-        Answers.getInstance().logCustom(new CustomEvent("Contacts-Deletion-Digits")
-                .putCustomAttribute("Action", "contactsDeletionFailure"));
+        Answers.getInstance().logCustom(new CustomEvent("ContactsDeletionFailure"));
     }
 }
