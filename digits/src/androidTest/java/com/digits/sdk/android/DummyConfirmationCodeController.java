@@ -18,7 +18,6 @@ package com.digits.sdk.android;
 
 import android.os.CountDownTimer;
 import android.os.ResultReceiver;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.twitter.sdk.android.core.SessionManager;
@@ -29,7 +28,7 @@ public class DummyConfirmationCodeController extends ConfirmationCodeController 
     DummyConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                                     InvertedStateButton resendButton,
                                     InvertedStateButton callMeButton,
-                                    EditText phoneEditText, String phoneNumber,
+                                    SpacedEditText phoneEditText, String phoneNumber,
                                     SessionManager<DigitsSession> sessionManager,
                                     DigitsClient client, ErrorCodes errors,
                                     ActivityClassManager activityClassManager,

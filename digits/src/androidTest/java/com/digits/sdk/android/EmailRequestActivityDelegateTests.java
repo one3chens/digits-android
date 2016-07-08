@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.InputType;
 import android.text.SpannedString;
-import android.view.View;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
@@ -109,7 +108,7 @@ public class EmailRequestActivityDelegateTests extends
     }
 
     public void testGetLayoutId() {
-        assertEquals(R.layout.dgts__activity_confirmation, delegate.getLayoutId());
+        assertEquals(R.layout.dgts__activity_email, delegate.getLayoutId());
     }
 
     @Override
@@ -151,30 +150,7 @@ public class EmailRequestActivityDelegateTests extends
         assertNotNull(details.elapsedTimeInMillis);
     }
 
-    public void testSetUpEditPhoneNumberButton() {
-        delegate.setUpEditPhoneNumberLink(activity, editPhoneNumberLink, "");
-        verify(editPhoneNumberLink).setVisibility(View.GONE);
-    }
-
-    public void testSetupResendButton(){
-        delegate.setupResendButton(resendButton);
-        verify(resendButton).setVisibility(View.GONE);
-    }
-
-    public void testSetupCallMeButton(){
-        final AuthConfig config = new AuthConfig();
-        delegate.setupCallMeButton(callMeButton);
-        verify(callMeButton).setVisibility(View.GONE);
-    }
-
-    public void testSetupTimerText(){
-        final AuthConfig config = new AuthConfig();
-        delegate.setupCountDownTimer(controller, timerText, config);
-        verify(timerText).setVisibility(View.GONE);
-    }
-
     public class DummyEmailRequestActivityDelegate extends EmailRequestActivityDelegate {
-
         DummyEmailRequestActivityDelegate(DigitsEventCollector digitsEventCollector) {
             super(digitsEventCollector);
         }

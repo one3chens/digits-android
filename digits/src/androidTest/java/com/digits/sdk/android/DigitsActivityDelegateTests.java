@@ -53,6 +53,7 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
     RelativeLayout.LayoutParams layoutParams;
     TosFormatHelper tosFormatHelper;
     ArgumentCaptor<DigitsEventDetails> detailsArgumentCaptor;
+    BucketedTextChangeListener bucketedTextChangeListener;
 
     @Override
     public void setUp() throws Exception {
@@ -73,6 +74,7 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
         layoutParams = mock(RelativeLayout.LayoutParams.class);
         tosFormatHelper = mock(TosFormatHelper.class);
         detailsArgumentCaptor = ArgumentCaptor.forClass(DigitsEventDetails.class);
+        bucketedTextChangeListener = mock(DummyBucketedTextChangeListener.class);
     }
 
     public abstract T getDelegate();

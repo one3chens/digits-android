@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.twitter.sdk.android.core.Result;
@@ -37,15 +36,17 @@ class LoginCodeController extends DigitsControllerImpl {
     private final String phoneNumber;
     private final Boolean emailCollection;
     private final InvertedStateButton resendButton, callMeButton;
+    private final SpacedEditText loginEditText;
     private String requestId;
     private final TextView timerText;
 
     LoginCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                         InvertedStateButton resendButton, InvertedStateButton callMeButton,
-                        EditText phoneEditText, String requestId, long userId, String phoneNumber,
-                        DigitsEventCollector digitsEventCollector, Boolean emailCollection,
-                        TextView timerText, DigitsEventDetailsBuilder details) {
-        this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText,
+                        SpacedEditText loginEditText, String requestId, long userId,
+                        String phoneNumber, DigitsEventCollector digitsEventCollector,
+                        Boolean emailCollection, TextView timerText,
+                        DigitsEventDetailsBuilder details) {
+        this(resultReceiver, stateButton, resendButton, callMeButton, loginEditText,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(), requestId,
                 userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
@@ -55,7 +56,7 @@ class LoginCodeController extends DigitsControllerImpl {
 
     LoginCodeController(ResultReceiver resultReceiver,
                         StateButton stateButton, InvertedStateButton resendButton,
-                        InvertedStateButton callMeButton, EditText loginEditText,
+                        InvertedStateButton callMeButton, SpacedEditText loginEditText,
                         SessionManager<DigitsSession> sessionManager, DigitsClient client,
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
                         ActivityClassManager activityClassManager,
@@ -73,16 +74,17 @@ class LoginCodeController extends DigitsControllerImpl {
                 DigitsConstants.RESEND_TIMER_DURATION_MILLIS, timerText, resendButton,
                 callMeButton);
         this.timerText = timerText;
+        this.loginEditText = loginEditText;
     }
 
     @Override
     public void executeRequest(final Context context) {
         digitsEventCollector.submitClickOnLoginScreen(
                 eventDetailsBuilder.withCurrentTime(System.currentTimeMillis()).build());
-        if (validateInput(editText.getText())) {
+        if (validateInput(loginEditText.getUnspacedText())) {
             sendButton.showProgress();
-            CommonUtils.hideKeyboard(context, editText);
-            final String code = editText.getText().toString();
+            CommonUtils.hideKeyboard(context, loginEditText);
+            final String code = loginEditText.getUnspacedText().toString();
             digitsClient.loginDevice(requestId, userId, code,
                     new DigitsCallback<DigitsSessionResponse>(context, this, sessionManager) {
                         public void success(Result<DigitsSessionResponse> result) {

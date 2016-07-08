@@ -136,7 +136,8 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
                 PHONE_WITH_COUNTRY_CODE, errors, new ActivityClassManagerImp(),
                 digitsEventCollector, true, timerTextView, digitsEventDetailsBuilder);
 
-        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable("123"));
+        when(phoneEditText.getUnspacedText())
+                .thenReturn(Editable.Factory.getInstance().newEditable("123"));
         final ArgumentCaptor<DigitsCallback> callbackArgumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
         controller.executeRequest(context);
@@ -223,7 +224,8 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         verify(timer).start();
 
         //Verify if requestId was reset
-        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable(CODE));
+        when(phoneEditText.getUnspacedText())
+                .thenReturn(Editable.Factory.getInstance().newEditable(CODE));
         controller.executeRequest(context);
         verify(digitsClient).loginDevice(eq(FAKE_REQUEST_ID), eq(USER_ID), eq(CODE),
                 any(DigitsCallback.class));
@@ -289,7 +291,8 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
     }
 
     DigitsCallback<DigitsSessionResponse> executeRequest() {
-        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable(CODE));
+        when(phoneEditText.getUnspacedText())
+                .thenReturn(Editable.Factory.getInstance().newEditable(CODE));
         final ArgumentCaptor<DigitsCallback> callbackArgumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
         controller.executeRequest(context);

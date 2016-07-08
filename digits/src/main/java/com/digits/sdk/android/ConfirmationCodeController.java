@@ -20,7 +20,6 @@ package com.digits.sdk.android;
 import android.content.Context;
 import android.net.Uri;
 import android.os.ResultReceiver;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.twitter.sdk.android.core.Result;
@@ -33,15 +32,16 @@ class ConfirmationCodeController extends DigitsControllerImpl {
     private final Boolean isEmailCollection;
     private final InvertedStateButton resendButton, callMeButton;
     private final TextView timerText;
+    private final SpacedEditText confirmationEditText;
 
     ConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                                InvertedStateButton resendButton, InvertedStateButton callMeButton,
-                               EditText phoneEditText, String phoneNumber,
+                               SpacedEditText confirmationEditText, String phoneNumber,
                                DigitsEventCollector digitsEventCollector, boolean isEmailCollection,
                                TextView timerText,
                                DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
-        this(resultReceiver, stateButton, resendButton, callMeButton, phoneEditText, phoneNumber,
-                Digits.getSessionManager(), Digits.getInstance().getDigitsClient(),
+        this(resultReceiver, stateButton, resendButton, callMeButton, confirmationEditText,
+                phoneNumber, Digits.getSessionManager(), Digits.getInstance().getDigitsClient(),
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), digitsEventCollector,
                 isEmailCollection, timerText, digitsEventDetailsBuilder);
@@ -52,14 +52,15 @@ class ConfirmationCodeController extends DigitsControllerImpl {
      */
     ConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                                InvertedStateButton resendButton, InvertedStateButton callMeButton,
-                               EditText phoneEditText, String phoneNumber,
+                               SpacedEditText confirmationEditText, String phoneNumber,
                                SessionManager<DigitsSession> sessionManager, DigitsClient client,
                                ErrorCodes errors, ActivityClassManager activityClassManager,
                                DigitsEventCollector digitsEventCollector, boolean isEmailCollection,
                                TextView timerText,
                                DigitsEventDetailsBuilder digitsEventDetailsBuilder) {
-        super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
-                sessionManager, digitsEventCollector, digitsEventDetailsBuilder);
+        super(resultReceiver, stateButton, confirmationEditText, client, errors,
+                activityClassManager, sessionManager, digitsEventCollector,
+                digitsEventDetailsBuilder);
         this.phoneNumber = phoneNumber;
         this.isEmailCollection = isEmailCollection;
         this.resendButton = resendButton;
@@ -68,16 +69,17 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                 DigitsConstants.RESEND_TIMER_DURATION_MILLIS, timerText, resendButton,
                 callMeButton);
         this.timerText = timerText;
+        this.confirmationEditText = confirmationEditText;
     }
 
     @Override
     public void executeRequest(final Context context) {
         digitsEventCollector.submitClickOnSignupScreen(eventDetailsBuilder
                 .withCurrentTime(System.currentTimeMillis()).build());
-        if (validateInput(editText.getText())) {
+        if (validateInput(confirmationEditText.getUnspacedText())) {
             sendButton.showProgress();
-            CommonUtils.hideKeyboard(context, editText);
-            final String code = editText.getText().toString();
+            CommonUtils.hideKeyboard(context, confirmationEditText);
+            final String code = confirmationEditText.getUnspacedText().toString();
             digitsClient.createAccount(code, phoneNumber,
                     new DigitsCallback<DigitsUser>(context, this, sessionManager) {
                         @Override

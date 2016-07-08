@@ -17,13 +17,11 @@
 
 package com.digits.sdk.android;
 
-import android.net.Uri;
+import android.widget.EditText;
 
-class DigitsConstants {
-    public final static Uri TWITTER_TOS = Uri.parse("https://twitter.com/tos");
-    public final static Uri DIGITS_TOS = Uri.parse("https://www.digits.com");
-    public final static int RESEND_TIMER_DURATION_MILLIS = 15000;
-    public final static int MIN_CONFIRMATION_CODE_LENGTH = 6;
-    static final String GUEST_AUTH_REFRESH_LOG_MESSAGE = "Refreshing guest auth token";
-    static final String hyphen = "-";
+public class DummyBucketedTextChangeListener extends BucketedTextChangeListener{
+    public DummyBucketedTextChangeListener(EditText editText, int expectedContentLength,
+                                           String placeHolder, ContentChangeCallback callback) {
+        super(editText, expectedContentLength, placeHolder, callback);
+    }
 }

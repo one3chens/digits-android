@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.InputType;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -29,10 +28,7 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     EditText editText;
     StateButton stateButton;
-    InvertedStateButton resendButton, callMeButton;
-    LinkTextView editPhoneNumberLink;
     TextView termsText;
-    TextView timerText;
     DigitsController controller;
     Activity activity;
     DigitsEventCollector digitsEventCollector;
@@ -45,7 +41,7 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public int getLayoutId() {
-        return R.layout.dgts__activity_confirmation;
+        return R.layout.dgts__activity_email;
     }
 
     @Override
@@ -72,13 +68,7 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
         titleText = (TextView) activity.findViewById(R.id.dgts__titleText);
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
-        resendButton =  (InvertedStateButton) activity
-                .findViewById(R.id.dgts__resendConfirmationButton);
-        callMeButton =  (InvertedStateButton) activity.findViewById(R.id.dgts__callMeButton);
-        editPhoneNumberLink = (LinkTextView) activity.findViewById(R.id.dgts__editPhoneNumber);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
-        timerText = (TextView) activity.findViewById(R.id.dgts__countdownTimer);
-        final AuthConfig config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
         tosFormatHelper = new TosFormatHelper(activity);
@@ -88,36 +78,9 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
-        setupResendButton(resendButton);
-        setupCallMeButton(callMeButton);
-        setupCountDownTimer(controller, timerText, config);
-        setUpEditPhoneNumberLink(activity, editPhoneNumberLink,
-                bundle.getString(DigitsClient.EXTRA_PHONE));
         setUpTermsText(activity, controller, termsText);
 
         CommonUtils.openKeyboard(activity, editText);
-    }
-
-    @Override
-    protected void setUpEditPhoneNumberLink(final Activity activity,
-                                            final LinkTextView editPhoneLink,
-                                            String phoneNumber) {
-        editPhoneLink.setVisibility(View.GONE);
-    }
-
-    void setupResendButton(final InvertedStateButton resendButton){
-        resendButton.setVisibility(View.GONE);
-    }
-
-    void setupCallMeButton(final InvertedStateButton callMeButton){
-        callMeButton.setVisibility(View.GONE);
-    }
-
-    @Override
-    void setupCountDownTimer(final DigitsController controller,
-                             final TextView timerText,
-                             final AuthConfig config){
-        timerText.setVisibility(View.GONE);
     }
 
     @Override

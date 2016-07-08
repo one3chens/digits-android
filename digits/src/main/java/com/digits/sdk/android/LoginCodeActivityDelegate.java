@@ -19,6 +19,8 @@ package com.digits.sdk.android;
 
 import android.app.Activity;
 import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.view.View;
@@ -29,7 +31,7 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 
 class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     private final DigitsEventCollector digitsEventCollector;
-    EditText editText;
+    SpacedEditText editText;
     LinkTextView editPhoneNumberLinkTextView;
     StateButton stateButton;
     InvertedStateButton resendButton, callMeButton;
@@ -40,6 +42,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     Activity activity;
     AuthConfig config;
     TosFormatHelper tosFormatHelper;
+    BucketedTextChangeListener bucketedTextChangeListener;
 
     LoginCodeActivityDelegate(DigitsEventCollector digitsEventCollector) {
         this.digitsEventCollector = digitsEventCollector;
@@ -49,7 +52,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     public void init(final Activity activity, Bundle bundle) {
         this.activity = activity;
         eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
-        editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
+        editText = (SpacedEditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         resendButton =  (InvertedStateButton) activity
                 .findViewById(R.id.dgts__resendConfirmationButton);
@@ -58,10 +61,13 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 .findViewById(R.id.dgts__editPhoneNumber);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
         timerText = (TextView) activity.findViewById(R.id.dgts__countdownTimer);
-        config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
+        config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
         controller = initController(bundle);
         tosFormatHelper = new TosFormatHelper(activity);
+        bucketedTextChangeListener = new BucketedTextChangeListener(this.editText,
+                DigitsConstants.MIN_CONFIRMATION_CODE_LENGTH, DigitsConstants.hyphen,
+                createBucketOnEditCallback(stateButton));
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
@@ -92,6 +98,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         stateButton.setStatesText(R.string.dgts__continue, R.string.dgts__sending,
                 R.string.dgts__done);
         stateButton.showStart();
+        stateButton.setEnabled(false);
         super.setUpSendButton(activity, controller, stateButton);
     }
 
@@ -128,6 +135,22 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
         }
         return false;
+    }
+
+    @Override
+    public void setUpEditText(final Activity activity, final DigitsController controller,
+                              EditText editText) {
+        super.setUpEditText(activity, controller, editText);
+
+        final Drawable dr = activity.getResources()
+                .getDrawable(Resources.getSystem()
+                        .getIdentifier("indicator_input_error", "drawable", "android"));
+        editText.setText(activity.getResources()
+                .getString(R.string.dgts__confirmationEditTextPlaceholder));
+        // Setting a negative padding helps to not having the text jump around
+        // when an error is displayed to a user
+        editText.setCompoundDrawablePadding(dr.getIntrinsicWidth() * -1);
+        editText.addTextChangedListener(bucketedTextChangeListener);
     }
 
     @Override

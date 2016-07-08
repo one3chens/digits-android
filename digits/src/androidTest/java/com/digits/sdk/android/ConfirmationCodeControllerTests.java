@@ -126,7 +126,7 @@ public class ConfirmationCodeControllerTests extends
                 digitsClient, errors, new ActivityClassManagerImp(), digitsEventCollector, true,
                 timerTextView, digitsEventDetailsBuilder);
 
-        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
+        when(phoneEditText.getUnspacedText()).thenReturn(Editable.Factory.getInstance().newEditable
                 ("123"));
         controller.executeRequest(context);
         verify(callMeButton).showError();
@@ -179,7 +179,7 @@ public class ConfirmationCodeControllerTests extends
     }
 
     DigitsCallback executeRequest() {
-        when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
+        when(phoneEditText.getUnspacedText()).thenReturn(Editable.Factory.getInstance().newEditable
                 (CODE));
         controller.executeRequest(context);
         verify(digitsEventCollector)

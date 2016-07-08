@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
@@ -81,6 +82,21 @@ public class DigitsActivityDelegateImplTests extends DigitsActivityDelegateTests
 
         verify(activity).finish();
         verifyResultCode(activity, DigitsActivity.RESULT_CHANGE_PHONE_NUMBER);
+    }
+
+    public void testCreateBucketOnEditCallback() throws Exception {
+        final BucketedTextChangeListener.ContentChangeCallback callback =
+                delegate.createBucketOnEditCallback(button);
+
+        callback.whileIncomplete();
+        callback.whileIncomplete();
+        callback.whileIncomplete();
+        callback.whileIncomplete();
+        verify(button, times(4)).setEnabled(false);
+
+        callback.whileComplete();
+        callback.whileComplete();
+        verify(button, times(2)).setEnabled(true);
     }
 
     class MockDigitsActivityDelegateImpl extends DigitsActivityDelegateImpl {

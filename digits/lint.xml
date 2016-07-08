@@ -29,4 +29,10 @@
     <issue id="PrivateResource" severity="ignore">
         <ignore path="src/main/java/com/digits/sdk/android/ContactsActionBarActivity.java"/>
     </issue>
+    <issue id="UnusedAttribute" severity="ignore">
+        <ignore path="src/main/res/layout/dgts__activity_confirmation.xml"/>
+    </issue>
+    <issue id="SetTextI18n" severity="ignore">
+        <ignore path="src/main/java/com/digits/sdk/android/LetterSpacingEditText.java"/>
+    </issue>
 </lint>

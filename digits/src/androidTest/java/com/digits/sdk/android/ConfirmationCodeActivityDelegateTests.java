@@ -19,6 +19,8 @@ package com.digits.sdk.android;
 
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.SpannedString;
@@ -114,11 +116,34 @@ public class ConfirmationCodeActivityDelegateTests extends
     }
 
     @Override
+    public void testSetUpEditText_nextAction() throws Exception {
+        final Drawable dr = getContext().getResources()
+                .getDrawable(Resources.getSystem()
+                        .getIdentifier("indicator_input_error", "drawable", "android"));
+        when(activity.getResources()).thenReturn(getContext().getResources());
+        delegate.bucketedTextChangeListener = bucketedTextChangeListener;
+
+        super.testSetUpEditText_nextAction();
+        verify(editText).setText(getContext().getResources()
+                .getString(R.string.dgts__confirmationEditTextPlaceholder));
+        verify(editText).addTextChangedListener(bucketedTextChangeListener);
+        verify(editText).setCompoundDrawablePadding(dr.getIntrinsicWidth() * -1);
+    }
+
+    @Override
+    public void testSetUpEditText_noNextAction() throws Exception {
+        when(activity.getResources()).thenReturn(getContext().getResources());
+        delegate.bucketedTextChangeListener = bucketedTextChangeListener;
+        super.testSetUpEditText_nextAction();
+    }
+
+    @Override
     public void testSetUpSendButton() throws Exception {
         super.testSetUpSendButton();
         verify(button).setStatesText(R.string.dgts__create_account, R.string.dgts__sending,
                 R.string.dgts__done);
         verify(button).showStart();
+        verify(button).setEnabled(false);
     }
 
     public void testOnResume() {

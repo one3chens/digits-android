@@ -18,7 +18,6 @@ package com.digits.sdk.android;
 
 import android.os.CountDownTimer;
 import android.os.ResultReceiver;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.twitter.sdk.android.core.SessionManager;
@@ -29,7 +28,8 @@ public class DummyLoginCodeController extends LoginCodeController {
     private final ApiInterface accountService;
     public DummyLoginCodeController(ResultReceiver resultReceiver, StateButton sendButton,
                                     InvertedStateButton resendButton,
-                                    InvertedStateButton callMeButton, EditText phoneEditText,
+                                    InvertedStateButton callMeButton,
+                                    SpacedEditText phoneEditText,
                                     SessionManager<DigitsSession> sessionManager,
                                     DigitsClient digitsClient, String requestId,
                                     long userId, String phoneWithCountryCode, ErrorCodes errors,

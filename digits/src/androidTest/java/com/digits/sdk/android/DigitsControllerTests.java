@@ -24,7 +24,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.ResultReceiver;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
@@ -36,7 +35,6 @@ import java.util.Locale;
 
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -54,7 +52,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
 
 
     T controller;
-    EditText phoneEditText;
+    SpacedEditText phoneEditText;
     StateButton sendButton;
     InvertedStateButton resendButton, callMeButton;
     DigitsClient digitsClient;
@@ -77,7 +75,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         bundleCaptor = ArgumentCaptor.forClass(Bundle.class);
         callbackCaptor = ArgumentCaptor.forClass(DigitsCallback.class);
         intentCaptor = ArgumentCaptor.forClass(Intent.class);
-        phoneEditText = mock(EditText.class);
+        phoneEditText = mock(SpacedEditText.class);
         sendButton = mock(StateButton.class);
         resendButton = mock(InvertedStateButton.class);
         callMeButton = mock(InvertedStateButton.class);

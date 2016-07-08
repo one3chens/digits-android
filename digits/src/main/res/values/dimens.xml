@@ -20,6 +20,7 @@
     <dimen name="dgts__progress_bar_side_length">28dp</dimen>
     <dimen name="dgts__title_text_size">22sp</dimen>
     <dimen name="dgts__terms_text_size">12sp</dimen>
+    <dimen name="dgts__confirmation_code_text_size">32sp</dimen>
     <dimen name="dgts__margin_bottom">16dp</dimen>
     <dimen name="dgts__margin_left">14dp</dimen>
     <dimen name="dgts__margin_right">14dp</dimen>

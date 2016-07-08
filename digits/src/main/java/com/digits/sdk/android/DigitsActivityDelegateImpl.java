@@ -111,4 +111,19 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
 
         timerText.setLayoutParams(params);
     }
+
+    BucketedTextChangeListener.ContentChangeCallback createBucketOnEditCallback(
+            final StateButton button) {
+        return new BucketedTextChangeListener.ContentChangeCallback() {
+            @Override
+            public void whileComplete() {
+                button.setEnabled(true);
+            }
+
+            @Override
+            public void whileIncomplete() {
+                button.setEnabled(false);
+            }
+        };
+    }
 }

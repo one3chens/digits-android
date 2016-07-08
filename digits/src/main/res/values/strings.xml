@@ -43,7 +43,7 @@
     <!-- hint for the user on a input field -->
     <!--suppress MissingTranslation-->
     <string name="dgts__phone_number_edit_hint">Your Number</string>
-    <!--suppress MissingTranslation-->
+    <!--suppress MissingTranslation, UnusedResources-->
     <string name="dgts__confirmation_code">Confirmation code</string>
     <!-- Confirmation code screen -->
     <string name="dgts__confirmation_edit_hint">Enter the 6-digit code we sent you</string>
@@ -116,4 +116,6 @@
     <string name="dgts__try_again_email">Please check your email and try again</string>
     <!--suppress MissingTranslation -->
     <string name="dgts__invalid_email">Invalid Email. Try Again</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__confirmationEditTextPlaceholder">------</string>
 </resources>

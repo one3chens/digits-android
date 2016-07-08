@@ -43,15 +43,24 @@
             android:layout_marginBottom="@dimen/dgts__margin_bottom"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        <EditText
+        <!--This fontFamily attribute of the SpacedEditText
+         is honored and required from api 16. It will be ignored for all lower versions.-->
+        <com.digits.sdk.android.SpacedEditText
             android:id="@+id/dgts__confirmationEditText"
+            digits:spacingProportion="1.1"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/dgts__confirmation_code_text_size"
+            android:cursorVisible="false"
+            android:typeface="monospace"
+            android:fontFamily="monospace"
+            android:background="@color/tw__transparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/dgts__margin_bottom"
             android:layout_below="@+id/dgts__editPhoneNumber"
             android:ems="10"
-            android:hint="@string/dgts__confirmation_code"
             android:imeOptions="actionNext"
             android:inputType="number"/>
         <View android:id="@+id/strut"

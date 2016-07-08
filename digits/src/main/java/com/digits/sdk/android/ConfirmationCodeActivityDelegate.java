@@ -19,6 +19,8 @@ package com.digits.sdk.android;
 
 import android.app.Activity;
 import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.view.View;
@@ -28,7 +30,7 @@ import android.widget.TextView;
 import io.fabric.sdk.android.services.common.CommonUtils;
 
 class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
-    EditText editText;
+    SpacedEditText editText;
     LinkTextView editPhoneNumberLink;
     StateButton stateButton;
     InvertedStateButton resendButton, callMeButton;
@@ -40,6 +42,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
     DigitsEventCollector digitsEventCollector;
     AuthConfig config;
     TosFormatHelper tosFormatHelper;
+    BucketedTextChangeListener bucketedTextChangeListener;
 
     public ConfirmationCodeActivityDelegate(DigitsEventCollector digitsEventCollector) {
         this.digitsEventCollector = digitsEventCollector;
@@ -70,7 +73,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
     public void init(Activity activity, Bundle bundle) {
         this.activity = activity;
         eventDetailsBuilder = bundle.getParcelable(DigitsClient.EXTRA_EVENT_DETAILS_BUILDER);
-        editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
+        editText = (SpacedEditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         resendButton =  (InvertedStateButton) activity
                 .findViewById(R.id.dgts__resendConfirmationButton);
@@ -82,6 +85,9 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
         controller = initController(bundle);
         tosFormatHelper = new TosFormatHelper(activity);
+        bucketedTextChangeListener = new BucketedTextChangeListener(this.editText,
+                DigitsConstants.MIN_CONFIRMATION_CODE_LENGTH, DigitsConstants.hyphen,
+                createBucketOnEditCallback(stateButton));
 
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
@@ -110,6 +116,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
         stateButton.setStatesText(R.string.dgts__create_account, R.string.dgts__sending,
                 R.string.dgts__done);
         stateButton.showStart();
+        stateButton.setEnabled(false);
         super.setUpSendButton(activity, controller, stateButton);
     }
 
@@ -117,6 +124,20 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
     public void setUpTermsText(Activity activity, DigitsController controller, TextView termsText) {
         termsText.setText(tosFormatHelper.getFormattedTerms(R.string.dgts__terms_text_create));
         super.setUpTermsText(activity, controller, termsText);
+    }
+
+    @Override
+    public void setUpEditText(final Activity activity, final DigitsController controller,
+                              EditText editText) {
+        super.setUpEditText(activity, controller, editText);
+
+        final Drawable dr = activity.getResources()
+                .getDrawable(Resources.getSystem()
+                        .getIdentifier("indicator_input_error", "drawable", "android"));
+        editText.setText(activity.getResources()
+                .getString(R.string.dgts__confirmationEditTextPlaceholder));
+        editText.setCompoundDrawablePadding(dr.getIntrinsicWidth() * -1);
+        editText.addTextChangedListener(bucketedTextChangeListener);
     }
 
     @Override
