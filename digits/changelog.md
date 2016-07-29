@@ -3,6 +3,12 @@
 
 ## Unreleased
 
+## v1.11.2
+* Added new confirmation code bucketing that provides visual feedback to
+  users about the length of the confirmation code we expect.
+* Replacing custom actions with custom events in sample application to
+  serve as a better example on using digits custom loggers
+
 ## v1.11.1
 * Bugs Fixed
     *OSS gradle files breakages.

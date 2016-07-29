@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-  compile('com.digits.sdk.android:digits:1.11.1@aar') {
+  compile('com.digits.sdk.android:digits:1.11.2@aar') {
     transitive = true
   }
 }
