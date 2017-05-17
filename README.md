@@ -5,83 +5,13 @@ Please utilize the available binaries.
 
 ## Download
 
+## Update 5.17.2017: 
 
-Define via Gradle:
-```groovy
+Firebase phone authentication is the next evolution of Digits. You can now let your users sign in with their phone numbers, in addition to traditional email/password or identity providers like Google or Facebook. This gives you a comprehensive authentication solution no matter who your users are or how they like to log in. Learn more about [Firebase phone authentication](https://firebase.google.com/docs/auth/).
 
-buildscript {
-  repositories {
-    mavenCentral()
-    maven { url 'https://maven.fabric.io/public' }
-  }
-  dependencies {
-    classpath 'io.fabric.tools:gradle:1.+'
-  }
-}
+## If you currently use Digits: 
 
-apply plugin: 'io.fabric'
-
-repositories {
-  mavenCentral()
-  maven { url 'https://maven.fabric.io/public' }
-}
-
-dependencies {
-  compile('com.digits.sdk.android:digits:1.11.2@aar') {
-    transitive = true
-  }
-}
-
-```
-
-Check out [more details and other build tool integrations](https://fabric.io/downloads/build-tools)
-
-## Getting Started
-
-* Sign up for a [Fabric account](https://fabric.io) and follow onboarding instructions to get your Fabric API Key and build secret, found under the organization settings of the Fabric web dashboard.
-* Get your Digits API key from the IDE plugin.
-* Rename samples/app/fabric.properties.sample to samples/app/fabric.properties and populate information.
-* Run Sample app to verify build.
-* For extensive documentation, please see the [official documentation](http://docs.fabric.io/android/digits/index.html).
-
-## Code of Conduct
-
-This, and all github.com/twitter projects, are under the [Twitter Open Source Code of Conduct](https://engineering.twitter.com/opensource/code-of-conduct). Additionally, see the [Typelevel Code of Conduct](http://typelevel.org/conduct) for specific examples of harassing behavior that are not tolerated.
-
-## Building
-
-Please use the provided gradle wrapper to build the project.
-
-```
-./gradlew assemble
-```
-
-Run all automated tests on device to verify.
-
-```
-./gradlew connectedCheck
-```
-
-To run the sample app
-
-```
-./gradlew :samples:app:installDebug
-```
-
-
-Contributing
-
-The master branch of this repository contains the latest stable release of Digits. See
-[CONTRIBUTING.md](https://github.com/twitter/digits-android/blob/master/CONTRIBUTING.md) for
-more details about how to contribute.
-
-## Contact
-
-For usage questions post on [Digits Community](https://twittercommunity.com/c/fabric/digits).
-
-Please report any bugs as [issues](https://github.com/twitter/digits-android/issues).
-
-Follow [@Digits](http://twitter.com/digits) on Twitter for updates.
+Upgrade to Firebase phone authentication for an even more powerful and reliable service that gives you faster user growth. The Digits SDK and Digits.com will be retired on September 30, 2017. Learn more on the [Digits blog](http://get.digits.com/blog/introducing-firebase-phone-authentication).
 
 ## Authors
 
@@ -101,6 +31,6 @@ Thanks for assistance and contributions:
 
 ## License
 
-Copyright 2015 Twitter, Inc.
+Copyright 2017 Google, Inc.
 
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
